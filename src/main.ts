@@ -1,7 +1,7 @@
 import { assetLoader } from "./assetLoader";
 import k from "./kaplayCtx";
-import { menuScene } from "./levels/menu";
-import { morningScene } from "./levels/morning";
+import { menu } from "./levels/menu";
+import { morning } from "./levels/morning";
 
 
 
@@ -17,8 +17,19 @@ import { morningScene } from "./levels/morning";
 
 await assetLoader()
 
-menuScene()
-morningScene()
+//make a function for doing repetetive ui onhover/onclick/properties 
+
+menu()
+//make a transition scene between menu and levels
+
+morning()
+//noon()
+//evening()
+//night()
+
+//Shop()
+
+//Secret()
 
 k.go("main-menu");
 

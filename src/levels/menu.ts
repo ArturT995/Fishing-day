@@ -8,8 +8,11 @@ import { bubbleText, clickProcess, hoverProcess } from "../utils";
 
 
 //do basic settings
+//add current datetime around the logo in the empty spots
+//and see if it makes sense
+//if not add it elsewhere
 
-export function menuScene() {
+export function menu() {
     k.scene("main-menu", () => {
         k.setCursor("default");
         addSprite("bg1")
@@ -82,7 +85,11 @@ export function menuScene() {
             if (gm.logPopupOpen) return;
             hoverProcess(log)
         })
-
+        
+        
+        k.onSceneLeave(() => {
+            bgMusic.stop();
+        });
     });
 };
 
