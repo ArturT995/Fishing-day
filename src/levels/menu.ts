@@ -1,8 +1,8 @@
+import k from "../kaplayCtx";
 import { addSprite } from "../assetLoader";
 import { COLORS, fontConfig, fontConfigSmall } from "../constants";
 import { FISH_DATA } from "../entities/fishes";
 import gm from "../gm";
-import k from "../kaplayCtx";
 import { bubbleText, clickProcess, hoverProcess } from "../utils";
 
 
@@ -11,6 +11,8 @@ import { bubbleText, clickProcess, hoverProcess } from "../utils";
 //add current datetime around the logo in the empty spots
 //and see if it makes sense
 //if not add it elsewhere
+
+//redo menu sprite, put logo on seperate layer and polish bg
 
 export function menu() {
     k.scene("main-menu", () => {
@@ -102,11 +104,13 @@ function openCollectionLog() {
     const COLS = 4;
     const ICON_SIZE = 32;
     const PADDING = 7;
+    const TOOLTIP_PADDING = 5;
     const POPUP_WIDTH = k.width() / 1.4;
     const POPUP_HEIGHT = k.height() / 1.5;
 
+    //refactor to make popup parent with relative offshoots
     const popup = k.add([
-        k.rect(POPUP_WIDTH, POPUP_HEIGHT),//replace with sprite
+        k.rect(POPUP_WIDTH, POPUP_HEIGHT),//replace or wrap in with sprite
         k.pos(k.width() / 2, k.height() / 2.2),
         k.anchor("center"),
         k.color(COLORS.BLUE),
@@ -124,24 +128,33 @@ function openCollectionLog() {
     ]);
    
     const tooltip = k.add([
-        k.rect(100, 40), //change to dynamic
+        k.rect(0, 0),
         k.pos(0, 0),
         k.color(0, 0, 0),
         k.opacity(0.9),
         k.z(5),
     ]);
-
+    
     const tooltipText = k.add([
-        k.text("", fontConfigSmall),
+        k.text("", {font: "happy", size: 6, width: 120}),
         k.pos(0, 0),
         k.color(COLORS.BEIGE),
         k.z(5),
     ]);
+    
+    //reuse in settings
+    const blocker = k.add([
+        k.rect(k.width(),k.height()),
+        k.anchor("center"),
+        k.color(0,0,0),
+        k.pos(k.center()),
+        k.opacity(0.5),
+    ])
 
     tooltip.hidden = true;
     tooltipText.hidden = true;
 
-    const popupObjects = [popup, closeBtn, tooltip, tooltipText];
+    const popupObjects = [blocker, popup, closeBtn, tooltip, tooltipText];
 
     FISH_DATA.forEach((fish, id) => {
         const col = id % COLS;
@@ -168,16 +181,40 @@ function openCollectionLog() {
             if (!fish.unlocked) {
                 tooltipText.text = "???";
             } else {
-                tooltipText.text = `${fish.name}\n${fish.desc}`;
+                tooltipText.text = `${fish.name}\n${fish.desc}${fish.desc}${fish.desc}${fish.desc}${fish.desc}${fish.desc} awa`;
             }
+
+            let tooltipTextInfo = k.formatText({
+                text: tooltipText.text,
+                font: "happy",
+                size: tooltipText.textSize,
+            })
+            if (tooltipTextInfo.width > tooltipText.width) {   
+                tooltipTextInfo = k.formatText({
+                    text: tooltipText.text,
+                    font: "happy",
+                    size: tooltipText.textSize,
+                    width: tooltipText.width,
+                })
+            }
+
+
+            tooltip.width = tooltipTextInfo.width + TOOLTIP_PADDING;
+            tooltip.height = tooltipTextInfo.height + TOOLTIP_PADDING;
             tooltip.hidden = false;
             tooltipText.hidden = false;
         });
 
         icon.onUpdate(() => {
-            if (!tooltip.hidden) {
-                tooltip.pos = k.mousePos().add(15, 15);
-                tooltipText.pos = tooltip.pos.add(5, 5)
+            if (tooltip.hidden) return;
+            const mouse = k.mousePos();
+            tooltip.pos = mouse.add(5, 5);
+            tooltipText.pos = tooltip.pos.add(TOOLTIP_PADDING / 2, TOOLTIP_PADDING / 2)
+            //toggle tooltip position
+            if (mouse.x + tooltip.width > k.width()) {
+                const flipX = -tooltip.width - (TOOLTIP_PADDING / 2);
+                tooltipText.pos = tooltip.pos.add(flipX, TOOLTIP_PADDING / 2);
+                tooltip.pos = mouse.add(flipX, 5);
             }
         });
 
@@ -186,7 +223,7 @@ function openCollectionLog() {
             tooltipText.hidden = true;
         });
 
-         popupObjects.push(icon);
+        popupObjects.push(icon);
     });
 
     closeBtn.onHover(() => {
@@ -198,6 +235,9 @@ function openCollectionLog() {
         gm.logPopupOpen = false;
     });
 }
+
+
+
 
 function openSettings() {
     //this will have adjustable settings that will be stored in gamestate and do not reset.

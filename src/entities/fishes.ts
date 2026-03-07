@@ -11,6 +11,8 @@ export interface FishObj {
     unlocked: boolean;
 }
 
+
+//make this a set for quicker lookups and no duplicates
 export const FISH_DATA = [
     {id: 0, name: "Orange Fish", sprite: "orangefishIcon",
     desc: "A common freshwater denizen.", avgSize: 12, unlocked: false},

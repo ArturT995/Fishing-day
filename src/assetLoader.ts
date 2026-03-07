@@ -10,13 +10,13 @@ export async function assetLoader() {
     k.loadSprite("orangefishIcon", "./graphics/orangefish.png")
     k.loadSprite("bluefishIcon", "./graphics/bluefish.png")
 
-    k.loadSound("bg-music", "./sounds/menu-bg-slower.wav");
-    k.loadSound("fishing-music", "./sounds/fishing-bg-1.wav");
-    k.loadSound("sea", "./sounds/sea.wav");
+    k.loadSound("bg-music", "./sounds/menu-bg-slower.ogg");
+    k.loadSound("fishing-music", "./sounds/fishing-bg-1.ogg");
+    k.loadSound("sea", "./sounds/sea.ogg");
 
-    k.loadSound("icon", "./sounds/icon-sound-2.wav");
-    k.loadSound("thunk", "./sounds/fishing-thunk.wav");
-    k.loadSound("laughing-bird", "./sounds/laughing-bird.wav");
+    k.loadSound("icon", "./sounds/icon-sound-2.ogg");
+    k.loadSound("thunk", "./sounds/fishing-thunk.ogg");
+    k.loadSound("laughing-bird", "./sounds/laughing-bird.ogg");
 }
 
 

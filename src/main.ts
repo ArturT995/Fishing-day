@@ -13,7 +13,7 @@ import { morning } from "./levels/morning";
 //mb a crab in sand, and every level will have different details so
 //at night theres some glowy bugs and such
 //same goes for sounds
-
+//make cursor sprite
 
 await assetLoader()
 
