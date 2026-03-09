@@ -1,18 +1,20 @@
 import k from "../kaplayCtx";
 import { addSprite } from "../assetLoader";
-import { COLORS, fontConfig, fontConfigSmall } from "../constants";
+import { COLORS, fontConfig } from "../constants";
 import { FISH_DATA } from "../entities/fishes";
 import gm from "../gm";
 import { bubbleText, clickProcess, hoverProcess } from "../utils";
+import type { GameObj } from "kaplay";
 
 
 
-//do basic settings
+
 //add current datetime around the logo in the empty spots
 //and see if it makes sense
 //if not add it elsewhere
 
 //redo menu sprite, put logo on seperate layer and polish bg
+//add tags and group things
 
 export function menu() {
     k.scene("main-menu", () => {
@@ -58,7 +60,7 @@ export function menu() {
         start.onClick(() => {
             if (gm.logPopupOpen) return;
             clickProcess(start)
-            k.go("morning") //change this later to be time based and pull from gamestate
+            k.go("day") //change this later to be time based and pull from gamestate
         });
         start.onHover(() => {
             if (gm.logPopupOpen) return;
@@ -68,24 +70,25 @@ export function menu() {
 
         settings.onClick(() => {
             if (gm.logPopupOpen) return;
-            clickProcess(settings)
-            //popup box with some settings, look at golf game to figure that out easier
+            clickProcess(settings);
+            gm.logPopupOpen = true;
+            openSettings();
         });
         settings.onHover(() => {
             if (gm.logPopupOpen) return;
-            hoverProcess(settings)
+            hoverProcess(settings);
         })
     
 
         log.onClick(() => {
             if (gm.logPopupOpen) return;
-            openCollectionLog()
+            openCollectionLog();
             gm.logPopupOpen = true;
-            clickProcess(log)
+            clickProcess(log);
         });
         log.onHover(() => {
             if (gm.logPopupOpen) return;
-            hoverProcess(log)
+            hoverProcess(log);
         })
         
         
@@ -94,6 +97,13 @@ export function menu() {
         });
     });
 };
+
+
+
+
+
+
+
 
 
 
@@ -113,6 +123,7 @@ function openCollectionLog() {
         k.rect(POPUP_WIDTH, POPUP_HEIGHT),//replace or wrap in with sprite
         k.pos(k.width() / 2, k.height() / 2.2),
         k.anchor("center"),
+        k.outline(2),
         k.color(COLORS.BLUE),
         k.area(),
         k.z(3),
@@ -130,8 +141,8 @@ function openCollectionLog() {
     const tooltip = k.add([
         k.rect(0, 0),
         k.pos(0, 0),
-        k.color(0, 0, 0),
-        k.opacity(0.9),
+        k.color(COLORS.DARKBLUE),
+        k.outline(1),
         k.z(5),
     ]);
     
@@ -141,7 +152,7 @@ function openCollectionLog() {
         k.color(COLORS.BEIGE),
         k.z(5),
     ]);
-    
+
     //reuse in settings
     const blocker = k.add([
         k.rect(k.width(),k.height()),
@@ -149,6 +160,7 @@ function openCollectionLog() {
         k.color(0,0,0),
         k.pos(k.center()),
         k.opacity(0.5),
+        k.z(2)
     ])
 
     tooltip.hidden = true;
@@ -239,6 +251,129 @@ function openCollectionLog() {
 
 
 
+
+
+
 function openSettings() {
-    //this will have adjustable settings that will be stored in gamestate and do not reset.
+    
+    const POPUP_WIDTH = k.width() / 1.4;
+    const POPUP_HEIGHT = k.height() / 2;
+    const PADDING = 8;
+
+    const blocker = k.add([
+        k.rect(k.width(),k.height()),
+        k.anchor("center"),
+        k.color(0,0,0),
+        k.area(),
+        k.pos(k.center()),
+        k.opacity(0.5),
+        k.z(2),
+    ])
+
+    const settingsMenu = k.add([
+        k.rect(POPUP_WIDTH, POPUP_HEIGHT),//replace or wrap in with sprite
+        k.pos(k.center()),
+        k.anchor("center"),
+        k.color(COLORS.BLUE),
+        k.area(),
+        k.z(3),
+    ]);
+
+    makeSlider(
+        settingsMenu, 
+        "Volume", 
+        -POPUP_HEIGHT / 2 + PADDING + 2,
+        1, 
+        (val) => {k.setVolume(val)}
+    );
+
+    const closeBtn = settingsMenu.add ([
+        k.text("Close", fontConfig),
+        k.pos(0, POPUP_HEIGHT / 2 - PADDING),
+        k.anchor("center"),
+        k.color(COLORS.BEIGE),
+        k.area(),
+        k.z(4)
+    ]);
+
+    closeBtn.onHover(() => {
+        hoverProcess(closeBtn)
+    });
+    closeBtn.onClick(() => {
+        clickProcess(closeBtn)
+        gm.logPopupOpen = false;
+        settingsMenu.destroy();
+        blocker.destroy();
+    });
+}
+
+
+
+
+
+
+
+function makeSlider(parent: GameObj, label: string, yOffset: number, initial: number, onChange: (val: number) => void) {
+    const SLIDER_WIDTH = parent.width / 2;
+    const CONTROLLER_SIZE = 4;
+    const LABEL_GAP = 10;
+    
+    const labelInfo = k.formatText({
+        text: label,
+        ...fontConfig,
+    });
+
+    const totalWidth = labelInfo.width + LABEL_GAP + SLIDER_WIDTH;
+    const startX = -totalWidth / 2;
+
+    parent.add([
+        k.text(label, fontConfig),
+        k.anchor("left"),
+        k.color(COLORS.BEIGE),
+        k.pos(startX, yOffset),
+        k.z(4),
+    ]);
+
+    const track = parent.add([
+        k.rect(SLIDER_WIDTH, CONTROLLER_SIZE*2),
+        k.anchor("left"),
+        k.pos(startX + labelInfo.width + LABEL_GAP, yOffset),
+        k.color(COLORS.BEIGE),
+        k.area(),
+        k.z(4),
+    ]);
+
+    const controller = parent.add([
+        k.rect(CONTROLLER_SIZE,CONTROLLER_SIZE*2),
+        k.anchor("center"),
+        k.pos(track.pos.x + initial * SLIDER_WIDTH, yOffset),
+        k.color(COLORS.YELLOW),
+        k.area(),
+        k.z(5),
+    ]);
+
+    let dragging = false;
+
+    const trackLeft: number = parent.pos.x + track.pos.x;
+    const trackRight = trackLeft + SLIDER_WIDTH;
+    let mouseX = k.mousePos().x;
+    let clamped = k.clamp(mouseX, trackLeft, trackRight);
+    let value = (clamped - trackLeft) / SLIDER_WIDTH;
+
+    controller.onUpdate(() => {
+        if (k.isMousePressed("left") && track.isHovering()) {
+            dragging = true;
+        }
+        if (k.isMouseReleased("left")) {
+            dragging = false;
+        }
+        if (dragging) {
+            mouseX = k.mousePos().x;
+            clamped = k.clamp(mouseX, trackLeft, trackRight);
+            controller.pos.x = clamped - parent.pos.x;
+            value = (clamped - trackLeft) / SLIDER_WIDTH;
+            onChange(value);
+        }});
+
+    return controller;
 }

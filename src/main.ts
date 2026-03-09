@@ -1,7 +1,7 @@
 import { assetLoader } from "./assetLoader";
 import k from "./kaplayCtx";
 import { menu } from "./levels/menu";
-import { morning } from "./levels/morning";
+import { day } from "./levels/day";
 
 
 
@@ -15,6 +15,10 @@ import { morning } from "./levels/morning";
 //same goes for sounds
 //make cursor sprite
 
+
+//use tags more, you can seperate and reuse logic easier
+//or group things by tag so they all have same onclick/onhover behavior
+
 await assetLoader()
 
 //make a function for doing repetetive ui onhover/onclick/properties 
@@ -22,9 +26,7 @@ await assetLoader()
 menu()
 //make a transition scene between menu and levels
 
-morning()
-//noon()
-//evening()
+day()
 //night()
 
 //Shop()

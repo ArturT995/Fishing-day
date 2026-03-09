@@ -6,15 +6,15 @@ import k from "./kaplayCtx";
 
 export function hoverProcess(obj: GameObj) {
     k.play("icon",{volume: 0.5})
-    obj.color = k.rgb(COLORS.YELLOW);
+    obj.color = COLORS.YELLOW;
     obj.onHoverEnd(() => {
-    obj.color = k.rgb(COLORS.BEIGE);
+    obj.color = COLORS.BEIGE;
     });
 }
 
 export function clickProcess(obj: GameObj) {
     k.play("thunk",{volume: 0.5})
-    obj.color = k.rgb(COLORS.GREEN);
+    obj.color = COLORS.GREEN;
 }
 
 

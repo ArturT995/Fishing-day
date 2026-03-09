@@ -6,7 +6,8 @@ export async function assetLoader() {
     k.loadFont("happy", "./fonts/happy-font.ttf")
 
     k.loadSprite("bg1", "./graphics/gamebg.png")
-    k.loadSprite("morning", "./graphics/gamebg.png") //placeholder duplicate, change to new sprite later.
+    k.loadSprite("day", "./graphics/day-level-bg.png")
+
     k.loadSprite("orangefishIcon", "./graphics/orangefish.png")
     k.loadSprite("bluefishIcon", "./graphics/bluefish.png")
 
@@ -15,6 +16,7 @@ export async function assetLoader() {
     k.loadSound("sea", "./sounds/sea.ogg");
 
     k.loadSound("icon", "./sounds/icon-sound-2.ogg");
+    k.loadSound("icon2", "./sounds/icon-sound-1.ogg");
     k.loadSound("thunk", "./sounds/fishing-thunk.ogg");
     k.loadSound("laughing-bird", "./sounds/laughing-bird.ogg");
 }

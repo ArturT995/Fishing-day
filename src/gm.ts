@@ -8,7 +8,7 @@ function makeGameManager() {
     return k.add([
         k.state("menu", [
             "intro",
-            "level-intro-noon",
+            "level-intro-morning",
             "fishing",
             "catching",
             "fish-caught",
