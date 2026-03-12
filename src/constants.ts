@@ -1,7 +1,9 @@
+import type { Vec2 } from "kaplay";
 import k from "./kaplayCtx";
 
 
 export const COLORS = {
+    WHITE: k.rgb(255, 255, 255),  
     BLUE: k.rgb(88, 130, 219),  
     DARKBLUE: k.rgb(21, 28, 45),
     DARKRED: k.rgb(54, 41, 41),
@@ -11,8 +13,9 @@ export const COLORS = {
     GREEN: k.rgb(118, 229, 114),
     BEIGE: k.rgb(231, 166, 133),
     YELLOW: k.rgb(255, 233, 109),
-    GRAYBLUE: k.rgb(35, 40, 98),
-    DARKGRAYBLUE: k.rgb(27, 19, 57),
+    PURPLE: k.rgb(184, 52, 255),
+    GRAYBLUE: k.rgb(29, 33, 73),
+    DARKGRAYBLUE: k.rgb(12, 9, 23),
 };
 
 type FontConfig = {
@@ -35,7 +38,7 @@ export const fontConfigSmall: FontConfig = {
     size: 6
 };
 
-
+export let fishHooked = false;
 
 export const fishingArea = k.add([
     k.polygon([
@@ -52,3 +55,9 @@ export const fishingArea = k.add([
     "fishingarea"
 ]);
 
+export type Stats = { 
+            size: number, 
+            difficulty: number,
+            name: string,
+            pos: Vec2,
+        };

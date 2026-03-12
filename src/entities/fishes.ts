@@ -23,18 +23,19 @@ export const ANCHOR = k.vec2(k.width() / 2, k.height() - 12)
 //make this a set for quicker lookups and no duplicates
 //change difficulty into a number
 
-export const FISH_AMOUNT = k.randi(12, 24)
+export const FISH_AMOUNT = k.randi(16, 24)
+
 export const FISH_DATA: FishObj[] = [
     {id: 0, name: "Orange Fish", sprite: "orangefishIcon",
     size: 5, desc: "A common freshwater denizen.",  unlocked: false,
     difficulty: 1},
-    {id: 1, name: "Orange Fish", sprite: "orangefishIcon",
+    {id: 1, name: "Orange Fish2", sprite: "orangefishIcon",
     size: 5, desc: "A common freshwater denizen.",  unlocked: false,
     difficulty: 1},
     {id: 2, name: "Bluemer", sprite: "bluefishIcon",
     size: 9, desc: "Strikingly blue.", unlocked: true,
     difficulty: 2},
-    {id: 3, name: "Bluemer", sprite: "bluefishIcon",
+    {id: 3, name: "Bluemer2", sprite: "bluefishIcon",
     size: 9, desc: "Strikingly blue.", unlocked: true,
     difficulty: 2},
 ];

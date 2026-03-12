@@ -5,8 +5,31 @@ import k from "./kaplayCtx";
 export async function assetLoader() {
     k.loadFont("happy", "./fonts/happy-font.ttf")
 
-    k.loadSprite("bg1", "./graphics/gamebg.png")
+    k.loadSprite("menu-bg", "./graphics/menu-bg.png")
+    k.loadSprite("titlebox", "./graphics/titlebox.png")
     k.loadSprite("day", "./graphics/day-level-bg.png")
+    k.loadSprite("ground", "./graphics/ground.png")
+    k.loadSprite("sea", "./graphics/sea.png")
+    
+
+    k.loadSprite("foam", "./graphics/foam.png", {
+        sliceX: 3,
+        anims: {
+            "normal": {
+                from: 0,
+                to: 2,
+                speed: 2,
+                frames: [0,1,2,1,0,1],
+                loop: true,
+            },
+            "fast": {
+                from: 2,
+                to: 0,
+                speed: 3,
+                loop: true,
+            },
+        },
+    })
 
     k.loadSprite("orangefishIcon", "./graphics/orangefish.png")
     k.loadSprite("bluefishIcon", "./graphics/bluefish.png")

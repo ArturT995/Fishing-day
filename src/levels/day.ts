@@ -1,3 +1,4 @@
+import type { GameObj } from "kaplay";
 import { addSprite } from "../assetLoader";
 import { COLORS, fontConfigSmall } from "../constants";
 import { ANCHOR } from "../entities/fishes";
@@ -7,16 +8,25 @@ import k from "../kaplayCtx";
 
 
 
-export function day() {
+export async function day() {
     k.scene("day", () => {
         k.setCursor("default");
-        addSprite("day") //add a bg sprite for morning
+        addSprite("sea")
+        addSprite("ground", k.z(2))
+        const foam = k.add([k.sprite("foam"), k.z(1)])
+        foam.play("normal");
+        //addSprite("foam")
+        //add some layers(deep water, ground) after u finish sprites for them.
+        //add crab and bird sprites
         const bgMusic = k.play("fishing-music", {volume: 0.5, loop: true});
         //add more tracks later, start with random one
         const seaSound = k.play("sea", {volume: 0.1, loop: true}); 
         //remember to load assets for any sound you add
 
         //make into a popup that has option to go back or adjust settings etc.
+
+
+
         const start = k.add([
             k.text("Menu", fontConfigSmall),
             k.anchor("left"),
@@ -35,7 +45,7 @@ export function day() {
         //add random sounds into onUpdate that run every now and then
         let canPlayBird = true;
         k.loop(3, () => {
-            if (canPlayBird && k.randi(1, 9) > 8) {
+            if (canPlayBird && k.rand(1, 9) > 8) {
                 canPlayBird = false;
                 const birdSound = k.play("laughing-bird", { volume: 0.3 });
                 birdSound.onEnd(() => {
@@ -48,6 +58,7 @@ export function day() {
             k.pos(k.vec2(k.width() / 2, k.height() -5)),
             k.anchor("center"),
             k.rect(2,14),
+            k.z(3),
             k.color(COLORS.RED),
             "player"
         ]);
@@ -57,12 +68,25 @@ export function day() {
     
 
 
-        const existingBobber = k.get("bobber");
-        k.onClick(() => {
+
+        let power = 0;
+        k.onMouseDown("left", () => {
+            k.play("icon2", {volume: 0.1})
+            power += 0.03
+        });
+        
+        if (k.isMouseDown("left")) {
+            k.play("icon2")
+        }
+
+        k.onMouseRelease("left", () => {
+            const existingBobber = k.get("bobber");
             if (existingBobber.length > 0) {
                 return;
             }
-            throwLine(ANCHOR, 3)
+            if (power > 4) power = 4;
+            throwLine(ANCHOR, power)
+            power = 0;
         });
 
         k.onDraw(() => {
@@ -96,12 +120,14 @@ export function day() {
             if(bobber) bobber.enterState("floating");
         });
 
+
         //add bird laughing sound sometimes when u fail to catch a fish
         k.onSceneLeave(() => {
             bgMusic.stop();
             seaSound.stop();
             reelSound.stop();
+            foam.stop();
         });
     });
-
+    
 };

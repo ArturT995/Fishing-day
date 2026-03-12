@@ -19,7 +19,8 @@ import type { GameObj } from "kaplay";
 export function menu() {
     k.scene("main-menu", () => {
         k.setCursor("default");
-        addSprite("bg1")
+        addSprite("titlebox", k.z(1))
+        addSprite("menu-bg")
         const bgMusic = k.play("bg-music", {volume: 0.4, loop: true});
 
         const start = k.add([
@@ -57,9 +58,10 @@ export function menu() {
         ]);
 
 
-        start.onClick(() => {
+        start.onClick( async () => {
             if (gm.logPopupOpen) return;
             clickProcess(start)
+            await k.wait(0.1)
             k.go("day") //change this later to be time based and pull from gamestate
         });
         start.onHover(() => {
