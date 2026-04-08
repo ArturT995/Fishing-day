@@ -2,6 +2,10 @@ import type { Vec2 } from "kaplay";
 import k from "./kaplayCtx";
 
 
+export const FISH_AMOUNT = k.randi(12, 18)
+export const ANCHOR = k.vec2(k.width() / 2, k.height() - 12)
+
+
 export const COLORS = {
     WHITE: k.rgb(255, 255, 255),  
     BLUE: k.rgb(88, 130, 219),  

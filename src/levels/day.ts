@@ -1,8 +1,7 @@
-import type { GameObj } from "kaplay";
 import { addSprite } from "../assetLoader";
 import { COLORS, fontConfigSmall } from "../constants";
-import { ANCHOR } from "../entities/fishes";
-import { generateFishes, throwLine } from "../fishing";
+import { ANCHOR, generateFishes } from "../entities/fishes";
+import { throwLine } from "../fishing";
 import k from "../kaplayCtx";
 
 
@@ -15,34 +14,46 @@ export async function day() {
         addSprite("ground", k.z(2))
         const foam = k.add([k.sprite("foam"), k.z(1)])
         foam.play("normal");
-        //addSprite("foam")
-        //add some layers(deep water, ground) after u finish sprites for them.
+
         //add crab and bird sprites
         const bgMusic = k.play("fishing-music", {volume: 0.5, loop: true});
         //add more tracks later, start with random one
         const seaSound = k.play("sea", {volume: 0.1, loop: true}); 
         //remember to load assets for any sound you add
 
-        //make into a popup that has option to go back or adjust settings etc.
+        //make a popup that has option to go back or adjust settings.
 
 
 
-        const start = k.add([
+        const menuBtn = k.add([
             k.text("Menu", fontConfigSmall),
             k.anchor("left"),
             k.pos(k.width()-20, k.height() - 5),
             k.color(COLORS.BLUE),
             k.area(),
             k.scale(1),
-            k.rotate(0),
             k.z(3),
         ]);
 
-        start.onClick(() => {
+        menuBtn.onClick(() => {
             k.go("main-menu");
         })
 
-        //add random sounds into onUpdate that run every now and then
+        const shopBtn = k.add([
+            k.text("Shop", fontConfigSmall),
+            k.anchor("left"),
+            k.pos(k.width()-40, k.height() - 5),
+            k.color(COLORS.BLUE),
+            k.area(),
+            k.scale(1),
+            k.z(3),
+        ]);
+
+        shopBtn.onClick(() => {
+            k.go("shop");
+        })
+
+        //add more random sounds into onUpdate that run every now and then
         let canPlayBird = true;
         k.loop(3, () => {
             if (canPlayBird && k.rand(1, 9) > 8) {
@@ -90,11 +101,11 @@ export async function day() {
         });
 
         k.onDraw(() => {
-            const bobbers = k.get("bobber");
-            if (bobbers.length > 0) {
+            const bobber = k.get("bobber")[0];
+            if (bobber) {
                 k.drawLine({
                     p1: ANCHOR,
-                    p2: bobbers[0].pos,
+                    p2: bobber.pos,
                     width: 0.2,
                     color: k.rgb(200, 200, 200),
                     opacity: 0.5,

@@ -1,13 +1,13 @@
 import k from "../kaplayCtx";
 import { addSprite } from "../assetLoader";
 import { COLORS, fontConfig } from "../constants";
-import { FISH_DATA } from "../entities/fishes";
+import { FISH_DATA } from "../db";
 import gm from "../gm";
-import { bubbleText, clickProcess, hoverProcess } from "../utils";
+import { alignObj, bubbleText, clickProcess, hoverProcess, makeButton, makeContainer } from "../ui";
 import type { GameObj } from "kaplay";
 
-
-
+//change font
+//spamclicking causes bug, sounds get overlapped and theres a crackling sound
 
 //add current datetime around the logo in the empty spots
 //and see if it makes sense
@@ -18,7 +18,7 @@ import type { GameObj } from "kaplay";
 
 export function menu() {
     k.scene("main-menu", () => {
-        k.setCursor("default");
+        k.setCursor("default");//make custom cursor
         addSprite("titlebox", k.z(1))
         addSprite("menu-bg")
         const bgMusic = k.play("bg-music", {volume: 0.4, loop: true});
@@ -93,7 +93,40 @@ export function menu() {
             hoverProcess(log);
         })
         
+        /*
+        example of helper function usage
+        const testContainer = makeContainer("center", COLORS.BEIGE, 180, 80, 1)
+        const testContainer2 = makeContainer("center", COLORS.BLUE, 40, 16, 1, testContainer)
+        const testContainer3 = makeContainer("center", COLORS.DARKRED, 40, 16, 1, testContainer)
+
+        const testButton1 = makeButton("test", 20, COLORS.DARKBLUE, testContainer, "static")
+        const testButton2 = makeButton("test2awaawaw", 6, COLORS.DARKBLUE, testContainer, "dynamic")
+        const testButton4 = makeButton("test2awaawaw", 6, COLORS.DARKBLUE, testContainer, "dynamic")
+        const testButton5 = makeButton("test2awaawaw", 6, COLORS.DARKBLUE, testContainer, "dynamic")
+        const testButton3 = makeButton("test3", 6, COLORS.DARKBLUE, testContainer, "static")
         
+
+        
+
+        alignObj(testButton1 ,testContainer, 2, 4, 2, "topleft")
+        alignObj(testButton2 ,testContainer, 0, 0, 2, "left")
+        alignObj(testButton4 ,testContainer, 0, 6, 2, "left")
+        alignObj(testButton5 ,testContainer, 0, 12, 2, "left")
+        alignObj(testButton3 ,testContainer, 0, 0, 0, "botright")
+        
+        alignObj(testContainer2 ,testContainer, 0, 0, 0, "popbotright")
+        const testButton7 = makeButton("$00300", 8, COLORS.YELLOW, testContainer2, "static")
+        alignObj(testButton7 ,testContainer2, 2, -4, 0, "topleft")
+        
+        alignObj(testContainer3 ,testContainer, 0, -16, 0, "popbotright")
+        const testButton8 = makeButton("$00500", 8, COLORS.YELLOW, testContainer3, "static")
+        alignObj(testButton8 ,testContainer3, 2, -4, 0, "topleft")
+        
+
+
+        bubbleText(testButton2)
+        */
+
         k.onSceneLeave(() => {
             bgMusic.stop();
         });

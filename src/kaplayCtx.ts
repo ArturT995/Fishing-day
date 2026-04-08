@@ -3,7 +3,7 @@ import kaplay from "kaplay";
 const k = kaplay({
     width: 256,
     height: 192,
-    letterbox: true, // dynamic scaling
+    letterbox: true,
     touchToMouse: true,
     scale: 4,
     pixelDensity: devicePixelRatio,

@@ -1,20 +1,8 @@
+import type { Vec2, GameObj } from "kaplay";
+import { COLORS, FISH_AMOUNT, fishingArea, type Stats } from "../constants";
+import gm from "../gm";
 import k from "../kaplayCtx";
-
-
-export interface FishObj {
-    id: number;
-    name: string;
-    size: number;
-    sprite: string;
-    desc: string;
-    unlocked: boolean;
-    difficulty: number;
-}
-
-export interface Bobber {
-    size: number;
-    sprite: string;
-}
+import { type FishObj, FISH_DATA } from "../db";
 
 
 
@@ -23,22 +11,6 @@ export const ANCHOR = k.vec2(k.width() / 2, k.height() - 12)
 //make this a set for quicker lookups and no duplicates
 //change difficulty into a number
 
-export const FISH_AMOUNT = k.randi(16, 24)
-
-export const FISH_DATA: FishObj[] = [
-    {id: 0, name: "Orange Fish", sprite: "orangefishIcon",
-    size: 5, desc: "A common freshwater denizen.",  unlocked: false,
-    difficulty: 1},
-    {id: 1, name: "Orange Fish2", sprite: "orangefishIcon",
-    size: 5, desc: "A common freshwater denizen.",  unlocked: false,
-    difficulty: 1},
-    {id: 2, name: "Bluemer", sprite: "bluefishIcon",
-    size: 9, desc: "Strikingly blue.", unlocked: true,
-    difficulty: 2},
-    {id: 3, name: "Bluemer2", sprite: "bluefishIcon",
-    size: 9, desc: "Strikingly blue.", unlocked: true,
-    difficulty: 2},
-];
 
 
 export function fishingPool(FISH_DATA: FishObj[], poolSize: number): FishObj[] {
@@ -48,6 +20,228 @@ export function fishingPool(FISH_DATA: FishObj[], poolSize: number): FishObj[] {
         chosenFishes.push(FISH_DATA[i])
         poolSize--;
     }
-    console.log(chosenFishes)
     return chosenFishes
 };
+
+
+export function generateFishes() {
+    let fishes = fishingPool(FISH_DATA, FISH_AMOUNT)
+    for (let fish of fishes) {
+        let randomPos = k.vec2(
+            k.randi(12, 240),
+            k.randi(12, 170)
+        );
+        if (!fishingArea.hasPoint(randomPos)) {
+            randomPos = k.vec2(k.randi(70,150), k.randi(60,130))
+        }
+        makeFish(fish, randomPos)
+    }
+}
+
+export function makeFish(fish: FishObj, pos: Vec2) {
+    const size = (k.randi(1, 1.4)*fish.maxSize) / 5
+    const speed = k.rand(1, 5)
+    const sizeSprite = k.rect(size*2,size, {radius: 3})
+    const r = 50;
+
+    const fishColors = [COLORS.GRAYBLUE,COLORS.DARKGRAYBLUE];
+    const randomColor = k.choose(fishColors);
+
+    const entity = k.add([
+        k.pos(pos),
+        sizeSprite,
+        k.opacity(1), //debug, change to 0
+        k.anchor("center"),
+        k.area(),
+        k.color(randomColor),
+        k.rotate(0),
+        k.state("idle", ["idle", "notice", "move", "pursue","hooked","attack"]),
+        {   
+            name: fish.name,
+            speed: speed,
+            size: fish.maxSize,
+            hooked: false,
+            difficulty: fish.difficulty,
+            waypoints: [
+                pos.add(k.vec2(k.rand(-r, r), k.rand(-r, r))),
+                pos.add(k.vec2(k.rand(-r, r), k.rand(-r, r))),
+                pos.add(k.vec2(k.rand(-r, r), k.rand(-r, r))),
+                pos.add(k.vec2(k.rand(-r, r), k.rand(-r, r))),
+                pos.add(k.vec2(k.rand(-r, r), k.rand(-r, r))),
+            ],
+            currentWaypoint: 0
+        },
+        "fish",
+    ]);
+    
+    /* disable in debug
+    const delay = k.rand(1, 8);
+
+    k.wait(delay, () => {
+        entity.opacity = k.rand(0.4, 0.7);
+
+        entity.fadeIn(k.rand(5, 18));
+    });
+    */
+
+    entity.onStateEnter("idle", async () => {
+        await k.wait(k.rand(0.2, 1))
+        entity.enterState("move");
+    })
+
+    entity.onKeyPress("k", () => {
+        entity.enterState("attack");
+    });
+
+    entity.onStateEnter("attack", async () => {
+        const bobber = k.get("bobber")[0];
+        const dir = bobber.pos.sub(entity.pos).unit();
+        await k.wait(k.rand(0,1));
+        k.add([
+            k.pos(entity.pos),
+            k.move(dir, 30),
+            k.circle(1),
+            k.area(),
+            k.offscreen({ destroy: true }),
+            k.anchor("center"),
+            k.color(COLORS.WHITE),
+            "bullet",
+        ]);
+        
+        bobber.onCollide("bullet", (bullet: GameObj) => {
+            k.play("thunk", {volume: 0.2})
+            k.destroy(bullet);
+        });
+        await k.wait(1);
+        entity.enterState("idle");
+    })
+
+
+    entity.onUpdate(() => {
+
+        if (!fishingArea.hasPoint(entity.pos)) {
+            const safePoint = k.vec2(k.randi(70,150), k.randi(60,130)); 
+            if (entity.waypoints[entity.currentWaypoint].dist(safePoint) > 1) {
+            entity.waypoints[entity.currentWaypoint] = safePoint;
+            entity.enterState("move");
+            }
+        }
+
+        if (entity.state === "move") {
+            const target = entity.waypoints[entity.currentWaypoint];
+            const dir = target.sub(entity.pos).unit();
+            entity.move(dir.scale(entity.speed));
+            entity.angle = dir.angle();
+
+            if (entity.pos.dist(target) < 5) {
+                entity.currentWaypoint = (entity.currentWaypoint + 1) % entity.waypoints.length;
+                entity.enterState("idle");
+            }
+        
+            if (entity.state === "move" && k.chance(0.01)) {
+                k.add([
+                    k.pos(entity.pos),
+                    k.circle(k.rand(0.2, 1)),
+                    k.color(COLORS.BLUE),
+                    k.opacity(0.2),
+                    k.lifespan(1, { fade: 0.5 }),
+                ]);
+            }
+        }
+        if (entity.state === "pursue") {
+            const bobber = k.get("bobber")[0];
+            if (!bobber) {
+                entity.enterState("idle");
+            } else {
+                const dir = bobber.pos.sub(entity.pos).unit();
+                entity.angle = dir.angle();
+                entity.move(dir.scale(entity.speed * 1.5));
+            }
+        }
+        if (entity.state === "hooked") {
+            const bobber = k.get("bobber")[0];
+            if (!bobber) {
+                entity.enterState("idle");
+            } else {
+                entity.use(k.follow(bobber, k.vec2(0, 0)));
+            }
+        }
+    })
+    entity.onCollide("noticeArea", () => {
+        if (entity.state !== "idle" && entity.state !== "move" ) return
+        entity.enterState("notice")
+    })
+
+    
+    entity.onCollide("catchArea", () => {
+        k.play("icon",{volume: 0.2}) //placeholder
+        const stats: Stats = { 
+            size: entity.size, 
+            difficulty: entity.difficulty,
+            name: entity.name,
+            pos: entity.pos 
+        };
+        spawnCaughtFish(stats);
+        gm.enterState("catching")
+        gm.fishReelSpeed = entity.size * 2
+        entity.destroy();
+        
+    })
+
+    entity.onStateEnter("hooked", () => {
+        const bobber = k.get("bobber")[0];
+        if (!bobber){
+            entity.enterState("idle");
+        }
+    })
+
+
+    entity.onStateEnter("notice", async () => {
+        k.play("icon",{volume: 0.03})
+        const notice = entity.add([
+            k.circle(0.5),
+            k.color(COLORS.BEIGE)
+        ])
+        await k.wait(k.rand(1, 2))
+        k.destroy(notice)
+        entity.enterState("pursue");
+    })
+}
+
+
+
+
+
+
+function spawnCaughtFish(fish: Stats) {
+    const bobber = k.get("bobber")[0];
+    if (!bobber) return;
+
+    const size = fish.size / 5
+    const sizeSprite = k.rect(size*2,size, {radius: 3})
+    const caughtFish = bobber.add([
+        k.pos(0,-3),
+        sizeSprite,
+        k.anchor("center"),
+        k.area(),
+        k.z(-2),
+        k.color(COLORS.BLACK),
+        k.rotate(90),
+        {   
+            name: fish.name,
+            size: fish.size,
+            difficulty: fish.difficulty,
+        },
+        "caughtFish",
+    ]);
+    bobber.reelSpeed = bobber.reelSpeed - fish.size
+
+    caughtFish.onUpdate(() => {
+        caughtFish.angle = k.rand(60, 120);
+    });
+}
+
+
+
+export { FISH_DATA };
+

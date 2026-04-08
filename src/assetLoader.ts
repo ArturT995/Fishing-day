@@ -7,7 +7,6 @@ export async function assetLoader() {
 
     k.loadSprite("menu-bg", "./graphics/menu-bg.png")
     k.loadSprite("titlebox", "./graphics/titlebox.png")
-    k.loadSprite("day", "./graphics/day-level-bg.png")
     k.loadSprite("ground", "./graphics/ground.png")
     k.loadSprite("sea", "./graphics/sea.png")
     

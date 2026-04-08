@@ -2,6 +2,7 @@ import { assetLoader } from "./assetLoader";
 import k from "./kaplayCtx";
 import { menu } from "./levels/menu";
 import { day } from "./levels/day";
+import { shop } from "./levels/shop";
 
 
 
@@ -27,11 +28,9 @@ menu()
 //make a transition scene between menu and levels
 
 day()
-//night()
 
-//Shop()
+shop()
 
-//Secret()
 
 k.go("main-menu");
 
