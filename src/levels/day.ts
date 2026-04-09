@@ -16,7 +16,7 @@ export async function day() {
         foam.play("normal");
 
         //add crab and bird sprites
-        const bgMusic = k.play("fishing-music", {volume: 0.5, loop: true});
+        const bgMusic = k.play("fishing-bg-1", {volume: 0.5, loop: true});
         //add more tracks later, start with random one
         const seaSound = k.play("sea", {volume: 0.1, loop: true}); 
         //remember to load assets for any sound you add
@@ -82,12 +82,12 @@ export async function day() {
 
         let power = 0;
         k.onMouseDown("left", () => {
-            k.play("icon2", {volume: 0.1})
+            k.play("icon-sound-1", {volume: 0.1})
             power += 0.03
         });
         
         if (k.isMouseDown("left")) {
-            k.play("icon2")
+            k.play("icon-sound-1")
         }
 
         k.onMouseRelease("left", () => {
@@ -114,7 +114,7 @@ export async function day() {
         });
 
 
-        const reelSound = k.play("icon2", { volume: 1.0, loop: true, detune: 3200, speed: 12 });
+        const reelSound = k.play("icon-sound-1", { volume: 1.0, loop: true, detune: 3200, speed: 12 });
         reelSound.volume = 0;
 
         k.onMouseDown("right", () => {

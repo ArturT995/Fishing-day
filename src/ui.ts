@@ -156,7 +156,7 @@ export function makeSlider(
 
 
 export function hoverProcess(obj: GameObj) {
-    k.play("icon",{volume: 0.5})
+    k.play("icon-sound-2",{volume: 0.5})
     const originalColor = obj.color
     obj.color = COLORS.YELLOW;
     obj.onHoverEnd(() => {
@@ -165,7 +165,7 @@ export function hoverProcess(obj: GameObj) {
 }
 
 export function clickProcess(obj: GameObj) {
-    k.play("thunk",{volume: 0.5})
+    k.play("fishing-thunk",{volume: 0.5})
     obj.color = COLORS.GREEN;
 }
 

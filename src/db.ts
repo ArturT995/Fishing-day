@@ -2,11 +2,16 @@
 export interface FishObj {
     id: number;
     name: string;
-    maxSize: number;
     sprite: string;
+    spriteLocked: string;
+    activeTime: string;
+    maxSize: number;
+    maxWeight: number;
+    rarityScore: number;
     desc: string;
     unlocked: boolean;
     difficulty: number;
+    feature?: string;
 }
 
 export interface RodObj {
@@ -25,20 +30,29 @@ export interface RodObj {
 
 //make this a set for quicker lookups and no duplicates
 //change difficulty into a number
+//make function that assigns a sprite/fixed size range depending on fish size
+
+// rarityscores: common = 1 uncommon = 3 rare = 8
 
 export const FISH_DATA: FishObj[] = [
-    {id: 0, name: "Orange Fish", sprite: "orangefishIcon",
-    maxSize: 5, desc: "A common freshwater denizen.",  unlocked: false,
-    difficulty: 1},
-    {id: 1, name: "Orange Fish2", sprite: "orangefishIcon",
-    maxSize: 5, desc: "A common freshwater denizen.",  unlocked: false,
-    difficulty: 1},
-    {id: 2, name: "Bluemer", sprite: "bluefishIcon",
-    maxSize: 9, desc: "Strikingly blue.", unlocked: true,
+    {id: 0, name: "Yuppie", sprite: "yuppie", spriteLocked: "yuppie-locked", activeTime: "Day",
+    maxSize: 10, maxWeight: 0.3, rarityScore: 4, desc: `This little denizen gets up at the crack of dawn,
+    and displays a high level of activity throughout the day and well into the late evening.
+    It has a sleek look and a go-getter attitude.`,  unlocked: true,
     difficulty: 2},
-    {id: 3, name: "Bluemer2", sprite: "bluefishIcon",
-    maxSize: 9, desc: "Strikingly blue.", unlocked: true,
-    difficulty: 2},
+
+    {id: 1, name: "Carp", sprite: "carp", spriteLocked: "carp-locked", activeTime: "Day",
+    maxSize: 80, maxWeight: 14, rarityScore: 1, desc: `A common coarse fish. Has a robust build and a dull gold sheen.
+    It has a fixed frown on it's face. A single carp can lay over a million eggs in one year.
+    Prefers cozy, brackish waters and soft sediments.`,  unlocked: true,
+    difficulty: 1},
+
+    {id: 2, name: "Ghost Carp", sprite: "ghostcarp", spriteLocked: "ghostcarp-locked", activeTime: "Night",
+    maxSize: 80, maxWeight: 14, rarityScore: 8, desc: `The ghost of a fallen carp, 
+    roaming the lake after sun has passed.
+    "How did you catch this?" - Shopkeeper`,  unlocked: false,
+    difficulty: 5},
+
 ];
 
 

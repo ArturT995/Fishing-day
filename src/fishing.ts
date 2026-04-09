@@ -31,7 +31,7 @@ export function throwLine(anchor: Vec2, power: number) {
         },
         "bobber"
     ])
-    const flySound = k.play("icon2", { volume: 1.0, loop: true, detune: 3200, speed: 16 });
+    const flySound = k.play("icon-sound-1", { volume: 1.0, loop: true, detune: 3200, speed: 16 });
     flySound.volume = 0;
     
     bobber.onStateEnter("flying", () => {
@@ -45,7 +45,7 @@ export function throwLine(anchor: Vec2, power: number) {
     });
 
     bobber.onStateEnter("splash", () => {
-        k.play("thunk")
+        k.play("fishing-thunk")
         spawnRipple(bobber.pos);
         bobber.enterState("floating");
     });

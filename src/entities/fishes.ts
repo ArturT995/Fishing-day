@@ -109,7 +109,7 @@ export function makeFish(fish: FishObj, pos: Vec2) {
         ]);
         
         bobber.onCollide("bullet", (bullet: GameObj) => {
-            k.play("thunk", {volume: 0.2})
+            k.play("fishing-thunk", {volume: 0.2})
             k.destroy(bullet);
         });
         await k.wait(1);
@@ -174,7 +174,7 @@ export function makeFish(fish: FishObj, pos: Vec2) {
 
     
     entity.onCollide("catchArea", () => {
-        k.play("icon",{volume: 0.2}) //placeholder
+        k.play("icon-sound-2",{volume: 0.7}) //placeholder
         const stats: Stats = { 
             size: entity.size, 
             difficulty: entity.difficulty,
@@ -197,7 +197,7 @@ export function makeFish(fish: FishObj, pos: Vec2) {
 
 
     entity.onStateEnter("notice", async () => {
-        k.play("icon",{volume: 0.03})
+        k.play("icon-sound-2",{volume: 0.2}) //placeholder
         const notice = entity.add([
             k.circle(0.5),
             k.color(COLORS.BEIGE)

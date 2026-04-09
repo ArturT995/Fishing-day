@@ -21,7 +21,7 @@ export function menu() {
         k.setCursor("default");//make custom cursor
         addSprite("titlebox", k.z(1))
         addSprite("menu-bg")
-        const bgMusic = k.play("bg-music", {volume: 0.4, loop: true});
+        const bgMusic = k.play("menu-bg-1", {volume: 0.4, loop: true});
 
         const start = k.add([
             k.text("Click to start", {font: "happy", size: 12}),
@@ -211,24 +211,24 @@ function openCollectionLog() {
         const startY = (popup.pos.y - POPUP_HEIGHT / 2 + PADDING + ICON_SIZE) - 15;
 
         const icon = k.add([
-            k.sprite(fish.sprite),
+            k.sprite(fish.unlocked ? fish.sprite : fish.spriteLocked),
             k.pos(startX + col * (ICON_SIZE + PADDING), startY + row * (ICON_SIZE + PADDING)),
             k.anchor("center"),
             k.area(),
             k.z(4),
-            k.opacity(fish.unlocked ? 1 : 0.3),
-            k.color(fish.unlocked ? k.rgb(255, 255, 255) : k.rgb(50, 50, 50)),
+            k.opacity(1),
+            k.color(),
             {
                 fishData: fish,
             },
         ]);
 
         icon.onHover(() => {
-            k.play("icon",{volume: 0.3})
+            k.play("icon-sound-2",{volume: 0.3})
             if (!fish.unlocked) {
                 tooltipText.text = "???";
             } else {
-                tooltipText.text = `${fish.name}\n${fish.desc}${fish.desc}${fish.desc}${fish.desc}${fish.desc}${fish.desc} awa`;
+                tooltipText.text = `${fish.name}\n${fish.desc}`;
             }
 
             let tooltipTextInfo = k.formatText({
