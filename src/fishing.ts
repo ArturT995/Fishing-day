@@ -31,8 +31,7 @@ export function throwLine(anchor: Vec2, power: number) {
         },
         "bobber"
     ])
-    const flySound = k.play("icon-sound-1", { volume: 1.0, loop: true, detune: 3200, speed: 16 });
-    flySound.volume = 0;
+    
     
     bobber.onStateEnter("flying", () => {
         
@@ -83,16 +82,13 @@ export function throwLine(anchor: Vec2, power: number) {
 
 
     bobber.onUpdate(() => {
-        if (bobber.state === "flying") flySound.volume = 2;
         if (bobber.state === "floating") {
-            flySound.volume = 0;
             if (gm.state === "catching") {
                 bobber.enterState("catching")
             }
         }
 
         if (bobber.state === "reeling" && k.isMouseDown("right")) {
-            flySound.volume = 0;
 
             const toAnchor = anchor.sub(bobber.pos).unit();
             bobber.move(toAnchor.scale(bobber.reelSpeed));
@@ -105,7 +101,6 @@ export function throwLine(anchor: Vec2, power: number) {
         }
 
         if (bobber.state === "catching") {
-            flySound.volume = 0;
             const toAnchor = anchor.sub(bobber.pos).unit();
             reelingArea.pos = k.mousePos()
             

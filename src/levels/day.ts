@@ -116,13 +116,24 @@ export async function day() {
 
         const reelSound = k.play("icon-sound-1", { volume: 1.0, loop: true, detune: 3200, speed: 12 });
         reelSound.volume = 0;
+        const flySound = k.play("icon-sound-1", { volume: 1.0, loop: true, detune: 3200, speed: 16 });
+        flySound.volume = 0;
+
+        k.onUpdate(() => {
+            const bobber = k.get("bobber")[0];
+            if (bobber && (bobber.state === "flying")) {
+                flySound.volume = 2;
+            } else {
+                flySound.volume = 0;
+            }
+        })
 
         k.onMouseDown("right", () => {
             const bobber = k.get("bobber")[0];
             if (bobber && (bobber.state === "floating" || bobber.state === "reeling")) {
                 bobber.enterState("reeling");
                 reelSound.volume = 1.8;
-            }           
+            }
         });
 
         k.onMouseRelease("right", () => {
@@ -137,6 +148,7 @@ export async function day() {
             bgMusic.stop();
             seaSound.stop();
             reelSound.stop();
+            flySound.stop()
             foam.stop();
         });
     });

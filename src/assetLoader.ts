@@ -30,24 +30,7 @@ export async function assetLoader() {
         },
     })
 
-    k.loadSprite("orangefishIcon", "./graphics/orangefish.png")
-    k.loadSprite("bluefishIcon", "./graphics/bluefish.png")
-
-    //k.loadSound("bg-music", "./sounds/menu-bg-slower.ogg");
-    //loadSound("menu-bg-1")
-
-    /*
-    k.loadSound("fishing-music", "./sounds/fishing-bg-1.ogg");
-    k.loadSound("sea", "./sounds/sea.ogg");
-
-    k.loadSound("icon", "./sounds/icon-sound-2.ogg");
-    k.loadSound("icon2", "./sounds/icon-sound-1.ogg");
-    k.loadSound("thunk", "./sounds/fishing-thunk.ogg");
-    k.loadSound("laughing-bird", "./sounds/laughing-bird.ogg");
-    */
-
     soundGen(soundsList)
-
     fishGen(fishesList)
 
 };
@@ -143,22 +126,22 @@ let soundsList = [
 
 let fishesList = 
 [
-  "alligator-gar-locked",
-  "alligator-gar",
+  "alligatorgar-locked",
+  "alligatorgar",
   "carp-locked",
   "carp",
   "esox-locked",
   "esox",
   "fishbones-locked",
   "fishbones",
-  "freshwater-drum-locked",
-  "freshwater-drum",
+  "freshwaterdrum-locked",
+  "freshwaterdrum",
   "ghostcarp-locked",
   "ghostcarp",
   "gildedfish-locked",
   "gildedfish",
-  "spotted-gar-locked",
-  "spotted-gar",
+  "spottedgar-locked",
+  "spottedgar",
   "tench-locked",
   "tench",
   "yuppie-locked",

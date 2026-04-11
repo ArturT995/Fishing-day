@@ -39,9 +39,9 @@ export function generateFishes() {
 }
 
 export function makeFish(fish: FishObj, pos: Vec2) {
-    const size = (k.randi(1, 1.4)*fish.maxSize) / 5
+    const size = (k.randi(1, 1.2)*fish.maxSize) / 6
     const speed = k.rand(1, 5)
-    const sizeSprite = k.rect(size*2,size, {radius: 3})
+    const sizeSprite = k.rect(size*2,size+(fish.maxWeight/50), {radius: 3})
     const r = 50;
 
     const fishColors = [COLORS.GRAYBLUE,COLORS.DARKGRAYBLUE];
@@ -116,7 +116,7 @@ export function makeFish(fish: FishObj, pos: Vec2) {
         entity.enterState("idle");
     })
 
-
+    let fishHooked = false
     entity.onUpdate(() => {
 
         if (!fishingArea.hasPoint(entity.pos)) {
@@ -148,7 +148,10 @@ export function makeFish(fish: FishObj, pos: Vec2) {
                 ]);
             }
         }
+
+        
         if (entity.state === "pursue") {
+            if (gm.state === "catching") return;
             const bobber = k.get("bobber")[0];
             if (!bobber) {
                 entity.enterState("idle");
@@ -158,22 +161,27 @@ export function makeFish(fish: FishObj, pos: Vec2) {
                 entity.move(dir.scale(entity.speed * 1.5));
             }
         }
+
         if (entity.state === "hooked") {
+            fishHooked = true
             const bobber = k.get("bobber")[0];
             if (!bobber) {
                 entity.enterState("idle");
+                fishHooked = false
             } else {
                 entity.use(k.follow(bobber, k.vec2(0, 0)));
             }
         }
     })
     entity.onCollide("noticeArea", () => {
+        if (gm.state === "catching") return;
         if (entity.state !== "idle" && entity.state !== "move" ) return
         entity.enterState("notice")
     })
 
     
     entity.onCollide("catchArea", () => {
+        if (gm.state === "catching") return;
         k.play("icon-sound-2",{volume: 0.7}) //placeholder
         const stats: Stats = { 
             size: entity.size, 
@@ -185,6 +193,7 @@ export function makeFish(fish: FishObj, pos: Vec2) {
         gm.enterState("catching")
         gm.fishReelSpeed = entity.size * 2
         entity.destroy();
+        fishHooked = false;
         
     })
 
@@ -197,6 +206,7 @@ export function makeFish(fish: FishObj, pos: Vec2) {
 
 
     entity.onStateEnter("notice", async () => {
+        if (fishHooked) entity.enterState("idle");
         k.play("icon-sound-2",{volume: 0.2}) //placeholder
         const notice = entity.add([
             k.circle(0.5),

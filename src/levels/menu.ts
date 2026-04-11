@@ -9,12 +9,9 @@ import type { GameObj } from "kaplay";
 //change font
 //spamclicking causes bug, sounds get overlapped and theres a crackling sound
 
-//add current datetime around the logo in the empty spots
-//and see if it makes sense
-//if not add it elsewhere
-
-//redo menu sprite, put logo on seperate layer and polish bg
 //add tags and group things
+
+
 
 export function menu() {
     k.scene("main-menu", () => {
