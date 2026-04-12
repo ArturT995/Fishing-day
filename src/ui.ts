@@ -1,6 +1,6 @@
 import type { AnchorComp, AreaComp, Color, ColorComp, GameObj, 
             OpacityComp, PosComp, RectComp, RotateComp, 
-            ScaleComp, SpriteComp, TextComp, ZComp } from "kaplay";
+            ScaleComp, SpriteComp, TextComp, Vec2, ZComp } from "kaplay";
 
 import { COLORS } from "./constants";
 import k from "./kaplayCtx";
@@ -65,45 +65,74 @@ export function makeButton(
     return button;
 }
 
+
+
+
+
+
+
+
 export function alignObj(
     obj: UIObject, container: Container,
     offsetX: number, offsetY: number, padding: number,
     alignment: "center" | "left" | "right" |
     "top" | "bot" | "topleft" | "botleft" | "topright" | "botright" | "popbotright") {
-    //objects start in the center, flip value if on right/bot
+    
 
     let padX = padding + offsetX;
     let padY = padding + offsetY;
     let width = container.width/2
     let height = container.height/2
+    // objects start in the center, flip value if on left/top
+    // a value of 0 means center
 
-    if (alignment === "topleft") {
-        obj.anchor = "topleft"
-        obj.pos.x = -width + padX
-        obj.pos.y = -height + padY
-    }
-    if (alignment === "topright") {
-        obj.anchor = "topright"
-        obj.pos.x = width + padX
-        obj.pos.y = -height + padY
+    if (alignment === "center") {
+        obj.anchor = "center"
+        obj.pos.x = 0
+        obj.pos.y = 0
     }
     if (alignment === "left") {
-        obj.pos.x = -width + padX
-        obj.pos.y = 0 + padY
-        obj.anchor = "left"
+        obj.anchor = "center"
+        obj.pos.x = -width + padX + obj.width/2
+        obj.pos.y = 0
+    }
+    if (alignment === "right") {
+        obj.anchor = "center"
+        obj.pos.x = width - padX -obj.width/2
+        obj.pos.y = 0
+    }
+    if (alignment === "top") {
+        obj.anchor = "center"
+        obj.pos.x = 0
+        obj.pos.y = -height + padY + obj.height/2
     }
     if (alignment === "bot") {
-        obj.anchor = "bot"
-        obj.pos.x = 0 + padX
-        obj.pos.y = height - padY
+        obj.anchor = "center"
+        obj.pos.x = 0
+        obj.pos.y = height - padY - obj.height/2
+    }
+    if (alignment === "topleft") {
+        obj.anchor = "center"
+        obj.pos.x = -width + padX + obj.width/2
+        obj.pos.y = -height + padY + obj.height/2
+    }
+    if (alignment === "botleft") {
+        obj.anchor = "center"
+        obj.pos.x = -width + padX + obj.width/2
+        obj.pos.y = height - padY - obj.height/2
+    }
+    if (alignment === "topright") {
+        obj.anchor = "center"
+        obj.pos.x = width - padX - obj.width/2
+        obj.pos.y = -height + padY + obj.height/2
     }
     if (alignment === "botright") {
-        obj.anchor = "botright"
-        obj.pos.x = width - padX
-        obj.pos.y = height - padY
+        obj.anchor = "center"
+        obj.pos.x = width - padX - obj.width/2
+        obj.pos.y = height - padY - obj.height/2
     }
     if (alignment === "popbotright") {
-        obj.anchor = "bot"
+        obj.anchor = "center"
         obj.pos.x = width - obj.width/2
         obj.pos.y = height - padY + obj.height
     }
@@ -144,13 +173,84 @@ export function makeContainer(
 }
 
 
+
+
+
+
+//add more types
 export function makeSlider(
-    name: string, padding: number, 
-    anchor: string, offset: number, color: Color,
-    container: Container) {
+    color: Color, parent: Container, 
+    direction: "vertical" | "horizontal", 
+    type: "scroll" | "volume", onChange: (val: number) => void) {
     
-    
+    let width = 1;
+    let height = 1;
+    let mousePos = 0;
+    let dragging = false;
+    let posX = 0;
+    let posY = 0;
+    let value = 0;
+
+    if (direction === "vertical") {
+        mousePos = k.mousePos().y;
+        width = parent.width
+        height = parent.height / 4
+        if (type === "volume") {
+            height = parent.height / 8
+        }
+        posX = 0;
+        posY = -(parent.height / 2) + (height / 2);
+    }
+    if (direction === "horizontal") {
+        mousePos = k.mousePos().x;
+        width = parent.width / 4
+        height = parent.height
+        if (type === "volume") {
+            width = parent.width / 8
+        }
+        posX = (parent.width / 2) - (width / 2);
+        posY = 0;
+    }
+
+    let sliderBar = parent.add([
+        k.rect(width, height),
+        k.anchor("center"),
+        k.color(color),
+        k.pos(posX, posY),
+        k.area(),
+        k.z(parent.z+1),
+    ])
+
+    sliderBar.onUpdate(() => {
+        if (k.isMousePressed("left") && parent.isHovering()) {
+            dragging = true;
+        }
+        if (k.isMouseReleased("left")) {
+            dragging = false;
+        }
+        if (dragging) {
+            if (direction === "horizontal") {
+                const relativeMouseX = k.mousePos().x - parent.screenPos()!.x;
+                sliderBar.pos.x = k.clamp(relativeMouseX, -parent.width/2 + sliderBar.width/2, parent.width/2 - sliderBar.width/2)
+                value = k.map(sliderBar.pos.x, -parent.width/2, parent.width/2, 0, 1);
+            }
+            if (direction === "vertical") {
+                const relativeMouseY = k.mousePos().y - parent.screenPos()!.y;
+                sliderBar.pos.y = k.clamp(relativeMouseY, -parent.height/2 + sliderBar.height/2, parent.height/2 - sliderBar.height/2)
+                value = k.map(sliderBar.pos.y, -parent.height/2, parent.height/2, 0, 1);
+            }
+
+            onChange(value);
+        }
+    })
+
+    return sliderBar;
 }
+
+
+
+
+
 
 
 

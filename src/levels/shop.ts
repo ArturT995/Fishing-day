@@ -1,13 +1,21 @@
 import { addSprite } from "../assetLoader";
 import { COLORS } from "../constants";
 import k from "../kaplayCtx";
-import { makeContainer, makeButton, alignObj } from "../ui";
+import { makeContainer, makeButton, alignObj, makeSlider } from "../ui";
 
 
 export function shop() {
     k.scene("shop", () => {
         k.setCursor("default");
-
+        const bg = k.add([
+            k.rect(k.width(),k.height()),
+            k.anchor("center"),
+            k.color(COLORS.BEIGE),
+            k.area(),
+            k.pos(k.center()),
+            k.opacity(0.5),
+            k.z(2),
+        ])
         //addSprite("shop")
         //addSprite("shopPopupBorders")
 
@@ -22,12 +30,15 @@ export function shop() {
         alignObj(BotContainer ,shopMenuContainer, 0, 0, 0, "bot")
 
         const leftSliderContainer = makeContainer("left", COLORS.BLUE, 
-            10, shopMenuContainer.height - BotContainer.height, 1, shopMenuContainer)
+            6, shopMenuContainer.height - BotContainer.height, 1, shopMenuContainer)
         alignObj(leftSliderContainer ,shopMenuContainer, 0, 0, 0, "topleft")
+        makeSlider(COLORS.BEIGE, leftSliderContainer, "vertical", "volume", (val) => {k.setVolume(val)});
 
         const rightSliderContainer = makeContainer("left", COLORS.BLUE, 
-            10, shopMenuContainer.height - BotContainer.height, 1, shopMenuContainer)
+            6, shopMenuContainer.height - BotContainer.height, 1, shopMenuContainer)
         alignObj(rightSliderContainer ,shopMenuContainer, 0, 0, 0, "topright")
+        makeSlider(COLORS.BEIGE, rightSliderContainer, "vertical", "volume", (val) => {k.setVolume(val)});
+
 
         const leftSellContainer = makeContainer("right", COLORS.DARKBLUE, 
             shopMenuContainer.width/2 - leftSliderContainer.width, 
@@ -37,11 +48,36 @@ export function shop() {
         const rightBuyContainer = makeContainer("right", COLORS.DARKBLUE, 
             shopMenuContainer.width/2 - rightSliderContainer.width, 
             shopMenuContainer.height - BotContainer.height, 1, shopMenuContainer)
-        alignObj(rightBuyContainer ,shopMenuContainer, -rightSliderContainer.width, 0, 0, "topright")
+        alignObj(rightBuyContainer ,shopMenuContainer, rightSliderContainer.width, 0, 0, "topright")
 
 
 
         /*
+
+
+
+
+        let volumeContainerVert = makeContainer("right", COLORS.BEIGE, 
+                10, settingsMenu.height/2,  1, settingsMenu)
+        alignObj(volumeContainerVert, settingsMenu, 0, 0, 10, "topright")
+        makeSlider(COLORS.RED, volumeContainerVert,"vertical", "volume", (val) => {k.setVolume(val)});
+
+        let volumeContainerBot = makeContainer("bot", COLORS.BEIGE, 
+                settingsMenu.width/4, 10,  1, settingsMenu)
+        alignObj(volumeContainerBot, settingsMenu, 0, 0, 10, "bot")
+        makeSlider(COLORS.RED, volumeContainerBot,"horizontal", "volume", (val) => {k.setVolume(val)});
+
+        let volumeContainerBotLeft = makeContainer("bot", COLORS.BEIGE, 
+                10, settingsMenu.width/4,  1, settingsMenu)
+        alignObj(volumeContainerBotLeft, settingsMenu, 0, 0, 10, "botleft")
+        makeSlider(COLORS.RED, volumeContainerBotLeft, "vertical", "volume", (val) => {k.setVolume(val)});
+
+        let volumeContainerCenter = makeContainer("center", COLORS.BEIGE, 
+                settingsMenu.width/4, 10,  1, settingsMenu)
+        alignObj(volumeContainerCenter, settingsMenu, 0, 0, 0, "center")
+        makeSlider(COLORS.RED, volumeContainerCenter, "horizontal", "volume", (val) => {k.setVolume(val)});
+
+
         const shopMenu3 = makeContainer("center", COLORS.DARKRED, 40, 16, 1, shopMenu)
 
         const testButton1 = makeButton("test", 20, COLORS.DARKBLUE, shopMenu, "static")
