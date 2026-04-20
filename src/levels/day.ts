@@ -2,6 +2,7 @@ import { addSprite } from "../assetLoader";
 import { COLORS, fontConfigSmall } from "../constants";
 import { ANCHOR, generateFishes } from "../entities/fishes";
 import { throwLine } from "../fishing";
+import gm from "../gm";
 import k from "../kaplayCtx";
 
 
@@ -9,6 +10,11 @@ import k from "../kaplayCtx";
 
 export async function day() {
     k.scene("day", () => {
+
+        let canCast = false;
+    
+        // Wait a tiny bit of time before allowing input
+        k.wait(0.5, () => canCast = true);
         k.setCursor("default");
         addSprite("sea")
         addSprite("ground", k.z(2))
@@ -82,6 +88,7 @@ export async function day() {
 
         let power = 0;
         k.onMouseDown("left", () => {
+            if (!canCast) return;
             k.play("icon-sound-1", {volume: 0.1})
             power += 0.03
         });
@@ -91,6 +98,7 @@ export async function day() {
         }
 
         k.onMouseRelease("left", () => {
+            if (!canCast) return;
             const existingBobber = k.get("bobber");
             if (existingBobber.length > 0) {
                 return;
@@ -145,6 +153,7 @@ export async function day() {
 
         //add bird laughing sound sometimes when u fail to catch a fish
         k.onSceneLeave(() => {
+            gm.currentFishID = "";
             bgMusic.stop();
             seaSound.stop();
             reelSound.stop();

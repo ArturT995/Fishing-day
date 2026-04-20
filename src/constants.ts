@@ -16,6 +16,7 @@ export const COLORS = {
     ORANGE: k.rgb(218, 154, 37),
     GREEN: k.rgb(118, 229, 114),
     BEIGE: k.rgb(231, 166, 133),
+    BROWN: k.rgb(72, 52, 37),
     YELLOW: k.rgb(255, 233, 109),
     PURPLE: k.rgb(184, 52, 255),
     GRAYBLUE: k.rgb(29, 33, 73),

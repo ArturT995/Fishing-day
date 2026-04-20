@@ -1,5 +1,6 @@
 import { addSprite } from "../assetLoader";
 import { COLORS } from "../constants";
+import gm from "../gm";
 import k from "../kaplayCtx";
 import { makeContainer, makeButton, alignObj, makeSlider } from "../ui";
 
@@ -52,8 +53,53 @@ export function shop() {
 
 
 
+        function buyItem(itemId: string, price: number) {
+            if (gm.itemsUnlocked.includes(itemId)) {
+                k.debug.log("You already own this!")
+                return;
+            }
+
+            // check gold, save new gold amount.
+
+            gm.unlockItem(itemId);
+            k.debug.log(`Purchased ${itemId}!`);
+        }
+
+        
         /*
 
+        REFS
+
+        let random = k.randi(10000,20000)
+        const sliderConfigs = [
+        { name: "Volume", action: (val: number) => k.setVolume(val) },
+        { name: "Brightness", action: (val: number) => k.debug.log("Brightness:", val) },
+        { name: "BulletSpeed", action: (val: number) => k.debug.log("BulletSpeed:", val) },
+        { name: "EventFrequency", action: (val: number) => k.debug.log("EventFrequency:", val) },
+        { name: "Gusto", action: (val: number) => k.debug.log("Gusto:", val*random) },
+        ];
+
+        const colorlist = [COLORS.BLACK, COLORS.RED, COLORS.BLUE, COLORS.DARKBLUE, COLORS.DARKRED]
+        let staticOpt: "static" | "dynamic";
+        let offset = 0;
+        staticOpt = "static"
+
+        for (let i = 0; i < 5; i++) {
+            const config = sliderConfigs[i];
+            
+            if (i > 3) staticOpt = "dynamic";
+            
+            let volumeContainer = makeContainer("left", COLORS.BEIGE, 
+                settingsMenu.width/2, 10, 1, settingsMenu)
+            alignObj(volumeContainer, settingsMenu, 0, offset, 5, "topleft")
+            
+            let text = makeButton(config.name, 4+i, colorlist[i], volumeContainer, staticOpt)
+            alignObj(text, volumeContainer, 0, 0, 12, "left")
+
+            makeSlider(COLORS.RED, volumeContainer,"horizontal", "volume", config.action);
+            
+            offset += 15;
+        }
 
 
 

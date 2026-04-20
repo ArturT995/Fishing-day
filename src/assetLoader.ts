@@ -3,14 +3,14 @@ import k from "./kaplayCtx";
 
 
 export async function assetLoader() {
-    k.loadFont("happy", "./fonts/KOMTXT__.ttf")
+    //k.loadFont("happy", "./fonts/happy-font.ttf")
+    k.loadFont("happy", "./fonts/Easy-Pixel.ttf")
 
     k.loadSprite("menu-bg", "./graphics/menu-bg.png")
     k.loadSprite("titlebox", "./graphics/titlebox.png")
     k.loadSprite("ground", "./graphics/ground.png")
     k.loadSprite("sea", "./graphics/sea.png")
     
-
     k.loadSprite("foam", "./graphics/foam.png", {
         sliceX: 3,
         anims: {

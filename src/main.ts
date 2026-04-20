@@ -20,6 +20,7 @@ import { shop } from "./levels/shop";
 //use tags more, you can seperate and reuse logic easier
 //or group things by tag so they all have same onclick/onhover behavior
 
+
 await assetLoader()
 
 //make a function for doing repetetive ui onhover/onclick/properties 
@@ -30,6 +31,17 @@ menu()
 day()
 
 shop()
+
+const canvas = document.querySelector("canvas");
+    if (canvas) {
+        canvas.style.width = (window.innerWidth - 1) + "px";
+
+        setTimeout(() => {
+            canvas.style.width = "100%";
+            canvas.style.height = "100%";
+            window.dispatchEvent(new Event('resize'));
+        }, 500);
+    }
 
 
 k.go("main-menu");

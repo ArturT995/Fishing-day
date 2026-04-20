@@ -4,10 +4,12 @@ import { COLORS, fontConfig } from "../constants";
 import { FISH_DATA } from "../db";
 import gm from "../gm";
 import { alignObj, bubbleText, clickProcess, hoverProcess, makeButton, makeContainer, makeSlider } from "../ui";
-import type { GameObj } from "kaplay";
 
-//change font
-//spamclicking causes bug, sounds get overlapped and theres a crackling sound
+
+//change font again
+
+
+//spamclicking sometimes causes a bug, sounds get overlapped and theres a crackling sound
 
 //add tags and group things
 
@@ -18,8 +20,34 @@ export function menu() {
         k.setCursor("default");//make custom cursor
         addSprite("titlebox", k.z(1))
         addSprite("menu-bg")
-        const bgMusic = k.play("menu-bg-1", {volume: 0.4, loop: true});
 
+        // change all music/sfx logic, make helper functions, some gm stuff
+        // unlocked music/sfx saves.
+        const bgMusic = k.play("menu-bg-1", {volume: 0.4, loop: true});
+    
+
+
+
+    /*
+    Move these to Stats when you make it.
+
+    const totalCaught = gm.fishCaught.length;
+    const totalUnlocked = gm.fishUnlocked.length;
+
+    k.add([
+        k.text(`Fish Discovered: ${totalUnlocked}`, {font: "happy", size: 6}),
+        k.pos(20, 20),
+        k.z(23),
+    ]);
+    k.add([
+        k.text(`Fish Caught: ${totalCaught}`, {font: "happy", size: 6}),
+        k.pos(20, 40),
+        k.z(23),
+    ]);
+    */
+    //const menuContainer = makeContainer()
+    
+    //const start = makeButton()
         const start = k.add([
             k.text("Click to start", {font: "happy", size: 12}),
             k.anchor("center"),
@@ -107,8 +135,97 @@ export function menu() {
 
 // Log and settings functions
 
-
 function openCollectionLog() {
+    gm.logPopupOpen = true;
+    
+    const ICON_COLS = 4;
+    const ICON_SIZE = 32;
+    const ICON_PADDING = 7;
+    const POPUP_WIDTH = k.width() / 1.4;
+    const POPUP_HEIGHT = k.height() / 1.4;
+    const ICON_VAL = 0;
+
+    const blocker = makeContainer("center", COLORS.BLACK,
+    k.width(), k.height(), 0.5)
+
+    const border = makeContainer("center", COLORS.BLACK,
+    POPUP_WIDTH+4, POPUP_HEIGHT+4, 1)
+
+    const logContainer = makeContainer("center", COLORS.BROWN,
+    POPUP_WIDTH, POPUP_HEIGHT, 1)
+    
+    const logSliderContainer = makeContainer("center", COLORS.BEIGE,
+    5, POPUP_HEIGHT, 0.5, logContainer)
+    alignObj(logSliderContainer, logContainer, 0, 0, 0, "right")
+
+    const logSlider = makeSlider(COLORS.BEIGE, logSliderContainer, "vertical" , "scroll", (val) => {k.setVolume(val)})
+
+    const closeBtn = makeButton("Close", 8, COLORS.BEIGE, logContainer, "static")
+    alignObj(closeBtn, logContainer, 5, -2, 3, "botright")
+    
+
+    let popupObjects = [blocker, logContainer, closeBtn, border, logSlider]
+
+    closeBtn.onClick(() => {
+        popupObjects.forEach(obj => obj.destroy());
+        gm.logPopupOpen = false;
+    });
+
+    FISH_DATA.forEach((fish, id) => {
+        const col = id % ICON_COLS;
+        const row = Math.floor(id / ICON_COLS);
+
+        const startX = (logContainer.pos.x - POPUP_WIDTH / 2 + ICON_PADDING + ICON_SIZE) - 15;
+        const startY = (logContainer.pos.y - POPUP_HEIGHT / 2 + ICON_PADDING + ICON_SIZE) - 15;
+
+        const icon = k.add([
+            k.sprite(fish.unlocked ? fish.sprite : fish.spriteLocked),
+            k.pos(startX + col * (ICON_SIZE + ICON_PADDING), startY + row * (ICON_SIZE + ICON_PADDING)),
+            k.anchor("center"),
+            k.area(),
+            k.z(4),
+            k.opacity(1),
+            k.color(),
+            {
+                fishData: fish,
+            },
+        ]);
+        
+        // const tooltipText = makeContainer()
+        const tooltip = icon.add([
+            k.rect(0, 0),
+            k.pos(0, 0),
+            k.color(COLORS.DARKBLUE),
+            k.outline(1),
+            k.z(5),
+        ]);
+        // const tooltipText = makeButton()
+        const tooltipText = tooltip.add([
+            k.text("banana", {font: "happy", size: 6, width: 120}),
+            k.pos(0, 0),
+            k.color(COLORS.BEIGE),
+            k.z(5),
+            k.opacity(0)
+        ]);
+        
+
+        icon.onHover(() => {
+            k.play("icon-sound-2",{volume: 0.3})
+            tooltipText.opacity = 1;
+        });
+
+        icon.onHoverEnd(() => {
+            k.play("icon-sound-2",{volume: 0.3})
+            tooltipText.opacity = 0;
+        });
+
+        popupObjects.push(icon)
+
+    });
+}
+
+
+function openCollectionLogOld() {
     const COLS = 4;
     const ICON_SIZE = 32;
     const PADDING = 7;
@@ -195,6 +312,7 @@ function openCollectionLog() {
             tooltipText.hidden = false;
         });
 
+
         icon.onUpdate(() => {
             if (icon.isHovering()) {
                 if (!fish.unlocked) {
@@ -219,7 +337,7 @@ function openCollectionLog() {
                 tooltip.height = tooltipTextInfo.height + TOOLTIP_PADDING;  
             }
             const mouse = k.mousePos();
-            tooltip.pos = mouse.add(5, 5);
+            tooltip.pos = icon.pos;
             tooltipText.pos = tooltip.pos.add(TOOLTIP_PADDING / 2, TOOLTIP_PADDING / 2)
             //toggle tooltip position
             if (mouse.x + tooltip.width > k.width()) {
@@ -262,14 +380,19 @@ function openSettings() {
     const blocker = makeContainer("center", COLORS.BLACK, k.width(), k.height(), 0.5)
     const settingsMenu = makeContainer("center", COLORS.BLUE, POPUP_WIDTH, POPUP_HEIGHT, 1)
     
-    
     let volumeContainer = makeContainer("left", COLORS.BEIGE, 
             settingsMenu.width/2, 10, 1, settingsMenu)
     alignObj(volumeContainer, settingsMenu, 0, 0, 10, "topleft")
     let volumeText = makeButton("VOLUME", 8, COLORS.BEIGE, settingsMenu,"static")
-    alignObj(volumeText, settingsMenu, 0, 0, 10, "topright")
-    makeSlider(COLORS.RED, volumeContainer,"horizontal", "volume", (val) => {k.setVolume(val)});
+    alignObj(volumeText, settingsMenu, 0, 2, 10, "topright")
+    const volumeSlider = makeSlider(COLORS.RED, volumeContainer,"horizontal", "volume", (val) => {k.setVolume(val)});
 
+
+    volumeSlider.onUpdate(() => {
+        let newVolume = k.getVolume()
+        gm.settings.musicVolume = newVolume;
+        gm.saveProgress();
+    });
 
     const closeBtn = settingsMenu.add ([
         k.text("Close", fontConfig),

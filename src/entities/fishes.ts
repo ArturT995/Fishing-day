@@ -57,6 +57,7 @@ export function makeFish(fish: FishObj, pos: Vec2) {
         k.rotate(0),
         k.state("idle", ["idle", "notice", "move", "pursue","hooked","attack"]),
         {   
+            fishId: fish.fishId,
             name: fish.name,
             speed: speed,
             size: fish.maxSize,
@@ -183,13 +184,10 @@ export function makeFish(fish: FishObj, pos: Vec2) {
     entity.onCollide("catchArea", () => {
         if (gm.state === "catching") return;
         k.play("icon-sound-2",{volume: 0.7}) //placeholder
-        const stats: Stats = { 
-            size: entity.size, 
-            difficulty: entity.difficulty,
-            name: entity.name,
-            pos: entity.pos 
-        };
-        spawnCaughtFish(stats);
+        spawnCaughtFish(entity);
+        if(!entity.fishId) throw new Error("id not found when spawning fish")
+
+        gm.currentFishId = entity.fishId.toString()
         gm.enterState("catching")
         gm.fishReelSpeed = entity.size * 2
         entity.destroy();
@@ -223,7 +221,7 @@ export function makeFish(fish: FishObj, pos: Vec2) {
 
 
 
-function spawnCaughtFish(fish: Stats) {
+function spawnCaughtFish(fish: GameObj) {
     const bobber = k.get("bobber")[0];
     if (!bobber) return;
 
@@ -238,17 +236,21 @@ function spawnCaughtFish(fish: Stats) {
         k.color(COLORS.BLACK),
         k.rotate(90),
         {   
+            id: fish.id,
             name: fish.name,
             size: fish.size,
             difficulty: fish.difficulty,
         },
         "caughtFish",
     ]);
+    bobber.fishReference = caughtFish;
     bobber.reelSpeed = bobber.reelSpeed - fish.size
 
     caughtFish.onUpdate(() => {
         caughtFish.angle = k.rand(60, 120);
     });
+
+    return fish;
 }
 
 

@@ -1,19 +1,21 @@
-import type { AnchorComp, AreaComp, Color, ColorComp, GameObj, 
+import type { AnchorComp, AreaComp, Color, ColorComp, FormattedText, GameObj, 
             OpacityComp, PosComp, RectComp, RotateComp, 
-            ScaleComp, SpriteComp, TextComp, Vec2, ZComp } from "kaplay";
+            ScaleComp, TextComp, ZComp } from "kaplay";
 
 import { COLORS } from "./constants";
 import k from "./kaplayCtx";
+import gm from "./gm";
+import { play } from "./sounds";
 
 
 export type UIObject = StaticButton | DynamicButton | Container;
 
 export type StaticButton = GameObj<
-    PosComp & AnchorComp & ColorComp &
+    PosComp & AnchorComp & ColorComp & FormattedText &
     AreaComp & ZComp & TextComp>;
 
 export type DynamicButton = GameObj<
-    PosComp & AnchorComp & ColorComp &
+    PosComp & AnchorComp & ColorComp & FormattedText &
     AreaComp & ZComp & TextComp & ScaleComp | RotateComp>;
 
 export type Container = GameObj<
@@ -50,6 +52,7 @@ export function makeButton(
             k.rotate(0),
             k.z(container.z+1),
         ]) as DynamicButton;
+        bubbleText(button)
     } else {
         throw new Error("invalid button type")
     }
@@ -98,7 +101,7 @@ export function alignObj(
     }
     if (alignment === "right") {
         obj.anchor = "center"
-        obj.pos.x = width - padX -obj.width/2
+        obj.pos.x = width - padX - obj.width/2
         obj.pos.y = 0
     }
     if (alignment === "top") {
@@ -185,11 +188,14 @@ export function makeSlider(
     
     let width = 1;
     let height = 1;
-    let mousePos = 0;
+    let mousePos: number;
     let dragging = false;
     let posX = 0;
     let posY = 0;
     let value = 0;
+    let initialX = 0;
+
+    mousePos = 0;
 
     if (direction === "vertical") {
         mousePos = k.mousePos().y;
@@ -207,9 +213,14 @@ export function makeSlider(
         height = parent.height
         if (type === "volume") {
             width = parent.width / 8
+            initialX = 0 + (gm.settings.musicVolume * width);
         }
         posX = (parent.width / 2) - (width / 2);
         posY = 0;
+
+        if (type === "volume") {
+            posX = initialX
+        }
     }
 
     let sliderBar = parent.add([
@@ -222,27 +233,63 @@ export function makeSlider(
     ])
 
     sliderBar.onUpdate(() => {
-        if (k.isMousePressed("left") && parent.isHovering()) {
+        if (k.isMousePressed("left") && parent.isHovering() ) {
             dragging = true;
         }
         if (k.isMouseReleased("left")) {
             dragging = false;
         }
+        
+        
         if (dragging) {
+            const worldMouse = k.toWorld(k.mousePos());
+            const parentCenter = parent.toWorld(k.vec2(0, 0));
+            let limit = 0;
+
             if (direction === "horizontal") {
-                const relativeMouseX = k.mousePos().x - parent.screenPos()!.x;
-                sliderBar.pos.x = k.clamp(relativeMouseX, -parent.width/2 + sliderBar.width/2, parent.width/2 - sliderBar.width/2)
-                value = k.map(sliderBar.pos.x, -parent.width/2, parent.width/2, 0, 1);
+                limit = parent.width / 2 - sliderBar.width / 2;
+                let localX = worldMouse.x - parentCenter.x;
+                sliderBar.pos.x = k.clamp(localX, -limit, limit);
+                value = k.map(sliderBar.pos.x, -limit, limit, 0, 1);
             }
             if (direction === "vertical") {
-                const relativeMouseY = k.mousePos().y - parent.screenPos()!.y;
-                sliderBar.pos.y = k.clamp(relativeMouseY, -parent.height/2 + sliderBar.height/2, parent.height/2 - sliderBar.height/2)
-                value = k.map(sliderBar.pos.y, -parent.height/2, parent.height/2, 0, 1);
+                limit = parent.height / 2 - sliderBar.height / 2;
+                const localY = worldMouse.y - parentCenter.y;
+                sliderBar.pos.y = k.clamp(localY, -limit, limit);
+                value = k.map(sliderBar.pos.y, -limit, limit, 0, 1);
             }
-
+            if ( value < 0.1) value = 0;
             onChange(value);
+            gm.settings.musicVolume = value;
         }
     })
+    k.onScroll((delta) => {
+
+    if (parent.isHovering() || sliderBar.isHovering()) {
+        const scrollSpeed = 7;
+        
+        if (direction === "vertical") {
+            const limit = (parent.height / 2) - (sliderBar.height / 2);
+
+            sliderBar.pos.y = k.clamp(sliderBar.pos.y + (delta.y / scrollSpeed), -limit, limit);
+            
+            const val = k.map(sliderBar.pos.y, -limit, limit, 0, 1);
+            onChange(val);
+        } else {
+            const limit = (parent.width / 2) - (sliderBar.width / 2);
+            sliderBar.pos.x = k.clamp(sliderBar.pos.x + (delta.y / scrollSpeed), -limit, limit);
+            
+            const val = k.map(sliderBar.pos.x, -limit, limit, 0, 1);
+            onChange(val);
+        }
+    }
+    });
+
+    sliderBar.onMouseRelease(() => {
+        if (type === "volume") {
+            gm.saveProgress();
+        }
+    });
 
     return sliderBar;
 }
@@ -256,7 +303,7 @@ export function makeSlider(
 
 
 export function hoverProcess(obj: GameObj) {
-    k.play("icon-sound-2",{volume: 0.5})
+    play("icon-sound-2", "sfx", -0.5)
     const originalColor = obj.color
     obj.color = COLORS.YELLOW;
     obj.onHoverEnd(() => {
