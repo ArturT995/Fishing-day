@@ -3,7 +3,7 @@ import { addSprite } from "../assetLoader";
 import { COLORS, fontConfig } from "../constants";
 import { FISH_DATA } from "../db";
 import gm from "../gm";
-import { alignObj, bubbleText, clickProcess, hoverProcess, makeButton, makeContainer, makeSlider } from "../ui";
+import { alignObj, bubbleText, clickProcess, hoverProcess, makeButton, makeContainer, makeIcons, makeSlider } from "../ui";
 
 
 //change font again
@@ -141,9 +141,10 @@ function openCollectionLog() {
     const ICON_COLS = 4;
     const ICON_SIZE = 32;
     const ICON_PADDING = 7;
-    const POPUP_WIDTH = k.width() / 1.4;
+    const POPUP_WIDTH = k.width() / 1.3;
     const POPUP_HEIGHT = k.height() / 1.4;
-    const ICON_VAL = 0;
+    const TOOLTIP_PADDING = 7;
+    const ICON_VAL = 0; // for scrolling value changes
 
     const blocker = makeContainer("center", COLORS.BLACK,
     k.width(), k.height(), 0.5)
@@ -153,12 +154,12 @@ function openCollectionLog() {
 
     const logContainer = makeContainer("center", COLORS.BROWN,
     POPUP_WIDTH, POPUP_HEIGHT, 1)
-    
+
     const logSliderContainer = makeContainer("center", COLORS.BEIGE,
     5, POPUP_HEIGHT, 0.5, logContainer)
     alignObj(logSliderContainer, logContainer, 0, 0, 0, "right")
 
-    const logSlider = makeSlider(COLORS.BEIGE, logSliderContainer, "vertical" , "scroll", (val) => {k.setVolume(val)})
+    const logSlider = makeSlider(COLORS.BEIGE, logSliderContainer, "vertical" , "scroll", (val) => {k.setVolume(val)}) // placeholder value
 
     const closeBtn = makeButton("Close", 8, COLORS.BEIGE, logContainer, "static")
     alignObj(closeBtn, logContainer, 5, -2, 3, "botright")
@@ -166,204 +167,27 @@ function openCollectionLog() {
 
     let popupObjects = [blocker, logContainer, closeBtn, border, logSlider]
 
-    closeBtn.onClick(() => {
-        popupObjects.forEach(obj => obj.destroy());
-        gm.logPopupOpen = false;
-    });
-
-    FISH_DATA.forEach((fish, id) => {
-        const col = id % ICON_COLS;
-        const row = Math.floor(id / ICON_COLS);
-
-        const startX = (logContainer.pos.x - POPUP_WIDTH / 2 + ICON_PADDING + ICON_SIZE) - 15;
-        const startY = (logContainer.pos.y - POPUP_HEIGHT / 2 + ICON_PADDING + ICON_SIZE) - 15;
-
-        const icon = k.add([
-            k.sprite(fish.unlocked ? fish.sprite : fish.spriteLocked),
-            k.pos(startX + col * (ICON_SIZE + ICON_PADDING), startY + row * (ICON_SIZE + ICON_PADDING)),
-            k.anchor("center"),
-            k.area(),
-            k.z(4),
-            k.opacity(1),
-            k.color(),
-            {
-                fishData: fish,
-            },
-        ]);
-        
-        // const tooltipText = makeContainer()
-        const tooltip = icon.add([
-            k.rect(0, 0),
-            k.pos(0, 0),
-            k.color(COLORS.DARKBLUE),
-            k.outline(1),
-            k.z(5),
-        ]);
-        // const tooltipText = makeButton()
-        const tooltipText = tooltip.add([
-            k.text("banana", {font: "happy", size: 6, width: 120}),
-            k.pos(0, 0),
-            k.color(COLORS.BEIGE),
-            k.z(5),
-            k.opacity(0)
-        ]);
-        
-
-        icon.onHover(() => {
-            k.play("icon-sound-2",{volume: 0.3})
-            tooltipText.opacity = 1;
-        });
-
-        icon.onHoverEnd(() => {
-            k.play("icon-sound-2",{volume: 0.3})
-            tooltipText.opacity = 0;
-        });
-
-        popupObjects.push(icon)
-
-    });
-}
-
-
-function openCollectionLogOld() {
-    const COLS = 4;
-    const ICON_SIZE = 32;
-    const PADDING = 7;
-    const TOOLTIP_PADDING = 5;
-    const POPUP_WIDTH = k.width() / 1.4;
-    const POPUP_HEIGHT = k.height() / 1.3;
-
-    //refactor to make popup parent with relative offshoots
-    const popup = k.add([
-        k.rect(POPUP_WIDTH, POPUP_HEIGHT),//replace or wrap in with sprite
-        k.pos(k.width() / 2, k.height() / 2.2),
-        k.anchor("center"),
-        k.outline(2),
-        k.color(COLORS.BLUE),
-        k.area(),
-        k.z(3),
-    ]);
-
-    const closeBtn = k.add ([
-        k.text("Close", fontConfig),
-        k.pos(popup.pos.x, popup.pos.y * 1.6),
-        k.anchor("center"),
-        k.color(COLORS.BEIGE),
-        k.area(),
-        k.z(4)
-    ]);
-   
-    const tooltip = k.add([
-        k.rect(0, 0),
-        k.pos(0, 0),
-        k.color(COLORS.DARKBLUE),
-        k.outline(1),
-        k.z(5),
-    ]);
     
-    //mb seperate title and text and make title fancier
-    const tooltipText = k.add([
-        k.text("", {font: "happy", size: 6, width: 120}),
-        k.pos(0, 0),
-        k.color(COLORS.BEIGE),
-        k.z(5),
+
+    const iconContainer = k.add([
+        k.rect(POPUP_WIDTH, POPUP_HEIGHT),
+        k.pos(k.center()),
+        k.color(33, 33, 33),
+        k.opacity(1),
+        k.mask(),
+        k.area(),
+        k.z(1)
     ]);
 
-    //reuse in settings
-    const blocker = k.add([
-        k.rect(k.width(),k.height()),
-        k.anchor("center"),
-        k.color(0,0,0),
-        k.pos(k.center()),
-        k.opacity(0.5),
-        k.z(2)
-    ])
+    let icons = makeIcons(iconContainer, popupObjects, FISH_DATA)
 
-    tooltip.hidden = true;
-    tooltipText.hidden = true;
-
-    const popupObjects = [blocker, popup, closeBtn, tooltip, tooltipText];
-
-    FISH_DATA.forEach((fish, id) => {
-        const col = id % COLS;
-        const row = Math.floor(id / COLS);
-
-        const startX = (popup.pos.x - POPUP_WIDTH / 2 + PADDING + ICON_SIZE) - 15;
-        const startY = (popup.pos.y - POPUP_HEIGHT / 2 + PADDING + ICON_SIZE) - 15;
-
-        const icon = k.add([
-            k.sprite(fish.unlocked ? fish.sprite : fish.spriteLocked),
-            k.pos(startX + col * (ICON_SIZE + PADDING), startY + row * (ICON_SIZE + PADDING)),
-            k.anchor("center"),
-            k.area(),
-            k.z(4),
-            k.opacity(1),
-            k.color(),
-            {
-                fishData: fish,
-            },
-        ]);
-        
-
-        
-        icon.onHover(() => {
-            k.play("icon-sound-2",{volume: 0.3})
-            tooltip.hidden = false;
-            tooltipText.hidden = false;
-        });
-
-
-        icon.onUpdate(() => {
-            if (icon.isHovering()) {
-                if (!fish.unlocked) {
-                        tooltipText.text = "???";
-                } else {
-                        tooltipText.text = `${fish.name}\n\n${fish.desc}`;
-                }
-                let tooltipTextInfo = k.formatText({
-                text: tooltipText.text,
-                font: "happy",
-                size: tooltipText.textSize,
-                })
-                if (tooltipTextInfo.width > tooltipText.width) {   
-                    tooltipTextInfo = k.formatText({
-                        text: tooltipText.text,
-                        font: "happy",
-                        size: tooltipText.textSize,
-                        width: tooltipText.width,
-                    })
-                }
-                tooltip.width = tooltipTextInfo.width + TOOLTIP_PADDING;
-                tooltip.height = tooltipTextInfo.height + TOOLTIP_PADDING;  
-            }
-            const mouse = k.mousePos();
-            tooltip.pos = icon.pos;
-            tooltipText.pos = tooltip.pos.add(TOOLTIP_PADDING / 2, TOOLTIP_PADDING / 2)
-            //toggle tooltip position
-            if (mouse.x + tooltip.width > k.width()) {
-                const flipX = -tooltip.width - (TOOLTIP_PADDING / 2);
-                tooltipText.pos = tooltip.pos.add(flipX, TOOLTIP_PADDING / 2);
-                tooltip.pos = mouse.add(flipX, 5);
-            }
-        });
-
-        icon.onHoverEnd(() => {
-            tooltip.hidden = true;
-            tooltipText.hidden = true;
-        });
-
-        popupObjects.push(icon);
-    });
-
-    closeBtn.onHover(() => {
-        hoverProcess(closeBtn)
-    });
     closeBtn.onClick(() => {
-        clickProcess(closeBtn)
         popupObjects.forEach(obj => obj.destroy());
         gm.logPopupOpen = false;
     });
-}
+};
+
+
 
 
 

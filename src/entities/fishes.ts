@@ -1,5 +1,5 @@
 import type { Vec2, GameObj } from "kaplay";
-import { COLORS, FISH_AMOUNT, fishingArea, type Stats } from "../constants";
+import { COLORS, FISH_AMOUNT, fishingArea } from "../constants";
 import gm from "../gm";
 import k from "../kaplayCtx";
 import { type FishObj, FISH_DATA } from "../db";

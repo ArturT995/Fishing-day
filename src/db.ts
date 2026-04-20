@@ -1,5 +1,4 @@
 import gm from "./gm";
-import k from "./kaplayCtx";
 
 export interface FishObj {
     fishId: number;
@@ -14,6 +13,14 @@ export interface FishObj {
     unlocked: boolean;
     difficulty: number;
     feature?: string;
+}
+
+export interface ShopObj {
+    itemId: number;
+    name: string;
+    sprite: string;
+    desc: string;
+    unlocked: boolean;
 }
 
 export interface RodObj {
@@ -33,6 +40,11 @@ export interface RodObj {
 //make function that assigns a sprite/fixed size range depending on fish size
 
 // rarityscores: common = 1 uncommon = 3 rare = 8
+
+export const ITEM_DATA: ShopObj[] = [
+    {itemId: 1, name: "Beer", sprite: "beer", desc: "A can of beer", unlocked: false}
+]
+
 
 export const FISH_DATA: FishObj[] = [
     {fishId: 1, name: "Yuppie", sprite: "yuppie", spriteLocked: "yuppie-locked", activeTime: "Day",
@@ -119,7 +131,8 @@ export function getFishName(id: string | number): string {
 }
 
 export function bagInfo() {
-    const names = gm.fishCaught.map(id => getFishName(id));
+    const fishNames = gm.fishCaught.map(id => getFishName(id));
+    return fishNames
 }
 
 /*

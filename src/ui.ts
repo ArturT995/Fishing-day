@@ -6,6 +6,7 @@ import { COLORS } from "./constants";
 import k from "./kaplayCtx";
 import gm from "./gm";
 import { play } from "./sounds";
+import { type FishObj, type ShopObj } from "./db";
 
 
 export type UIObject = StaticButton | DynamicButton | Container;
@@ -188,7 +189,7 @@ export function makeSlider(
     
     let width = 1;
     let height = 1;
-    let mousePos: number;
+    let mousePos!: number; //constant "value not read warning here on new session, trying different fixes atm"
     let dragging = false;
     let posX = 0;
     let posY = 0;
@@ -296,6 +297,166 @@ export function makeSlider(
 
 
 
+
+
+
+export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj[] | ShopObj[]): GameObj[] {
+
+    const ICON_COLS = 4;
+    const ICON_SIZE = 32;
+    const ICON_PADDING = 7;
+    const POPUP_WIDTH = k.width() / 1.4;
+    const POPUP_HEIGHT = k.height() / 1.4;
+    const TOOLTIP_PADDING = 7;
+    //const ICON_VAL = 0;
+
+    let iconsList: GameObj[]
+    iconsList = []
+
+    data.forEach((obj, id) => {
+        const col = id % ICON_COLS;
+        const row = Math.floor(id / ICON_COLS);
+
+        const startX = (Container.pos.x - POPUP_WIDTH / 2 + ICON_PADDING + ICON_SIZE) - 15;
+        const startY = (Container.pos.y - POPUP_HEIGHT / 2 + ICON_PADDING + ICON_SIZE) - 15;
+
+        let objLocked = obj.sprite
+        if ("spriteLocked" in obj) {
+            objLocked = obj.spriteLocked
+        }
+
+        const icon = k.add([
+            k.sprite(obj.unlocked ? obj.sprite : objLocked),
+            k.pos(startX + col * (ICON_SIZE + ICON_PADDING), startY + row * (ICON_SIZE + ICON_PADDING)),
+            k.anchor("center"),
+            k.area(),
+            k.z(3),
+            k.rotate(0),
+            k.opacity(1),
+            k.color(),
+            {
+                data: obj,
+                baseY: 0,
+            },
+        ]);
+        icon.baseY = icon.pos.y;
+
+        const tooltip = k.add([
+            k.rect(0, 0),
+            k.pos(icon.pos.x + icon.width, icon.pos.y),
+            k.anchor("center"),
+            k.color(COLORS.DARKBLUE),
+            k.outline(1),
+            k.opacity(0),
+            k.z(4),
+        ]);
+
+        const tooltipText = k.add([
+            k.text("", {font: "happy", size: 6, width: 120}),
+            k.pos(tooltip.pos.x, tooltip.pos.y),
+            k.anchor("center"),
+            k.color(COLORS.BEIGE),
+            k.z(4),
+            k.opacity(0)
+        ]);
+        
+
+        icon.onHover(() => {
+            k.play("icon-sound-2",{volume: 0.3})
+            tooltip.opacity = 1;
+            tooltipText.opacity = 1;
+        });
+
+        icon.onClick(() => {
+            //add a shaking animation
+            k.play("icon-sound-1",{volume: 0.5})
+            tooltipText.opacity = 1;
+        });
+
+        icon.onHoverEnd(() => {
+            tooltip.opacity = 0;
+            tooltipText.opacity = 0;
+        });
+
+        icon.onUpdate(() => {
+            if (icon.isHovering()) {
+                if (!obj.unlocked && 'fishId' in data[0]) {
+                        tooltipText.text = "???";
+                        tooltipText.width = 0;
+                } else {
+                        tooltipText.text = `${obj.name}\n\n${obj.desc}`;
+                }
+            
+                let tooltipTextInfo = k.formatText({
+                    text: tooltipText.text,
+                    font: "happy",
+                    size: tooltipText.textSize,
+                })
+
+                if (tooltipTextInfo.width > tooltipText.width) {   
+                    tooltipTextInfo = k.formatText({
+                        text: tooltipText.text,
+                        font: "happy",
+                        size: tooltipText.textSize,
+                        width: tooltipText.width,
+                    })
+                }
+                tooltip.width = tooltipTextInfo.width + TOOLTIP_PADDING;
+                tooltip.height = tooltipTextInfo.height + TOOLTIP_PADDING;  
+
+                tooltip.pos.x = tooltip.width/2 + icon.pos.x + icon.width/2 + 2
+                tooltipText.pos.x = tooltip.pos.x
+                tooltip.pos.y = icon.pos.y + tooltip.height / 2 - + icon.height/2
+                tooltipText.pos.y = tooltip.pos.y
+
+                if (icon.pos.x + tooltip.width > k.width()) {
+                    tooltip.pos.x = (tooltip.width/2 + icon.pos.x - icon.width/2 - 1) - k.width()/2
+                    tooltipText.pos.x = tooltip.pos.x
+                }
+            }
+            if (icon.pos.y + icon.height < Container.pos.y - icon.height/2 +4 || 
+                icon.pos.y + icon.height > Container.pos.y/2 + Container.height
+            ) {
+                icon.opacity = 0;
+                tooltip.opacity = 0;
+                tooltipText.opacity = 0;
+            } else {
+                icon.opacity = 1;
+            }
+        });
+        
+        
+
+        
+
+        popupObjects.push(icon)
+        iconsList.push(icon)
+
+        const ROW_HEIGHT = ICON_SIZE + ICON_PADDING
+        let scrollY = 0;
+
+        const totalRows = Math.ceil(data.length / ICON_COLS);
+        const contentHeight = totalRows * ROW_HEIGHT;
+        const visibleRows = Math.floor(POPUP_HEIGHT / ROW_HEIGHT);
+        const visibleHeight = visibleRows * ROW_HEIGHT;
+        const maxScroll = Math.max(0, contentHeight - visibleHeight);
+
+        const scrollHandler = k.onScroll((delta) => {
+            if (!Container.isHovering()) return;
+            const direction = Math.sign(delta.y);
+            scrollY += direction * ROW_HEIGHT;
+            scrollY = k.clamp(scrollY, 0, maxScroll);
+            
+            iconsList.forEach(icon => {
+                icon.pos.y = icon.baseY - scrollY;
+            });
+            icon.pos.y = icon.baseY - scrollY;
+        });
+
+    });
+
+    return iconsList;
+}
 
 
 
