@@ -68,6 +68,15 @@ function makeGameManager() {
                 this.saveProgress();
             },
 
+            removeFish(this: GameManager, fishId: string) {
+                const index = this.fishCaught.indexOf(fishId)
+                if (index !== -1) {
+                    this.fishCaught.splice(index, 1);
+                    this.saveProgress();
+                }
+                
+            },
+
             unlockItem(this: GameManager, itemId: string) {
                 if (!this.itemsUnlocked.includes(itemId)) {
                     this.itemsUnlocked.push(itemId);

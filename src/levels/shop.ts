@@ -1,6 +1,6 @@
 import { addSprite } from "../assetLoader";
 import { COLORS, fontConfigSmall } from "../constants";
-import { FISH_DATA } from "../db";
+import { FISH_DATA, type FishObj } from "../db";
 import gm from "../gm";
 import k from "../kaplayCtx";
 import { play } from "../sounds";
@@ -68,11 +68,25 @@ export function shop() {
             const popupObjects = [BotContainer, leftSliderContainer, 
                 rightSliderContainer, leftBuyContainer, rightSellContainer, hideBtn]
 
-            const rightIcons = makeIcons(rightSellContainer, popupObjects, FISH_DATA, 3, 5)
+
+            const caughtFishData = gm.fishCaught.map(id => {
+                return FISH_DATA.find(f => f.fishId.toString() === id.toString());
+            }).filter(f => f !== undefined) as FishObj[];
+
+            const rightIcons = makeIcons(rightSellContainer, popupObjects, caughtFishData, 3, 5)
 
             const leftIcons = makeIcons(leftBuyContainer, popupObjects, FISH_DATA, 3, 5)
 
-            
+
+            //sell
+            for (let icon of rightIcons) {
+                icon.onClick(() => {
+                    const id = icon.objId.toString();
+                    gm.removeFish(id);
+                    icon.destroy();
+                    k.debug.log(`Sold fish ID: ${id}`);
+                })
+            }
 
             hideBtn.onClick(() => {
                 gm.logPopupOpen = false
@@ -112,18 +126,22 @@ export function shop() {
             k.go("day");
         })
 
-        function buyItem(itemId: string, price: number) {
-            if (gm.itemsUnlocked.includes(itemId)) {
+
+
+
+        function buyItem(item: string, price: number) {
+            if (gm.itemsUnlocked.includes(item)) {
                 k.debug.log("You already own this!")
                 return;
             }
 
             // check gold, save new gold amount.
 
-            gm.unlockItem(itemId);
-            k.debug.log(`Purchased ${itemId}!`);
+            gm.unlockItem(item);
+            k.debug.log(`Purchased ${item}!`);
         }
-    
+
+
         k.onSceneLeave(() => {
             bgMusic.stop();
         });

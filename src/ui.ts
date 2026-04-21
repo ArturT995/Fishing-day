@@ -323,10 +323,20 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
         const startX = (Container.pos.x - POPUP_WIDTH / 2 + ICON_PADDING + ICON_SIZE) - 15;
         const startY = (Container.pos.y - POPUP_HEIGHT / 2 + ICON_PADDING + ICON_SIZE) - 15;
 
+        
+        const objId = "fishId" in obj ? obj.fishId : ("itemId" in obj ? obj.itemId : id);
+        
         let objLocked = obj.sprite
         if ("spriteLocked" in obj) {
-            objLocked = obj.spriteLocked
+            if(gm.fishUnlocked.includes(objId.toString())) {
+                objLocked = obj.sprite
+                obj.unlocked = true
+            } else {
+                objLocked = obj.spriteLocked
+            }
         }
+        
+        
 
         const icon = k.add([
             k.sprite(obj.unlocked ? obj.sprite : objLocked),
@@ -338,6 +348,7 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
             k.opacity(1),
             k.color(),
             {
+                objId: objId,
                 data: obj,
                 baseY: 0,
             },
@@ -412,25 +423,32 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
                 tooltip.pos.y = icon.pos.y + tooltip.height / 2 - + icon.height/2
                 tooltipText.pos.y = tooltip.pos.y
 
-                if (icon.pos.x + tooltip.width > k.width()) {
+
+                //flip logic
+                if (icon.pos.x + tooltip.width  + 10 > k.width()) {
                     tooltip.pos.x = icon.pos.x - (icon.width / 2) - (tooltip.width / 2 + 2)
                     tooltipText.pos.x = tooltip.pos.x
                 }
-                if (icon.pos.y + tooltip.height > k.height()) {
+                if (icon.pos.y + tooltip.height  + 5 > k.height()) {
                     tooltip.pos.y = icon.pos.y + (icon.height / 2) - (tooltip.height / 2 )
                     tooltipText.pos.y = tooltip.pos.y
                 }
-                
-            }
-            if (icon.pos.y + icon.height < Container.pos.y - icon.height/2 +4 || 
-                icon.pos.y + icon.height > Container.pos.y/2 + Container.height
-            ) {
-                icon.opacity = 0;
-                tooltip.opacity = 0;
-                tooltipText.opacity = 0;
-            } else {
-                icon.opacity = 1;
-            }
+                    
+                }
+                if (icon.pos.y + icon.height < Container.pos.y - icon.height/2 +4 || 
+                    icon.pos.y + icon.height > Container.pos.y/2 + Container.height
+                ) {
+                    icon.opacity = 0;
+                    tooltip.opacity = 0;
+                    tooltipText.opacity = 0;
+                } else {
+                    icon.opacity = 1;
+                }
+
+                icon.onDestroy(() => {
+                    tooltip.destroy()
+                    tooltipText.destroy()
+                })
         });
         
         
