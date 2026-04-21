@@ -123,6 +123,48 @@ export const FISH_DATA: FishObj[] = [
     that vibrate against the swim bladder. The purpose of the grunting is unknown.`,
     unlocked: true, difficulty: 3, feature: "Grunting"},
 
+
+
+
+    {fishId: 6, name: "Gilded Fish", sprite: "gildedfish", spriteLocked: "gildedfish-locked", activeTime: "Day",
+    maxSize: 15, maxWeight: 5, rarityScore: 50,
+    desc: `This fish has ganoid scales that resemble gold and have similar properties.
+    It has lead to the scales being used as a popular version of fools gold.
+    Alchemists grind the scales into dust and treat it chemically, 
+    removing imperfections and sell it as gold powder.
+    "Now this is a rare sight! Folks used to fish entire lakes dry in search of this fish." - Shopkeeper`, 
+    unlocked: true, difficulty: 3, feature: "Icon sparkles/glows"},
+
+    {fishId: 7, name: "Spotted Gar", sprite: "spottedgar", spriteLocked: "spottedgar-locked", activeTime: "Day",
+    maxSize: 28, maxWeight: 4, rarityScore: 1,
+    desc: `Thick scales cover this fish, it's mouth filled with long, sharp teeth.
+    It's most commonly found in clear, shallow waters and hunts smaller fish.`,
+    unlocked: false, difficulty: 4, feature: ""},
+
+    {fishId: 8, name: "Alligator Gar", sprite: "alligatorgar", spriteLocked: "alligatorgar-locked", activeTime: "Night",
+    maxSize: 45, maxWeight: 120, rarityScore: 12,
+    desc: `A massive, slow moving fish. The largest species of the gar family.
+    It stalks the waters, looking to ambush other fish, waterfowl and small mammals.
+    The scales have serrated edges and have a tough inner layer of bone.
+    It's estimated to live between 50 to 70 years.
+    "How did you manage to catch that?!" - Shopkeeper.`,
+    unlocked: true, difficulty: 10, feature: ""},
+
+    {fishId: 9, name: "Esox", sprite: "esox", spriteLocked: "esox-locked", activeTime: "Day",
+    maxSize: 32, maxWeight: 25, rarityScore: 6,
+    desc: `Commonly known as pike. They have a torpedo-like shape typical of predatory fishes.
+    Typically of grey-green color and mottled appearance. Many unwary anglers have
+    been bitten by them.`,
+    unlocked: true, difficulty: 6, feature: "Aggressive"},
+
+    {fishId: 10, name: "Freshwater drum", sprite: "freshwaterdrum", spriteLocked: "freshwaterdrum-locked", activeTime: "Day",
+    maxSize: 15, maxWeight: 10, rarityScore: 4,
+    desc: `It is also called Russell fish, Shepherd's pie, Gray bass, Gasper goo,
+    Gaspergou, Gou, Grunt, Grunter, Grinder, Gooble Gobble, and Croaker.
+    The males make a "grunting" noise that comes from a special set of muscles
+    that vibrate against the swim bladder. The purpose of the grunting is unknown.`,
+    unlocked: true, difficulty: 3, feature: "Grunting"},
+
 ];
 
 export function getFishName(id: string | number): string {

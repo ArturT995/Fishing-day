@@ -19,9 +19,7 @@ export type DynamicButton = GameObj<
     PosComp & AnchorComp & ColorComp & FormattedText &
     AreaComp & ZComp & TextComp & ScaleComp | RotateComp>;
 
-export type Container = GameObj<
-    RectComp & PosComp & AnchorComp & ColorComp &
-    AreaComp & ZComp & OpacityComp>;
+export type Container = GameObj<any>;
 
 
 export function makeButton(
@@ -160,6 +158,9 @@ export function makeContainer(
             k.area(),
             k.z(2+parent.z),
             k.opacity(opacity),
+            {
+                grandparent: parent
+            }
         ]);
 
     } else {
@@ -186,6 +187,8 @@ export function makeSlider(
     color: Color, parent: Container, 
     direction: "vertical" | "horizontal", 
     type: "scroll" | "volume", onChange: (val: number) => void) {
+    
+    if (!parent.parent) throw new Error("SliderError: Parent of parent not set.");
     
     let width = 1;
     let height = 1;
@@ -259,33 +262,35 @@ export function makeSlider(
                 sliderBar.pos.y = k.clamp(localY, -limit, limit);
                 value = k.map(sliderBar.pos.y, -limit, limit, 0, 1);
             }
-            if ( value < 0.1) value = 0;
-            onChange(value);
-            gm.settings.musicVolume = value;
+            if (type === "volume") {
+                if ( value < 0.1) value = 0;
+                onChange(value);
+                gm.settings.musicVolume = value;
+            } else {
+                onChange(value);
+            }
         }
     })
+
     k.onScroll((delta) => {
-
-    if (parent.isHovering() || sliderBar.isHovering()) {
-        const scrollSpeed = 7;
-        
-        if (direction === "vertical") {
-            const limit = (parent.height / 2) - (sliderBar.height / 2);
-
-            sliderBar.pos.y = k.clamp(sliderBar.pos.y + (delta.y / scrollSpeed), -limit, limit);
-            
-            const val = k.map(sliderBar.pos.y, -limit, limit, 0, 1);
-            onChange(val);
-        } else {
-            const limit = (parent.width / 2) - (sliderBar.width / 2);
-            sliderBar.pos.x = k.clamp(sliderBar.pos.x + (delta.y / scrollSpeed), -limit, limit);
-            
-            const val = k.map(sliderBar.pos.x, -limit, limit, 0, 1);
-            onChange(val);
+        if (parent.isHovering() || sliderBar.isHovering() || parent.grandparent.isHovering()) {
+            let scrollSpeed = 7;
+            if (direction === "vertical") {
+                const limit = (parent.height / 2) - (sliderBar.height / 2);
+                sliderBar.pos.y = k.clamp(sliderBar.pos.y + (delta.y / scrollSpeed), -limit, limit);
+                
+                const val = k.map(sliderBar.pos.y, -limit, limit, 0, 1);
+                onChange(val);
+            } else {
+                const limit = (parent.width / 2) - (sliderBar.width / 2);
+                sliderBar.pos.x = k.clamp(sliderBar.pos.x + (delta.y / scrollSpeed), -limit, limit);
+                
+                const val = k.map(sliderBar.pos.x, -limit, limit, 0, 1);
+                onChange(val);
+            }
         }
-    }
-    });
-
+        });
+    
     sliderBar.onMouseRelease(() => {
         if (type === "volume") {
             gm.saveProgress();
@@ -300,13 +305,11 @@ export function makeSlider(
 
 
 
-export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj[] | ShopObj[]): GameObj[] {
+export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj[] | ShopObj[], ICON_COLS = 4, ICON_PADDING = 7 ): GameObj[] {
 
-    const ICON_COLS = 4;
     const ICON_SIZE = 32;
-    const ICON_PADDING = 7;
-    const POPUP_WIDTH = k.width() / 1.4;
-    const POPUP_HEIGHT = k.height() / 1.4;
+    const POPUP_WIDTH = Container.width;
+    const POPUP_HEIGHT = Container.height;
     const TOOLTIP_PADDING = 7;
     //const ICON_VAL = 0;
 
@@ -352,7 +355,7 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
         ]);
 
         const tooltipText = k.add([
-            k.text("", {font: "happy", size: 6, width: 120}),
+            k.text("", {font: "happy", size: 6, width: 90}),
             k.pos(tooltip.pos.x, tooltip.pos.y),
             k.anchor("center"),
             k.color(COLORS.BEIGE),
@@ -410,9 +413,14 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
                 tooltipText.pos.y = tooltip.pos.y
 
                 if (icon.pos.x + tooltip.width > k.width()) {
-                    tooltip.pos.x = (tooltip.width/2 + icon.pos.x - icon.width/2 - 1) - k.width()/2
+                    tooltip.pos.x = icon.pos.x - (icon.width / 2) - (tooltip.width / 2 + 2)
                     tooltipText.pos.x = tooltip.pos.x
                 }
+                if (icon.pos.y + tooltip.height > k.height()) {
+                    tooltip.pos.y = icon.pos.y + (icon.height / 2) - (tooltip.height / 2 )
+                    tooltipText.pos.y = tooltip.pos.y
+                }
+                
             }
             if (icon.pos.y + icon.height < Container.pos.y - icon.height/2 +4 || 
                 icon.pos.y + icon.height > Container.pos.y/2 + Container.height
@@ -430,6 +438,8 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
         
 
         popupObjects.push(icon)
+        popupObjects.push(tooltip)
+        popupObjects.push(tooltipText)
         iconsList.push(icon)
 
         const ROW_HEIGHT = ICON_SIZE + ICON_PADDING
@@ -447,10 +457,12 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
             scrollY += direction * ROW_HEIGHT;
             scrollY = k.clamp(scrollY, 0, maxScroll);
             
+
             iconsList.forEach(icon => {
                 icon.pos.y = icon.baseY - scrollY;
             });
             icon.pos.y = icon.baseY - scrollY;
+
         });
 
     });

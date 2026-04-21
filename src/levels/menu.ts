@@ -159,7 +159,7 @@ function openCollectionLog() {
     5, POPUP_HEIGHT, 0.5, logContainer)
     alignObj(logSliderContainer, logContainer, 0, 0, 0, "right")
 
-    const logSlider = makeSlider(COLORS.BEIGE, logSliderContainer, "vertical" , "scroll", (val) => {k.setVolume(val)}) // placeholder value
+    const logSlider = makeSlider(COLORS.BEIGE, logSliderContainer, "vertical" , "scroll", (val) => val )
 
     const closeBtn = makeButton("Close", 8, COLORS.BEIGE, logContainer, "static")
     alignObj(closeBtn, logContainer, 5, -2, 3, "botright")
@@ -167,19 +167,7 @@ function openCollectionLog() {
 
     let popupObjects = [blocker, logContainer, closeBtn, border, logSlider]
 
-    
-
-    const iconContainer = k.add([
-        k.rect(POPUP_WIDTH, POPUP_HEIGHT),
-        k.pos(k.center()),
-        k.color(33, 33, 33),
-        k.opacity(1),
-        k.mask(),
-        k.area(),
-        k.z(1)
-    ]);
-
-    let icons = makeIcons(iconContainer, popupObjects, FISH_DATA)
+    let logIcons = makeIcons(logContainer, popupObjects, FISH_DATA, ICON_COLS)
 
     closeBtn.onClick(() => {
         popupObjects.forEach(obj => obj.destroy());
