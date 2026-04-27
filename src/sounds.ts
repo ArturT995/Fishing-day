@@ -1,6 +1,7 @@
 import type { AudioPlay } from "kaplay"
 import k from "./kaplayCtx"
 import gm from "./gm"
+import { soundsList } from "./assetLoader"
 
 
 
@@ -12,7 +13,7 @@ export const shopMusic = ["day-bg-3", "night-shop-1"]
 export const nightMusic = ["night-bg-1", "night-bg-2"]
 export const eventMusic = ["boss1", "fast-tune"]
 
-export const uiSfx = ["icon-sound-1", "icon-sound-2", "item-bought"]
+export const uiSfx = ["icon-sound-1", "icon-sound-2", "item-bought", "sell-item", "rare-sell"]
 export const daySfx = ["bird1", "bird2", "bird3", "day-bird-2", "day-bird-3"]
 export const nightSfx = ["night-bird-1", "night-bird-2", "night-bird-3", "night-bird-4", 
     "night-bug-1", "night-bug-2"]
@@ -20,16 +21,13 @@ export const creatureSfx = ["chomps", "crabclack", "fly", "frog-1", "frog-2",
     "laughing-bird", "mosquito", "thumping", "shaking"]
 
 
-/*
-for reference
-
 const eventSfx = ["new-fish-caught", "new-fish-unlocked", "fish-caught", 
     "fish-escaped", "fishing-thunk", "flying-2", "powerbar", "powerup", 
-    "rare-catch", "rare-sell", "sell-item"]
+    "rare-catch"]
 
 const itemSfx = ["chomps", "cards", "dice-roll", "drinking-noise", 
     "pipe", "rancid-gloop", "shaking"]
-*/
+
 
 export let sfxSet = new Set<AudioPlay>();
 export let musicSet = new Set<AudioPlay>();
@@ -37,6 +35,7 @@ export let musicSet = new Set<AudioPlay>();
 export function play(sound: string, type: "sfx" | "music" , volumeAdd = 0, 
     loop = false, detune = 0, speed = 1) {
     
+    if (!soundsList.includes(sound)) throw new Error(`Sound "${sound}" not found in soundsList`)
 
     if (gm.settings.musicVolume === 0 && type === "music") {
         volumeAdd = 0;

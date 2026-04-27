@@ -10,7 +10,7 @@ import { makeContainer, makeButton, alignObj, makeSlider, makeIcons } from "../u
 export function shop() {
     k.scene("shop", () => {
         k.setCursor("default");
-        let bgMusic = play("night-shop-1", "music", 0, true)
+        let bgMusicShop = play("night-shop-1", "music", 0, true)
         const bg = k.add([
             k.sprite("shop-bg"),
             k.anchor("center"),
@@ -35,24 +35,15 @@ export function shop() {
                 shopMenuContainer.width, 20, 0.5, shopMenuContainer)
             alignObj(BotContainer ,shopMenuContainer, 0, 0, 0, "bot")
 
-            const leftSliderContainer = makeContainer("center", COLORS.DARKBLUE, 
-                6, shopMenuContainer.height - BotContainer.height, 1, shopMenuContainer)
-            alignObj(leftSliderContainer ,shopMenuContainer, 0, 0, 0, "topleft")
-            makeSlider(COLORS.BROWN, leftSliderContainer, "vertical", "scroll", (val) => val);
-
-            const rightSliderContainer = makeContainer("center", COLORS.DARKBLUE, 
-                6, shopMenuContainer.height - BotContainer.height, 1, shopMenuContainer)
-            alignObj(rightSliderContainer ,shopMenuContainer, 0, 0, 0, "topright")
-            makeSlider(COLORS.BROWN, rightSliderContainer, "vertical", "scroll", (val) => val);
-
+            
 
             const leftBuyContainer = makeContainer("center", COLORS.BLUE, 
-                shopMenuContainer.width/2 - leftSliderContainer.width, 
+                shopMenuContainer.width/2, 
                 shopMenuContainer.height - BotContainer.height, 0.5)
             //alignObj(leftBuyContainer ,shopMenuContainer, leftSliderContainer.width, 0, 0, "topleft")
 
             const rightSellContainer = makeContainer("center", COLORS.BLUE, 
-                shopMenuContainer.width/2 - rightSliderContainer.width, 
+                shopMenuContainer.width/2, 
                 shopMenuContainer.height - BotContainer.height, 0.5)
             //alignObj(rightSellContainer , shopMenuContainer, rightSliderContainer.width, 0, 0, "center")
             
@@ -65,26 +56,51 @@ export function shop() {
             const hideBtn = makeButton("Close", 8, COLORS.BLUE, BotContainer, "static")
             alignObj(hideBtn, BotContainer, 5, -2, 3, "botright")
             
-            const popupObjects = [BotContainer, leftSliderContainer, 
-                rightSliderContainer, leftBuyContainer, rightSellContainer, hideBtn]
+            const popupObjects = [BotContainer, leftBuyContainer, rightSellContainer, hideBtn]
 
 
             const caughtFishData = gm.fishCaught.map(id => {
                 return FISH_DATA.find(f => f.fishId.toString() === id.toString());
             }).filter(f => f !== undefined) as FishObj[];
 
-            const rightIcons = makeIcons(rightSellContainer, popupObjects, caughtFishData, 3, 5)
+            const rightIcons = makeIcons(rightSellContainer, popupObjects, caughtFishData, "right", 3, 5, true)
 
-            const leftIcons = makeIcons(leftBuyContainer, popupObjects, FISH_DATA, 3, 5)
+            const leftIcons = makeIcons(leftBuyContainer, popupObjects, FISH_DATA, "left", 3, 5, true)
 
+
+            const moneyButton = makeButton(`${gm.money}$`, 8, COLORS.BEIGE, BotContainer, "static")
+            alignObj(moneyButton, BotContainer, 40, -2, 3, "botright")
 
             //sell
-            for (let icon of rightIcons) {
-                icon.onClick(() => {
-                    const id = icon.objId.toString();
+            for (let iconR of rightIcons) {
+                iconR.onClick(() => {
+                    if (iconR.opacity === 0) return;
+                    const id = iconR.objId.toString();
                     gm.removeFish(id);
-                    icon.destroy();
+                    (iconR.price >= 100) ? play("rare-sell", "sfx") : play("sell-item", "sfx");
+                    gm.addMoney(iconR.price);
+                    moneyButton.text = `${gm.money}$`
+                    iconR.destroy();
                     k.debug.log(`Sold fish ID: ${id}`);
+                })
+            }
+
+            //buy
+            for (let iconL of leftIcons) {
+                iconL.onClick(() => {
+                    if (iconL.opacity === 0) return;
+                    if (iconL.price > gm.money) {
+                        k.debug.log(`No money for that`);
+                        return;
+                    }                
+                    const id = iconL.objId.toString();
+                    // TODO add gm.removeItem IF item.feature === "Unique"
+                    play("item-bought", "sfx")
+                    gm.removeMoney(iconL.price);
+                    moneyButton.text = `${gm.money}$`
+                    // add item.feature === "Unique" check to see if to destroy icon or not.
+                    iconL.destroy();
+                    k.debug.log(`Bought item ID: ${id}`);
                 })
             }
 
@@ -127,23 +143,9 @@ export function shop() {
         })
 
 
-
-
-        function buyItem(item: string, price: number) {
-            if (gm.itemsUnlocked.includes(item)) {
-                k.debug.log("You already own this!")
-                return;
-            }
-
-            // check gold, save new gold amount.
-
-            gm.unlockItem(item);
-            k.debug.log(`Purchased ${item}!`);
-        }
-
-
         k.onSceneLeave(() => {
-            bgMusic.stop();
+            bgMusicShop.stop();
+            gm.logPopupOpen = false
         });
     })
 };

@@ -71,7 +71,7 @@ export function addSprite(name: string, ...components: Comp[]) {
 
 
 
-let soundsList = [
+export let soundsList = [
   "bird1",
   "bird2",
   "bird3",

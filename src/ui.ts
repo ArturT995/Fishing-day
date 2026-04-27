@@ -192,7 +192,7 @@ export function makeSlider(
     
     let width = 1;
     let height = 1;
-    let mousePos!: number; //constant "value not read warning here on new session, trying different fixes atm"
+    let mousePos: number; //constant "value not read warning here on new session, trying different fixes atm"
     let dragging = false;
     let posX = 0;
     let posY = 0;
@@ -305,13 +305,20 @@ export function makeSlider(
 
 
 
-export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj[] | ShopObj[], ICON_COLS = 4, ICON_PADDING = 7 ): GameObj[] {
+
+
+
+export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj[] | ShopObj[], sliderPos: "left" | "right", ICON_COLS = 4, ICON_PADDING = 7, isStore?: boolean ): GameObj[] {
 
     const ICON_SIZE = 32;
     const POPUP_WIDTH = Container.width;
     const POPUP_HEIGHT = Container.height;
     const TOOLTIP_PADDING = 7;
-    //const ICON_VAL = 0;
+    const ROW_HEIGHT = ICON_SIZE + ICON_PADDING
+    const SLIDER_WIDTH = 4;
+
+
+    let adjustX = sliderPos === "left" ? SLIDER_WIDTH : 0;
 
     let iconsList: GameObj[]
     iconsList = []
@@ -320,7 +327,7 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
         const col = id % ICON_COLS;
         const row = Math.floor(id / ICON_COLS);
 
-        const startX = (Container.pos.x - POPUP_WIDTH / 2 + ICON_PADDING + ICON_SIZE) - 15;
+        const startX = (Container.pos.x - POPUP_WIDTH / 2 + ICON_PADDING + ICON_SIZE) - 15 + adjustX;
         const startY = (Container.pos.y - POPUP_HEIGHT / 2 + ICON_PADDING + ICON_SIZE) - 15;
 
         
@@ -350,10 +357,23 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
             {
                 objId: objId,
                 data: obj,
+                price: obj.price,
                 baseY: 0,
             },
         ]);
         icon.baseY = icon.pos.y;
+
+        const priceText = icon.add([
+            k.text(`${obj.price}$`, { font: "happy", size: 5}),
+            k.pos(14,15),
+            k.anchor("right"),
+            k.color(COLORS.ORANGE),
+            k.opacity(0),
+            k.z(4),
+        ])
+        if (!isStore) {
+            k.destroy(priceText)
+        }
 
         const tooltip = k.add([
             k.rect(0, 0),
@@ -376,13 +396,15 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
         
 
         icon.onHover(() => {
+            if (icon.opacity === 0) return;
             k.play("icon-sound-2",{volume: 0.3})
             tooltip.opacity = 1;
             tooltipText.opacity = 1;
         });
 
         icon.onClick(() => {
-            //add a shaking animation
+            if (icon.opacity === 0) return;
+            // TODO add a shaking animation?
             k.play("icon-sound-1",{volume: 0.5})
             tooltipText.opacity = 1;
         });
@@ -441,8 +463,10 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
                     icon.opacity = 0;
                     tooltip.opacity = 0;
                     tooltipText.opacity = 0;
+                    priceText.opacity = 0;
                 } else {
                     icon.opacity = 1;
+                    priceText.opacity = 1;
                 }
 
                 icon.onDestroy(() => {
@@ -450,40 +474,64 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
                     tooltipText.destroy()
                 })
         });
-        
-        
 
+        popupObjects.push(icon,tooltip,tooltipText)
         
-
-        popupObjects.push(icon)
-        popupObjects.push(tooltip)
-        popupObjects.push(tooltipText)
         iconsList.push(icon)
 
-        const ROW_HEIGHT = ICON_SIZE + ICON_PADDING
-        let scrollY = 0;
-
-        const totalRows = Math.ceil(data.length / ICON_COLS);
-        const contentHeight = totalRows * ROW_HEIGHT;
-        const visibleRows = Math.floor(POPUP_HEIGHT / ROW_HEIGHT);
-        const visibleHeight = visibleRows * ROW_HEIGHT;
-        const maxScroll = Math.max(0, contentHeight - visibleHeight);
-
-        const scrollHandler = k.onScroll((delta) => {
-            if (!Container.isHovering()) return;
-            const direction = Math.sign(delta.y);
-            scrollY += direction * ROW_HEIGHT;
-            scrollY = k.clamp(scrollY, 0, maxScroll);
-            
-
-            iconsList.forEach(icon => {
-                icon.pos.y = icon.baseY - scrollY;
-            });
-            icon.pos.y = icon.baseY - scrollY;
-
-        });
 
     });
+
+    // 
+    // SCROLLING LOGIC AND SLIDER COMPONENT
+    //   
+
+    let sliderHeight = Container.height
+
+    const totalRows = Math.ceil(data.length / ICON_COLS);
+    const contentHeight = totalRows * ROW_HEIGHT;
+    const visibleRows = Math.floor(POPUP_HEIGHT / ROW_HEIGHT);
+    const visibleHeight = visibleRows * ROW_HEIGHT;
+    const maxScroll = Math.max(0, contentHeight - visibleHeight);
+
+
+    if (contentHeight > sliderHeight) {
+        let ratio = Container.height / contentHeight
+        sliderHeight = Container.height * ratio
+    }
+    if (sliderHeight < 5) sliderHeight = 5;
+
+
+    let sliderContainer = makeContainer("center", COLORS.DARKBLUE, 
+        SLIDER_WIDTH, Container.height, 0.5, Container)
+    alignObj(sliderContainer, Container, 0, 0, 0, `${sliderPos}`)
+    
+    let slider = makeContainer("center", COLORS.BEIGE, 
+        SLIDER_WIDTH, sliderHeight, 0.5, Container)
+    alignObj(slider, Container, 0, 0, 0, `top${sliderPos}`)
+
+
+    k.onScroll((delta) => {
+        if (!Container.isHovering() || maxScroll <= 0) return;
+        
+        const sliderRange = Container.height - slider.height;
+        const startY = -Container.height / 2 + slider.height / 2;
+        const endY = Container.height / 2 - slider.height / 2;
+        const sliderStep = (ROW_HEIGHT / maxScroll) * sliderRange;
+        const direction = Math.sign(delta.y);
+        
+        slider.pos.y = k.clamp(slider.pos.y + (direction * sliderStep), startY, endY);
+        
+
+        const currentPercent = (slider.pos.y - startY) / sliderRange;
+        const currentScrollY = Math.round((currentPercent * maxScroll) / ROW_HEIGHT) * ROW_HEIGHT;
+
+        iconsList.forEach(icon => {
+            icon.pos.y = icon.baseY - currentScrollY;
+        });
+    });
+
+    
 
     return iconsList;
 }

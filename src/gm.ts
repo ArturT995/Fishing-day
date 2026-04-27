@@ -15,18 +15,22 @@ interface GameManager extends GameObj {
     settings: GameSettings;
     isPaused: boolean;
     logPopupOpen: boolean;
+    money: number;
 
     saveProgress(): void;
     unlockFish(fishId: string): void;
     addFish(fishId: string): void;
     resetGameState(): void;
+    addMoney(number:number): void;
+    removeMoney(number:number): void;
 }
 
 function makeGameManager() {
 
     const savedUnlocks = k.getData("fishUnlocked", [] as string[]);
     const savedCaught = k.getData("fishCaught", [] as string[]);
-    const savedItems = k.getData("itemsUnlocked", [] as string[])
+    const savedItems = k.getData("itemsUnlocked", [] as string[]);
+    const savedMoney = k.getData<number>("money", 0);
     
     const savedSettings = k.getData("settings", { 
         musicVolume: 1, 
@@ -47,12 +51,14 @@ function makeGameManager() {
             itemsUnlocked: savedItems,
             settings: savedSettings,
             currentFishId: "",
+            money: savedMoney,
 
             saveProgress(this: GameManager) {
                 k.setData("fishUnlocked", this.fishUnlocked);
                 k.setData("fishCaught", this.fishCaught);
                 k.setData("itemsUnlocked", this.itemsUnlocked);
                 k.setData("settings", this.settings);
+                k.setData("money", this.money);
             },
 
             unlockFish(this: GameManager, fishId: string) {
@@ -76,6 +82,17 @@ function makeGameManager() {
                 }
                 
             },
+
+            addMoney(this: GameManager, number: number) {
+                this.money += number;
+                this.saveProgress();
+            },
+
+            removeMoney(this: GameManager, number: number) {
+                this.money -= number;
+                this.saveProgress();
+            },
+
 
             unlockItem(this: GameManager, itemId: string) {
                 if (!this.itemsUnlocked.includes(itemId)) {

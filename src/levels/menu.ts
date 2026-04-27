@@ -139,12 +139,8 @@ function openCollectionLog() {
     gm.logPopupOpen = true;
     
     const ICON_COLS = 4;
-    const ICON_SIZE = 32;
-    const ICON_PADDING = 7;
     const POPUP_WIDTH = k.width() / 1.3;
     const POPUP_HEIGHT = k.height() / 1.4;
-    const TOOLTIP_PADDING = 7;
-    const ICON_VAL = 0; // for scrolling value changes
 
     const blocker = makeContainer("center", COLORS.BLACK,
     k.width(), k.height(), 0.5)
@@ -155,19 +151,15 @@ function openCollectionLog() {
     const logContainer = makeContainer("center", COLORS.BROWN,
     POPUP_WIDTH, POPUP_HEIGHT, 1)
 
-    const logSliderContainer = makeContainer("center", COLORS.BEIGE,
-    5, POPUP_HEIGHT, 0.5, logContainer)
-    alignObj(logSliderContainer, logContainer, 0, 0, 0, "right")
-
-    const logSlider = makeSlider(COLORS.BEIGE, logSliderContainer, "vertical" , "scroll", (val) => val )
+    
 
     const closeBtn = makeButton("Close", 8, COLORS.BEIGE, logContainer, "static")
     alignObj(closeBtn, logContainer, 5, -2, 3, "botright")
     
 
-    let popupObjects = [blocker, logContainer, closeBtn, border, logSlider]
+    let popupObjects = [blocker, logContainer, closeBtn, border]
 
-    let logIcons = makeIcons(logContainer, popupObjects, FISH_DATA, ICON_COLS)
+    let logIcons = makeIcons(logContainer, popupObjects, FISH_DATA, "right", ICON_COLS)
 
     closeBtn.onClick(() => {
         popupObjects.forEach(obj => obj.destroy());

@@ -35,6 +35,7 @@ shop()
 
 // this addresses an issue where the hover/click areas drift to left from the ui element positions on the screen caused by
 // flexbox set to true. It forces a resize causing the areas to update.
+
 const canvas = document.querySelector("canvas");
     if (canvas) {
         canvas.style.width = (window.innerWidth - 1) + "px";
