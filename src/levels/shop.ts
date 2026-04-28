@@ -4,7 +4,7 @@ import { FISH_DATA, type FishObj } from "../db";
 import gm from "../gm";
 import k from "../kaplayCtx";
 import { play } from "../sounds";
-import { makeContainer, makeButton, alignObj, makeSlider, makeIcons } from "../ui";
+import { makeContainer, makeButton, alignObj, makeIcons } from "../ui";
 
 
 export function shop() {

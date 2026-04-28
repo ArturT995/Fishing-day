@@ -1,6 +1,5 @@
 import type { AnchorComp, AreaComp, Color, ColorComp, FormattedText, GameObj, 
-            OpacityComp, PosComp, RectComp, RotateComp, 
-            ScaleComp, TextComp, ZComp } from "kaplay";
+            PosComp, RotateComp, ScaleComp, TextComp, ZComp } from "kaplay";
 
 import { COLORS } from "./constants";
 import k from "./kaplayCtx";
@@ -510,28 +509,35 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
         SLIDER_WIDTH, sliderHeight, 0.5, Container)
     alignObj(slider, Container, 0, 0, 0, `top${sliderPos}`)
 
+    const sliderRange = Container.height - slider.height;
+    const startY = -Container.height / 2 + slider.height / 2;
+    const endY = Container.height / 2 - slider.height / 2;
+    const sliderStep = (ROW_HEIGHT / maxScroll) * sliderRange;
 
     k.onScroll((delta) => {
         if (!Container.isHovering() || maxScroll <= 0) return;
         
-        const sliderRange = Container.height - slider.height;
-        const startY = -Container.height / 2 + slider.height / 2;
-        const endY = Container.height / 2 - slider.height / 2;
-        const sliderStep = (ROW_HEIGHT / maxScroll) * sliderRange;
         const direction = Math.sign(delta.y);
-        
         slider.pos.y = k.clamp(slider.pos.y + (direction * sliderStep), startY, endY);
         
+        const currentPercent = (slider.pos.y - startY) / sliderRange;
+        const currentScrollY = Math.round((currentPercent * maxScroll) / ROW_HEIGHT) * ROW_HEIGHT;
+        iconsList.forEach(icon => {
+            icon.pos.y = icon.baseY - currentScrollY;
+        });
+    });
 
+    sliderContainer.onClick(() => {
+        if (!sliderContainer.isHovering() || maxScroll <= 0) return;
+        const localMousePos = k.mousePos().y - sliderContainer.worldPos().y;
+        slider.pos.y = k.clamp(localMousePos, startY, endY);
         const currentPercent = (slider.pos.y - startY) / sliderRange;
         const currentScrollY = Math.round((currentPercent * maxScroll) / ROW_HEIGHT) * ROW_HEIGHT;
 
         iconsList.forEach(icon => {
             icon.pos.y = icon.baseY - currentScrollY;
         });
-    });
-
-    
+    })
 
     return iconsList;
 }
