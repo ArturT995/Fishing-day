@@ -67,13 +67,13 @@ export const ITEM_DATA: ShopObj[] = [
     price: 10, unlocked: false, feature: "Unique"},
 
     {itemId: 6, name: "Rancid gloop", sprite: "rancidgloop",
-    desc: `A disgusting mess, even fish are deterred by this. Used by some to clear areas in the lake,
-    thus allowing different types of fish to emerge sometimes`,
+    desc: `A disgusting mess, even fish are deterred by this. Used by some to clear areas in the lake, thus allowing different types of fish to emerge sometimes`,
     price: 10, unlocked: false, feature: "Item"},
 
     {itemId: 7, name: "Fish Feed Deluxe", sprite: "fishfeeddeluxe",
-    desc: `A delicacy so potent it drives the fish into a frenzy, empty lakes are filled,
-    even the rarest of fish might come out of hiding`,
+    desc: `
+    A delicacy so potent it drives the fish into a frenzy, empty lakes are filled. 
+    Even the rarest of fish might come out of hiding.`,
     price: 250, unlocked: false, feature: "Item"},
 
     // rods
@@ -107,7 +107,9 @@ export const ITEM_DATA: ShopObj[] = [
 
     {itemId: 14, name: "Fish identifier", sprite: "fishidentifier",
     desc: `You're not sure how, but this curious contraption makes you sense what fish are swimming in the lake,
-    wearing it for too long causes some dizzyness, so you place it in your bag for now.`,
+    when you activate it, you see smoke rising from one of the tubes and looking through the circle causes your
+    head to hurt a bit, you notice some faint green splotches in your vision that emerge and fade.
+    You are able to sense what fish are swimming in the lake.`,
     price: 3000, unlocked: false, feature: "Unique"},
 
     {itemId: 15, name: "Dice", sprite: "dice",
@@ -118,6 +120,7 @@ export const ITEM_DATA: ShopObj[] = [
     desc: `You feel luckier holding them, can be played with to alleviate boredom`,
     price: 200, unlocked: false, feature: "Night Unique"},
 
+    /*
     {itemId: 17, name: "Grog", sprite: "grog",
     desc: `A moderate beverage, soothes your worries.`,
     price: 35, unlocked: false, feature: "Night item"},
@@ -141,7 +144,7 @@ export const ITEM_DATA: ShopObj[] = [
     {itemId: 22, name: "Bugfeed", sprite: "bugfeed",
     desc: `Feed to a bug to make them happy`,
     price: 15, unlocked: false, feature: "Item"},
-
+    */
     //  next up decor and endgame items
 
     //  pier, lantern, red lights, beach umbrella, beach chair, 4 monuments, medal of completion.

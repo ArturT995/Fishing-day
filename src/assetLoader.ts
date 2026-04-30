@@ -35,6 +35,7 @@ export async function assetLoader() {
 
     soundGen(soundsList)
     fishGen(fishesList)
+    itemGen(itemsList)
 
 };
 
@@ -49,6 +50,11 @@ function fishGen(list: string[]) {
         loadFish(asset)
     }
 }
+function itemGen(list: string[]) {
+    for (let asset of list) {
+        loadItem(asset)
+    }
+}
 
 
 function loadSound(name: string) {
@@ -56,6 +62,9 @@ function loadSound(name: string) {
 };
 function loadFish(name: string) {
     return k.loadSprite(`${name}`,`./graphics/fishes/${name}.png`)
+};
+function loadItem(name: string) {
+    return k.loadSprite(`${name}`,`./graphics/items/${name}.png`)
 };
 
 
@@ -171,4 +180,25 @@ let fishesList =
   "walleye",
   "yuppie-locked",
   "yuppie"
+]
+
+
+let itemsList = 
+[
+  "beer",
+  "cards",
+  "coffee",
+  "copperrod",
+  "deluxebait",
+  "dice",
+  "elegantrod",
+  "excellentrod",
+  "exquisiterod",
+  "fishfeedcan",
+  "fishfeeddeluxe",
+  "fishidentifier",
+  "glasses",
+  "legendaryrod",
+  "rancidgloop",
+  "woodrod"
 ]

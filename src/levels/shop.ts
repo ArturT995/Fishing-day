@@ -1,6 +1,6 @@
 import { addSprite } from "../assetLoader";
 import { COLORS, fontConfigSmall } from "../constants";
-import { FISH_DATA, type FishObj } from "../db";
+import { FISH_DATA, ITEM_DATA, type FishObj } from "../db";
 import gm from "../gm";
 import k from "../kaplayCtx";
 import { play } from "../sounds";
@@ -40,12 +40,11 @@ export function shop() {
             const leftBuyContainer = makeContainer("center", COLORS.BLUE, 
                 shopMenuContainer.width/2, 
                 shopMenuContainer.height - BotContainer.height, 0.5)
-            //alignObj(leftBuyContainer ,shopMenuContainer, leftSliderContainer.width, 0, 0, "topleft")
 
             const rightSellContainer = makeContainer("center", COLORS.BLUE, 
                 shopMenuContainer.width/2, 
                 shopMenuContainer.height - BotContainer.height, 0.5)
-            //alignObj(rightSellContainer , shopMenuContainer, rightSliderContainer.width, 0, 0, "center")
+
             
             rightSellContainer.pos.y -= 10;
             rightSellContainer.pos.x = k.width()/2 + rightSellContainer.width/2
@@ -65,7 +64,7 @@ export function shop() {
 
             const rightIcons = makeIcons(rightSellContainer, popupObjects, caughtFishData, "right", 3, 5, true)
 
-            const leftIcons = makeIcons(leftBuyContainer, popupObjects, FISH_DATA, "left", 3, 5, true)
+            const leftIcons = makeIcons(leftBuyContainer, popupObjects, ITEM_DATA, "left", 3, 5, true)
 
 
             const moneyButton = makeButton(`${gm.money}$`, 8, COLORS.BEIGE, BotContainer, "static")
