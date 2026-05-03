@@ -25,7 +25,9 @@ export function throwLine(anchor: Vec2, power: number) {
         k.state("flying", ["flying","floating","reeling","splash","catching"]),
         {
                 targetPos: landingPos,
-                reelSpeed: 50,
+                reelSpeed: gm.reelSpeed,
+                catchArea: gm.catchArea,
+                noticeArea: gm.noticeArea,
                 fishPullDir: k.vec2(0,0),
                 fishPullTime: 0,
                 fishPullSpeed: 0,
@@ -53,7 +55,7 @@ export function throwLine(anchor: Vec2, power: number) {
     bobber.onStateEnter("floating", () => {
 
         const noticeArea = bobber.add([
-            k.circle(15, { fill: false }),
+            k.circle(bobber.noticeArea, { fill: false }),
             k.opacity(0),
             k.outline(0.2, COLORS.BEIGE, 0.001),
             k.pos(),
@@ -72,8 +74,8 @@ export function throwLine(anchor: Vec2, power: number) {
 
 
     const reelingArea = k.add([
-        k.circle(10, { fill: false }),
-        k.opacity(1),
+        k.circle(bobber.catchArea, { fill: false }),
+        k.opacity(0),
         k.outline(0.2, COLORS.BEIGE, 0.1),
         k.pos(),
         k.area(),
@@ -104,6 +106,7 @@ export function throwLine(anchor: Vec2, power: number) {
         if (bobber.state === "catching") {
             const toAnchor = anchor.sub(bobber.pos).unit();
             reelingArea.pos = k.mousePos()
+            reelingArea.opacity = 1;
             
             bobber.fishPullTime -= k.dt();
             if (bobber.fishPullTime <= 0) {

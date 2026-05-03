@@ -1,6 +1,9 @@
 import gm from "./gm";
+import type { GameObj } from "kaplay";
 
-export interface FishObj {
+
+
+export interface FishObj{
     fishId: number;
     name: string;
     sprite: string;
@@ -14,9 +17,10 @@ export interface FishObj {
     difficulty: number;
     price: number;
     feature?: string;
+
 }
 
-export interface ShopObj {
+export interface ShopObj{
     itemId: number;
     name: string;
     sprite: string;
@@ -27,11 +31,8 @@ export interface ShopObj {
 }
 
 export interface RodObj {
-    idRod: number;
+    rodId: number;
     name: string;
-    iconSprite: string;
-    levelSprite: string;
-    desc: string;
     unlocked: boolean;
     selected: boolean;
     reelSpeed: number;
@@ -39,6 +40,27 @@ export interface RodObj {
     endurance: number;
 }
 
+export const ROD_DATA: any[] = [
+
+    {rodId: 1, name: "Wood rod", unlocked: true,
+    selected: true, reelSpeed: 8, catchArea: 10, endurance: 5},
+
+    {rodId: 2, name: "Copper rod", unlocked: false,
+    selected: false, reelSpeed: 11, catchArea: 12, endurance: 6},
+
+    {rodId: 3, name: "Elegant Rod", unlocked: false,
+    selected: false, reelSpeed: 14, catchArea: 13, endurance: 7},
+
+    {rodId: 4, name: "Exquisite rod", unlocked: true,
+    selected: true, reelSpeed: 15, catchArea: 14, endurance: 8},
+
+    {rodId: 5, name: "Excellent rod", unlocked: false,
+    selected: false, reelSpeed: 17, catchArea: 16, endurance: 9},
+
+    {rodId: 6, name: "Legendary rod", unlocked: false,
+    selected: false, reelSpeed: 25, catchArea: 20, endurance: 12},
+
+]
 
 //make function that assigns a sprite/fixed size range depending on fish size
 
@@ -71,8 +93,7 @@ export const ITEM_DATA: ShopObj[] = [
     price: 10, unlocked: false, feature: "Item"},
 
     {itemId: 7, name: "Fish Feed Deluxe", sprite: "fishfeeddeluxe",
-    desc: `
-    A delicacy so potent it drives the fish into a frenzy, empty lakes are filled. 
+    desc: `A delicacy so potent it drives the fish into a frenzy, empty lakes are filled. 
     Even the rarest of fish might come out of hiding.`,
     price: 250, unlocked: false, feature: "Item"},
 
@@ -80,28 +101,28 @@ export const ITEM_DATA: ShopObj[] = [
 
     {itemId: 8, name: "Wood rod", sprite: "woodrod",
     desc: `A basic rod, enough to get the job done`,
-    price: 40, unlocked: true, feature: "Rod"},
+    price: 40, unlocked: true, feature: "Rod Unique"},
 
     {itemId: 9, name: "Copper rod", sprite: "copperrod",
     desc: `An improved rod, it is easier to handle.`,
-    price: 170, unlocked: false, feature: "Rod"},
+    price: 170, unlocked: false, feature: "Rod Unique"},
 
     {itemId: 10, name: "Elegant Rod", sprite: "elegantrod",
     desc: `A graceful rod, it is lighter and feels comfortable in your hands.`,
-    price: 500, unlocked: false, feature: "Rod"},
+    price: 500, unlocked: false, feature: "Rod Unique"},
 
     {itemId: 11, name: "Exquisite rod", sprite: "exquisiterod",
     desc: `Quite a feat of craftsmanship. It has a great grip, weight and handles well.`,
-    price: 900, unlocked: false, feature: "Rod"},
+    price: 900, unlocked: false, feature: "Rod Unique"},
 
     {itemId: 12, name: "Excellent rod", sprite: "excellentrod",
     desc: `This rod feels perfect! You didn't think rods could be done at such a level.`,
-    price: 1250, unlocked: false, feature: "Rod"},
+    price: 1250, unlocked: false, feature: "Rod Unique"},
 
     {itemId: 13, name: "Legendary rod", sprite: "legendaryrod",
     desc: `Tales have been told of an ancient ornate rod that can tame the mightiest of fish. 
     To see it in person fills you with awe. You feel a strange tingling when you hold it.`,
-    price: 1800, unlocked: false, feature: "Rod"},
+    price: 1800, unlocked: false, feature: "Rod Unique"},
 
     // night and misc items
 
@@ -155,8 +176,7 @@ export const ITEM_DATA: ShopObj[] = [
 export const FISH_DATA: FishObj[] = [
     {fishId: 1, name: "Yuppie", sprite: "yuppie", spriteLocked: "yuppie-locked", activeTime: "Day",
     maxSize: 10, maxWeight: 0.3, rarityScore: 4,
-    desc: `This little denizen gets up at the crack of dawn,
-    and displays a high level of activity throughout the day and well into the late evening.
+    desc: `This little denizen gets up at the crack of dawn and displays a high level of activity throughout the day and well into the late evening.
     It has a sleek look and a go-getter attitude.`,
     unlocked: true, difficulty: 2, price: 50, feature: ""},
 
@@ -322,14 +342,7 @@ Legendary Rod - Tales have been told of an ancient ornate rod that can tame the 
 */
 //rods
 //get sprites for these and replace placeholder values and add rest of rods
-export const RODS: RodObj[] = [
-    {idRod: 0, name: "Wood rod", iconSprite: "woodRodIcon",
-    levelSprite: "woodRod", desc: "A basic rod, enough to get the job done.",  unlocked: false,
-    selected: false, reelSpeed: 15, catchArea: 15, endurance: 15},
-    {idRod: 1, name: "Copper rod", iconSprite: "copperRodIcon",
-    levelSprite: "copperRod", desc: "An improved rod, it is easier to handle.",  unlocked: false,
-    selected: false, reelSpeed: 25, catchArea: 25, endurance: 25},
-];
+
 
 
 //items

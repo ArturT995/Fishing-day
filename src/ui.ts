@@ -5,7 +5,7 @@ import { COLORS } from "./constants";
 import k from "./kaplayCtx";
 import gm from "./gm";
 import { play } from "./sounds";
-import { type FishObj, type ShopObj } from "./db";
+import { ROD_DATA, type FishObj, type RodObj, type ShopObj } from "./db";
 
 
 export type UIObject = StaticButton | DynamicButton | Container;
@@ -322,15 +322,18 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
     let iconsList: GameObj[]
     iconsList = []
 
-    data.forEach((obj, id) => {
-        const col = id % ICON_COLS;
-        const row = Math.floor(id / ICON_COLS);
+    data.forEach((obj, idx) => {
+        
+        const objId = "fishId" in obj ? obj.fishId : ("itemId" in obj ? obj.itemId : idx);     
+
+        const col = idx % ICON_COLS;
+        const row = Math.floor(idx / ICON_COLS);
 
         const startX = (Container.pos.x - POPUP_WIDTH / 2 + ICON_PADDING + ICON_SIZE) - 15 + adjustX;
         const startY = (Container.pos.y - POPUP_HEIGHT / 2 + ICON_PADDING + ICON_SIZE) - 15;
 
         
-        const objId = "fishId" in obj ? obj.fishId : ("itemId" in obj ? obj.itemId : id);
+
         
         let objLocked = obj.sprite
         if ("spriteLocked" in obj) {
@@ -341,8 +344,7 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
                 objLocked = obj.spriteLocked
             }
         }
-        
-        
+
 
         const icon = k.add([
             k.sprite(obj.unlocked ? obj.sprite : objLocked),
@@ -364,14 +366,27 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
 
         const priceText = icon.add([
             k.text(`${obj.price}$`, { font: "happy", size: 5}),
-            k.pos(14,15),
+            k.pos(16,14.2),
             k.anchor("right"),
             k.color(COLORS.ORANGE),
             k.opacity(0),
             k.z(4),
         ])
+
+        const priceTextBox = icon.add([
+            k.rect(priceText.width+3, priceText.height+3),
+            k.pos(17.4,13.4),
+            k.anchor("right"),
+            k.color(COLORS.BLACK),
+            k.opacity(priceText.opacity),
+            k.outline(1, COLORS.ORANGE),
+            k.z(3),
+        ])
+
+        
         if (!isStore) {
             k.destroy(priceText)
+            k.destroy(priceTextBox)
         }
 
         const tooltip = k.add([
@@ -412,7 +427,7 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
             tooltip.opacity = 0;
             tooltipText.opacity = 0;
         });
-
+        
         icon.onUpdate(() => {
             if (icon.isHovering()) {
                 if (!obj.unlocked && 'fishId' in data[0]) {
@@ -420,6 +435,19 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
                         tooltipText.width = 0;
                 } else {
                         tooltipText.text = `${obj.name}\n\n${obj.desc}`;
+                        if (obj.feature === "Rod Unique") {
+                            const rodData = ROD_DATA.find(f => obj.name === f.name) as RodObj;
+                            if (rodData === undefined) throw new Error("Rod tooltip text creation failed. Rod data not found")
+
+                            tooltipText.text = `${obj.name}\n\n${obj.desc}\n
+                            Reeling speed: ${rodData.reelSpeed}
+                            Catch area: ${rodData.catchArea}
+                            Line durability: ${rodData.endurance}
+                            `
+                        }
+
+                        tooltipText.text = tooltipText.text.trim().split("\n").map((line) => line.trimStart()).join("\n");
+
                 }
             
                 let tooltipTextInfo = k.formatText({
@@ -463,9 +491,11 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
                     tooltip.opacity = 0;
                     tooltipText.opacity = 0;
                     priceText.opacity = 0;
+                    priceTextBox.opacity = 0;
                 } else {
                     icon.opacity = 1;
                     priceText.opacity = 1;
+                    priceTextBox.opacity = 1;
                 }
 
                 icon.onDestroy(() => {
@@ -475,10 +505,7 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
         });
 
         popupObjects.push(icon,tooltip,tooltipText)
-        
         iconsList.push(icon)
-
-
     });
 
     // 
@@ -540,6 +567,7 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
     })
 
     return iconsList;
+
 }
 
 

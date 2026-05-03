@@ -1,6 +1,6 @@
 import { addSprite } from "../assetLoader";
 import { COLORS, fontConfigSmall } from "../constants";
-import { FISH_DATA, ITEM_DATA, type FishObj } from "../db";
+import { FISH_DATA, ITEM_DATA, type FishObj, type ShopObj } from "../db";
 import gm from "../gm";
 import k from "../kaplayCtx";
 import { play } from "../sounds";
@@ -20,7 +20,7 @@ export function shop() {
             k.opacity(0.5),
             k.z(2),
         ])
-        //addSprite("shop")
+
         //addSprite("shopPopupBorders")
 
         shopPopup()
@@ -58,13 +58,22 @@ export function shop() {
             const popupObjects = [BotContainer, leftBuyContainer, rightSellContainer, hideBtn]
 
 
-            const caughtFishData = gm.fishCaught.map(id => {
-                return FISH_DATA.find(f => f.fishId.toString() === id.toString());
-            }).filter(f => f !== undefined) as FishObj[];
+            const caughtFishes = gm.fishCaught.map(id => {
+                return FISH_DATA.find(obj => obj.fishId.toString() === id.toString());
+            }).filter(obj => obj !== undefined) as FishObj[];
 
-            const rightIcons = makeIcons(rightSellContainer, popupObjects, caughtFishData, "right", 3, 5, true)
+            const shopItems = ITEM_DATA.filter(obj => {
+                if (obj.feature.includes("Unique") && gm.itemsUnlocked.some(id => id.toString() === obj.itemId.toString())) {
+                    return false; // exclude unlocked unique items
+                }
+                return true;
+            }) as ShopObj[];
 
-            const leftIcons = makeIcons(leftBuyContainer, popupObjects, ITEM_DATA, "left", 3, 5, true)
+
+
+            const rightIcons = makeIcons(rightSellContainer, popupObjects, caughtFishes, "right", 3, 5, true)
+
+            const leftIcons = makeIcons(leftBuyContainer, popupObjects, shopItems, "left", 3, 5, true)
 
 
             const moneyButton = makeButton(`${gm.money}$`, 8, COLORS.BEIGE, BotContainer, "static")
@@ -93,12 +102,13 @@ export function shop() {
                         return;
                     }                
                     const id = iconL.objId.toString();
-                    // TODO add gm.removeItem IF item.feature === "Unique"
                     play("item-bought", "sfx")
+                    gm.unlockItem(id)
                     gm.removeMoney(iconL.price);
                     moneyButton.text = `${gm.money}$`
-                    // add item.feature === "Unique" check to see if to destroy icon or not.
-                    iconL.destroy();
+                    k.debug.log(iconL.data.feature)
+                    if (iconL.data.feature.includes("Unique")) iconL.destroy();
+
                     k.debug.log(`Bought item ID: ${id}`);
                 })
             }

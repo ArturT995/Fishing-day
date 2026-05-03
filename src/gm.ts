@@ -109,7 +109,11 @@ function makeGameManager() {
 
             isPaused: false,
             logPopupOpen: false,
-            fishReelSpeed: 0,
+            // adjust these to reflect rod stats
+            reelSpeed: 200,
+            noticeArea: 40,
+            catchArea: 45,
+            endurance: 9, //not implemented yet
 
             resetGameState(this:GameObj) {
                 this.isPaused = false;
