@@ -141,12 +141,11 @@ export const ITEM_DATA: ShopObj[] = [
     desc: `You feel luckier holding them, can be played with to alleviate boredom`,
     price: 200, unlocked: false, feature: "Night Unique"},
 
-    /*
     {itemId: 17, name: "Grog", sprite: "grog",
     desc: `A moderate beverage, soothes your worries.`,
     price: 35, unlocked: false, feature: "Night item"},
 
-    {itemId: 18, name: "Rum", sprite: "rum",
+    {itemId: 18, name: "Red Rum", sprite: "redrum",
     desc: `A proper drink, you remember getting quite boisterous from this years ago.`,
     price: 50, unlocked: false, feature: "Night item"},
 
@@ -165,7 +164,7 @@ export const ITEM_DATA: ShopObj[] = [
     {itemId: 22, name: "Bugfeed", sprite: "bugfeed",
     desc: `Feed to a bug to make them happy`,
     price: 15, unlocked: false, feature: "Item"},
-    */
+
     //  next up decor and endgame items
 
     //  pier, lantern, red lights, beach umbrella, beach chair, 4 monuments, medal of completion.

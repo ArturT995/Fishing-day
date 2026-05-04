@@ -33,6 +33,26 @@ export async function assetLoader() {
         },
     })
 
+    k.loadSprite("waves", "./graphics/waves.png", {
+        sliceX: 4,
+        anims: {
+            "normal": {
+                from: 0,
+                to: 3,
+                speed: 3,
+                frames: [0,1,2,3,2,1],
+                loop: true,
+            },
+            "fast": {
+                from: 0,
+                to: 3,
+                speed: 6,
+                frames: [0,1,2,3,2,1],
+                loop: true,
+            },
+        },
+    })
+
     soundGen(soundsList)
     fishGen(fishesList)
     itemGen(itemsList)
@@ -186,6 +206,8 @@ let fishesList =
 let itemsList = 
 [
   "beer",
+  "birdfeed",
+  "bugfeed",
   "cards",
   "coffee",
   "copperrod",
@@ -197,8 +219,12 @@ let itemsList =
   "fishfeedcan",
   "fishfeeddeluxe",
   "fishidentifier",
+  "friedfish",
   "glasses",
+  "grog",
   "legendaryrod",
+  "pipe",
   "rancidgloop",
+  "redrum",
   "woodrod"
 ]

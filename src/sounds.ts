@@ -32,9 +32,9 @@ const itemSfx = ["chomps", "cards", "dice-roll", "drinking-noise",
 export let sfxSet = new Set<AudioPlay>();
 export let musicSet = new Set<AudioPlay>();
 
-export function play(sound: string, type: "sfx" | "music" , volumeAdd = 0, 
+export function playSound(sound: string, type: "sfx" | "music" , volumeAdd = 0, 
     loop = false, detune = 0, speed = 1) {
-    
+
     if (!soundsList.includes(sound)) throw new Error(`Sound "${sound}" not found in soundsList`)
 
     if (gm.settings.musicVolume === 0 && type === "music") {
@@ -59,4 +59,5 @@ export function play(sound: string, type: "sfx" | "music" , volumeAdd = 0,
     }
     
     return song;
+
 }

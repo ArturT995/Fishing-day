@@ -4,7 +4,7 @@ import type { AnchorComp, AreaComp, Color, ColorComp, FormattedText, GameObj,
 import { COLORS } from "./constants";
 import k from "./kaplayCtx";
 import gm from "./gm";
-import { play } from "./sounds";
+import { playSound } from "./sounds";
 import { ROD_DATA, type FishObj, type RodObj, type ShopObj } from "./db";
 
 
@@ -411,7 +411,7 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
 
         icon.onHover(() => {
             if (icon.opacity === 0) return;
-            k.play("icon-sound-2",{volume: 0.3})
+            playSound("icon-sound-2", "sfx", -0.7)
             tooltip.opacity = 1;
             tooltipText.opacity = 1;
         });
@@ -419,7 +419,7 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
         icon.onClick(() => {
             if (icon.opacity === 0) return;
             // TODO add a shaking animation?
-            k.play("icon-sound-1",{volume: 0.5})
+            playSound("icon-sound-1", "sfx")
             tooltipText.opacity = 1;
         });
 
@@ -576,7 +576,7 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
 
 
 export function hoverProcess(obj: GameObj) {
-    play("icon-sound-2", "sfx", -0.5)
+    playSound("icon-sound-2", "sfx", -0.5)
     const originalColor = obj.color
     obj.color = COLORS.YELLOW;
     obj.onHoverEnd(() => {
@@ -585,7 +585,7 @@ export function hoverProcess(obj: GameObj) {
 }
 
 export function clickProcess(obj: GameObj) {
-    k.play("fishing-thunk",{volume: 0.5})
+    playSound("fishing-thunk", "sfx", -0.5)
     obj.color = COLORS.GREEN;
 }
 

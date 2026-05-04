@@ -18,8 +18,8 @@ export async function day() {
         k.setCursor("default");
         addSprite("sea")
         addSprite("ground", k.z(2))
-        const foam = k.add([k.sprite("foam"), k.z(1)])
-        foam.play("normal");
+        const waves = k.add([k.sprite("waves"), k.z(1)])
+        waves.play("normal");
 
         //add crab and bird sprites
         const bgMusic = k.play("fishing-bg-1", {volume: 0.5, loop: true});
@@ -158,7 +158,7 @@ export async function day() {
             seaSound.stop();
             reelSound.stop();
             flySound.stop()
-            foam.stop();
+            waves.stop();
         });
     });
     

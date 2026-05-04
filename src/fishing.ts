@@ -2,7 +2,7 @@ import type { Vec2 } from "kaplay";
 import k from "./kaplayCtx";
 import { COLORS } from "./constants";
 import gm from "./gm";
-import { play } from "./sounds";
+import { playSound } from "./sounds";
 
 
 
@@ -124,9 +124,9 @@ export function throwLine(anchor: Vec2, power: number) {
                 const fishId = gm.currentFishId;
 
                 if (gm.fishUnlocked.includes(fishId)) {
-                    play("new-fish-caught", "sfx")
+                    playSound("new-fish-caught", "sfx")
                 } else {
-                    play("fish-caught", "sfx")
+                    playSound("fish-caught", "sfx")
                 }
 
                 gm.addFish(fishId);
@@ -146,7 +146,7 @@ export function throwLine(anchor: Vec2, power: number) {
                 k.destroy(reelingArea);
                 gm.currentFishId = "";
                 gm.enterState("fishing")
-                play("fish-escaped", "sfx")
+                playSound("fish-escaped", "sfx")
                 return;
                 //fish escaped
             }

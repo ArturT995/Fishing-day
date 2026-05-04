@@ -3,14 +3,14 @@ import { COLORS, fontConfigSmall } from "../constants";
 import { FISH_DATA, ITEM_DATA, type FishObj, type ShopObj } from "../db";
 import gm from "../gm";
 import k from "../kaplayCtx";
-import { play } from "../sounds";
+import { playSound } from "../sounds";
 import { makeContainer, makeButton, alignObj, makeIcons } from "../ui";
 
 
 export function shop() {
     k.scene("shop", () => {
         k.setCursor("default");
-        let bgMusicShop = play("night-shop-1", "music", 0, true)
+        let bgMusicShop = playSound("night-shop-1", "music", 0, true)
         const bg = k.add([
             k.sprite("shop-bg"),
             k.anchor("center"),
@@ -85,7 +85,7 @@ export function shop() {
                     if (iconR.opacity === 0) return;
                     const id = iconR.objId.toString();
                     gm.removeFish(id);
-                    (iconR.price >= 100) ? play("rare-sell", "sfx") : play("sell-item", "sfx");
+                    (iconR.price >= 100) ? playSound("rare-sell", "sfx") : playSound("sell-item", "sfx");
                     gm.addMoney(iconR.price);
                     moneyButton.text = `${gm.money}$`
                     iconR.destroy();
@@ -102,13 +102,12 @@ export function shop() {
                         return;
                     }                
                     const id = iconL.objId.toString();
-                    play("item-bought", "sfx")
+                    playSound("item-bought", "sfx")
                     gm.unlockItem(id)
                     gm.removeMoney(iconL.price);
                     moneyButton.text = `${gm.money}$`
                     k.debug.log(iconL.data.feature)
                     if (iconL.data.feature.includes("Unique")) iconL.destroy();
-
                     k.debug.log(`Bought item ID: ${id}`);
                 })
             }
