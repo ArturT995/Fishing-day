@@ -4,6 +4,7 @@ import { COLORS, fontConfig } from "../constants";
 import { FISH_DATA } from "../db";
 import gm from "../gm";
 import { alignObj, bubbleText, clickProcess, hoverProcess, makeButton, makeContainer, makeIcons, makeSlider } from "../ui";
+import { musicSet, playSound, sfxSet } from "../sounds";
 
 
 //change font again
@@ -23,8 +24,9 @@ export function menu() {
 
         // change all music/sfx logic, make helper functions, some gm stuff
         // unlocked music/sfx saves.
-        const bgMusic = k.play("menu-bg-1", {volume: 0.4, loop: true});
+        const bgMusic = playSound("menu-bg-1", "music", 0, true, 0, 1);
     
+        //credits song? playSound("menu-bg-1","music", 1, true, 6, 3);
 
 
 
@@ -153,21 +155,20 @@ function openCollectionLog() {
 
     
 
-    const closeBtn = makeButton("Close", 8, COLORS.BEIGE, logContainer, "static")
+    const closeBtn = makeButton("Close", 8, COLORS.ORANGE, logContainer, "static")
     alignObj(closeBtn, logContainer, 5, -2, 3, "botright")
     
 
     let popupObjects = [blocker, logContainer, closeBtn, border]
 
-    let logIcons = makeIcons(logContainer, popupObjects, FISH_DATA, "right", ICON_COLS)
+    //fish icons
+    makeIcons(logContainer, popupObjects, FISH_DATA, "right", ICON_COLS)
 
     closeBtn.onClick(() => {
         popupObjects.forEach(obj => obj.destroy());
         gm.logPopupOpen = false;
     });
 };
-
-
 
 
 
@@ -182,27 +183,38 @@ function openSettings() {
     const PADDING = 8;
 
     const blocker = makeContainer("center", COLORS.BLACK, k.width(), k.height(), 0.5)
-    const settingsMenu = makeContainer("center", COLORS.BLUE, POPUP_WIDTH, POPUP_HEIGHT, 1)
+    const border = makeContainer("center", COLORS.BLACK, POPUP_WIDTH+4, POPUP_HEIGHT+4, 1)
+    const settingsMenu = makeContainer("center", COLORS.BROWN, POPUP_WIDTH, POPUP_HEIGHT, 1)
+
     
-    let volumeContainer = makeContainer("left", COLORS.BEIGE, 
+    let musicVolumeContainer = makeContainer("left", COLORS.DARKRED, 
             settingsMenu.width/2, 10, 1, settingsMenu)
-    alignObj(volumeContainer, settingsMenu, 0, 0, 10, "topleft")
-    let volumeText = makeButton("VOLUME", 8, COLORS.BEIGE, settingsMenu,"static")
+    alignObj(musicVolumeContainer, settingsMenu, 0, 0, 10, "topleft")
+    let volumeText = makeButton("MUSIC VOLUME", 8, COLORS.ORANGE, settingsMenu,"static")
     alignObj(volumeText, settingsMenu, 0, 2, 10, "topright")
-    const volumeSlider = makeSlider(COLORS.RED, volumeContainer,"horizontal", "volume", (val) => {k.setVolume(val)});
-
-
-    volumeSlider.onUpdate(() => {
-        let newVolume = k.getVolume()
-        gm.settings.musicVolume = newVolume;
-        gm.saveProgress();
+    const volumeSlider = makeSlider(COLORS.ORANGE, musicVolumeContainer, "horizontal", "musicVolume", (val) => {
+        musicSet.forEach((offset, song) => {
+            song.volume = val + offset;
+        });
     });
+
+    let sfxVolumeContainer = makeContainer("left", COLORS.DARKRED, 
+            settingsMenu.width/2, 10, 1, settingsMenu)
+    alignObj(sfxVolumeContainer, settingsMenu, 0, 18, 10, "topleft")
+    let sfxText = makeButton("SFX VOLUME", 8, COLORS.ORANGE, settingsMenu,"static")
+    alignObj(sfxText, settingsMenu, 0, 20, 10, "topright")
+    const sfxSlider = makeSlider(COLORS.ORANGE, sfxVolumeContainer,"horizontal", "sfxVolume", (val) =>  {
+        sfxSet.forEach((offset, sfx) => {
+            sfx.volume = val + offset;
+        });
+    });
+
 
     const closeBtn = settingsMenu.add ([
         k.text("Close", fontConfig),
         k.pos(0, POPUP_HEIGHT / 2 - PADDING),
         k.anchor("center"),
-        k.color(COLORS.BEIGE),
+        k.color(COLORS.ORANGE),
         k.area(),
         k.z(4)
     ]);
@@ -212,8 +224,9 @@ function openSettings() {
     });
     closeBtn.onClick(() => {
         clickProcess(closeBtn)
-        gm.logPopupOpen = false;
+        gm.logPopupOpen = false
         settingsMenu.destroy();
         blocker.destroy();
+        border.destroy();
     });
 }

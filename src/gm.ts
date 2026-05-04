@@ -32,10 +32,10 @@ function makeGameManager() {
     const savedItems = k.getData("itemsUnlocked", [] as string[]);
     const savedMoney = k.getData<number>("money", 0);
     
-    const savedSettings = k.getData("settings", { 
-        musicVolume: 1, 
-        sfxVolume: 1
-    } as GameSettings);
+    const settings = { 
+        musicVolume: 0.5, 
+        sfxVolume: 1,
+    };
 
     return k.add([
         k.state("menu", [
@@ -49,7 +49,7 @@ function makeGameManager() {
             fishUnlocked: savedUnlocks,
             fishCaught: savedCaught,
             itemsUnlocked: savedItems,
-            settings: savedSettings,
+            settings: settings,
             currentFishId: "",
             money: savedMoney,
 
@@ -57,7 +57,6 @@ function makeGameManager() {
                 k.setData("fishUnlocked", this.fishUnlocked);
                 k.setData("fishCaught", this.fishCaught);
                 k.setData("itemsUnlocked", this.itemsUnlocked);
-                k.setData("settings", this.settings);
                 k.setData("money", this.money);
             },
 

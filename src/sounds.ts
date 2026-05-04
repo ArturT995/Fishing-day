@@ -29,13 +29,28 @@ const itemSfx = ["chomps", "cards", "dice-roll", "drinking-noise",
     "pipe", "rancid-gloop", "shaking"]
 
 
-export let sfxSet = new Set<AudioPlay>();
-export let musicSet = new Set<AudioPlay>();
+export let sfxSet = new Map<AudioPlay, number>();
+export let musicSet = new Map<AudioPlay, number>();
+
 
 export function playSound(sound: string, type: "sfx" | "music" , volumeAdd = 0, 
     loop = false, detune = 0, speed = 1) {
-
+    
     if (!soundsList.includes(sound)) throw new Error(`Sound "${sound}" not found in soundsList`)
+
+    if (type === "music") {
+        musicSet.forEach((offset, song) => {
+            offset = 0;
+            musicSet.delete(song);
+        })
+    }
+
+    if (type === "sfx" && sfxSet.size > 10) {
+        sfxSet.forEach((offset, sfx) => {
+            offset = 0;
+            musicSet.delete(sfx);
+        })
+    }
 
     if (gm.settings.musicVolume === 0 && type === "music") {
         volumeAdd = 0;
@@ -44,20 +59,24 @@ export function playSound(sound: string, type: "sfx" | "music" , volumeAdd = 0,
         volumeAdd = 0;
     }
 
-    let song = k.play(sound, {
-        volume: gm.settings.musicVolume + volumeAdd,
+    let soundObj: AudioPlay
+    let soundTypeVolume = (type === "music") ? gm.settings.musicVolume : gm.settings.sfxVolume;
+    
+    soundObj = k.play(sound, {
+        volume: soundTypeVolume + volumeAdd,
         loop: loop,
         detune: detune,
         speed: speed,
     })
+    
     if (type === "music") {
-        musicSet.add(song)
-        song.onEnd(() => musicSet.delete(song))
+        musicSet.set(soundObj, volumeAdd);
+        soundObj.onEnd(() => musicSet.delete(soundObj));
     } else {
-        sfxSet.add(song)
-        song.onEnd(() => sfxSet.delete(song))
+        sfxSet.set(soundObj, volumeAdd)
+        soundObj.onEnd(() => sfxSet.delete(soundObj))
     }
     
-    return song;
+    return soundObj;
 
 }

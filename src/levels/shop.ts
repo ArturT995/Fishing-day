@@ -11,39 +11,57 @@ export function shop() {
     k.scene("shop", () => {
         k.setCursor("default");
         let bgMusicShop = playSound("night-shop-1", "music", 0, true)
-        const bg = k.add([
+        let bg:any; //modify at night to be darker and bluer
+
+        bg = k.add([
             k.sprite("shop-bg"),
             k.anchor("center"),
-            k.color(COLORS.BEIGE),
+            k.color(),
             k.area(),
             k.pos(k.center()),
-            k.opacity(0.5),
+            k.opacity(0.7),
             k.z(2),
         ])
+
+        const smoke = k.add([k.sprite("smoke"),k.pos(67,54), k.z(2), k.opacity(0.7)])
+        smoke.play("normal");
 
         //addSprite("shopPopupBorders")
 
         shopPopup()
 
         function shopPopup() {
-            gm.logPopupOpen = true
+
             //overlay borders with a sprite on these
-            const shopMenuContainer = makeContainer("center", COLORS.BEIGE, 
-                k.width() - 10 , k.height() - (k.width()/5), 0)
-            
-            const BotContainer = makeContainer("center", COLORS.DARKBLUE,
-                shopMenuContainer.width, 20, 0.5, shopMenuContainer)
-            alignObj(BotContainer ,shopMenuContainer, 0, 0, 0, "bot")
 
-            
+            let POPUP_WIDTH = k.width() - 10 
+            let POPUP_HEIGHT = k.height() - (k.width()/5)
 
-            const leftBuyContainer = makeContainer("center", COLORS.BLUE, 
+            const blocker = makeContainer("center", COLORS.BLACK,
+            k.width(), k.height(), 0.3)
+
+            const shopMenuContainer = makeContainer("center", COLORS.BROWN, 
+                POPUP_WIDTH , POPUP_HEIGHT+2, 0.5)
+            const shopMenuBorder = k.add([
+                k.sprite("shopborder"),
+                k.anchor("center"),
+                k.color(),
+                k.pos(k.center()),
+                k.z(4),
+            ])
+
+
+            const botContainer = makeContainer("center", COLORS.BLACK,
+                shopMenuContainer.width, 20, 0.7, shopMenuContainer)
+            alignObj(botContainer ,shopMenuContainer, 0, 0, 0, "bot")
+
+            const leftBuyContainer = makeContainer("center", COLORS.GRAYBLUE, 
                 shopMenuContainer.width/2, 
-                shopMenuContainer.height - BotContainer.height, 0.5)
+                shopMenuContainer.height - botContainer.height, 0.6)
 
-            const rightSellContainer = makeContainer("center", COLORS.BLUE, 
+            const rightSellContainer = makeContainer("center", COLORS.GRAYBLUE, 
                 shopMenuContainer.width/2, 
-                shopMenuContainer.height - BotContainer.height, 0.5)
+                shopMenuContainer.height - botContainer.height, 0.6)
 
             
             rightSellContainer.pos.y -= 10;
@@ -52,10 +70,10 @@ export function shop() {
             leftBuyContainer.pos.y -= 10;
             leftBuyContainer.pos.x = k.width()/2 - leftBuyContainer.width/2;
 
-            const hideBtn = makeButton("Close", 8, COLORS.BLUE, BotContainer, "static")
-            alignObj(hideBtn, BotContainer, 5, -2, 3, "botright")
+            const hideBtn = makeButton("Close", 8, COLORS.ORANGE, botContainer, "static")
+            alignObj(hideBtn, botContainer, 5, -2, 3, "botright")
             
-            const popupObjects = [BotContainer, leftBuyContainer, rightSellContainer, hideBtn]
+            const popupObjects = [shopMenuContainer, botContainer, leftBuyContainer, rightSellContainer, hideBtn, blocker, shopMenuBorder]
 
 
             const caughtFishes = gm.fishCaught.map(id => {
@@ -76,8 +94,8 @@ export function shop() {
             const leftIcons = makeIcons(leftBuyContainer, popupObjects, shopItems, "left", 3, 5, true)
 
 
-            const moneyButton = makeButton(`${gm.money}$`, 8, COLORS.BEIGE, BotContainer, "static")
-            alignObj(moneyButton, BotContainer, 40, -2, 3, "botright")
+            const priceText = makeButton(`${gm.money}$`, 8, COLORS.ORANGE, botContainer, "static")
+            alignObj(priceText, botContainer, 40, -2, 3, "botright")
 
             //sell
             for (let iconR of rightIcons) {
@@ -87,7 +105,7 @@ export function shop() {
                     gm.removeFish(id);
                     (iconR.price >= 100) ? playSound("rare-sell", "sfx") : playSound("sell-item", "sfx");
                     gm.addMoney(iconR.price);
-                    moneyButton.text = `${gm.money}$`
+                    priceText.text = `${gm.money}$`
                     iconR.destroy();
                     k.debug.log(`Sold fish ID: ${id}`);
                 })
@@ -105,12 +123,13 @@ export function shop() {
                     playSound("item-bought", "sfx")
                     gm.unlockItem(id)
                     gm.removeMoney(iconL.price);
-                    moneyButton.text = `${gm.money}$`
+                    priceText.text = `${gm.money}$`
                     k.debug.log(iconL.data.feature)
                     if (iconL.data.feature.includes("Unique")) iconL.destroy();
                     k.debug.log(`Bought item ID: ${id}`);
                 })
             }
+
 
             hideBtn.onClick(() => {
                 gm.logPopupOpen = false
@@ -124,14 +143,18 @@ export function shop() {
             k.text("Shop", fontConfigSmall),
             k.anchor("left"),
             k.pos(k.width()-60, k.height() - 5),
-            k.color(COLORS.BEIGE),
+            k.color(COLORS.ORANGE),
+            k.opacity(0.7),
             k.area(),
             k.scale(1),
             k.z(3),
         ]);
 
-        showBtn.onClick(() => {
+        showBtn.onClick(async () => {
             if (gm.logPopupOpen) return;
+                
+            await k.wait(0.1)
+            gm.logPopupOpen = true
             shopPopup();
         })
 
@@ -140,7 +163,8 @@ export function shop() {
             k.text("Back", fontConfigSmall),
             k.anchor("left"),
             k.pos(k.width()-40, k.height() - 5),
-            k.color(COLORS.BEIGE),
+            k.color(COLORS.ORANGE),
+            k.opacity(0.7),
             k.area(),
             k.scale(1),
             k.z(3),
@@ -153,6 +177,7 @@ export function shop() {
 
         k.onSceneLeave(() => {
             bgMusicShop.stop();
+            smoke.stop();
             gm.logPopupOpen = false
         });
     })
