@@ -4,7 +4,7 @@ import { FISH_DATA, ITEM_DATA, type FishObj, type ShopObj } from "../db";
 import gm from "../gm";
 import k from "../kaplayCtx";
 import { playSound } from "../sounds";
-import { makeContainer, makeButton, alignObj, makeIcons } from "../ui";
+import { makeContainer, makeButton, alignObj, makeIcons, clickProcess, hoverProcess } from "../ui";
 
 
 export function shop() {
@@ -31,9 +31,9 @@ export function shop() {
         shopPopup()
 
         function shopPopup() {
-
             //overlay borders with a sprite on these
-
+            if (gm.logPopupOpen) return;
+            gm.logPopupOpen = true
             let POPUP_WIDTH = k.width() - 10 
             let POPUP_HEIGHT = k.height() - (k.width()/5)
 
@@ -42,18 +42,33 @@ export function shop() {
 
             const shopMenuContainer = makeContainer("center", COLORS.BROWN, 
                 POPUP_WIDTH , POPUP_HEIGHT+2, 0.5)
+            
             const shopMenuBorder = k.add([
                 k.sprite("shopborder"),
                 k.anchor("center"),
                 k.color(),
                 k.pos(k.center()),
                 k.z(4),
+                "shop-Popup"
             ])
 
 
             const botContainer = makeContainer("center", COLORS.BLACK,
                 shopMenuContainer.width, 20, 0.7, shopMenuContainer)
             alignObj(botContainer ,shopMenuContainer, 0, 0, 0, "bot")
+
+
+            let icons = ["sunIcon", "moonIcon"]
+            let chosenIcon = icons[k.randi()]
+            const sunIcon = botContainer.add([
+                k.sprite(chosenIcon),
+                k.anchor("center"),
+                k.pos(botContainer.x,botContainer.y),
+                k.z(botContainer.z+1)
+            ])
+            alignObj(sunIcon ,botContainer, 0, 0, 0, "botleft")
+
+            if (chosenIcon === "moonIcon") shopMenuBorder.color = COLORS.BLUE;
 
             const leftBuyContainer = makeContainer("center", COLORS.GRAYBLUE, 
                 shopMenuContainer.width/2, 
@@ -73,7 +88,7 @@ export function shop() {
             const hideBtn = makeButton("Close", 8, COLORS.ORANGE, botContainer, "static")
             alignObj(hideBtn, botContainer, 5, -2, 3, "botright")
             
-            const popupObjects = [shopMenuContainer, botContainer, leftBuyContainer, rightSellContainer, hideBtn, blocker, shopMenuBorder]
+            const popupObjects = [shopMenuContainer, botContainer, leftBuyContainer, rightSellContainer, hideBtn, blocker, shopMenuBorder, sunIcon]
 
 
             const caughtFishes = gm.fishCaught.map(id => {
@@ -100,6 +115,7 @@ export function shop() {
             //sell
             for (let iconR of rightIcons) {
                 iconR.onClick(() => {
+                    if (gm.logpopupOpen === false) return;
                     if (iconR.opacity === 0) return;
                     const id = iconR.objId.toString();
                     gm.removeFish(id);
@@ -114,6 +130,7 @@ export function shop() {
             //buy
             for (let iconL of leftIcons) {
                 iconL.onClick(() => {
+                    if (gm.logpopupOpen === false) return;
                     if (iconL.opacity === 0) return;
                     if (iconL.price > gm.money) {
                         k.debug.log(`No money for that`);
@@ -122,6 +139,7 @@ export function shop() {
                     const id = iconL.objId.toString();
                     playSound("item-bought", "sfx")
                     gm.unlockItem(id)
+                    gm.addItem(id)
                     gm.removeMoney(iconL.price);
                     priceText.text = `${gm.money}$`
                     k.debug.log(iconL.data.feature)
@@ -130,10 +148,10 @@ export function shop() {
                 })
             }
 
-
             hideBtn.onClick(() => {
-                gm.logPopupOpen = false
+                clickProcess(hideBtn)
                 popupObjects.forEach(obj => obj.destroy())
+                gm.logPopupOpen = false
             })
         };
 
@@ -149,12 +167,11 @@ export function shop() {
             k.scale(1),
             k.z(3),
         ]);
-
+        showBtn.onHover(() => hoverProcess(showBtn))
         showBtn.onClick(async () => {
             if (gm.logPopupOpen) return;
-                
-            await k.wait(0.1)
-            gm.logPopupOpen = true
+            clickProcess(showBtn)
+            await k.wait(0.05)
             shopPopup();
         })
 
@@ -169,14 +186,16 @@ export function shop() {
             k.scale(1),
             k.z(3),
         ]);
-
+        levelBtn.onHover(() => hoverProcess(levelBtn))
         levelBtn.onClick(() => {
+            clickProcess(levelBtn)
             k.go("day");
         })
 
 
         k.onSceneLeave(() => {
             bgMusicShop.stop();
+            bg.destroy();
             smoke.stop();
             gm.logPopupOpen = false
         });

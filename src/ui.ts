@@ -5,7 +5,7 @@ import { COLORS } from "./constants";
 import k from "./kaplayCtx";
 import gm from "./gm";
 import { playSound } from "./sounds";
-import { ROD_DATA, type FishObj, type RodObj, type ShopObj } from "./db";
+import { ROD_DATA, type BagObj, type FishObj, type RodObj, type ShopObj } from "./db";
 
 
 export type UIObject = StaticButton | DynamicButton | Container;
@@ -36,6 +36,7 @@ export function makeButton(
             k.color(color),
             k.area(),
             k.z(container.z+1),
+            `${desc}`
         ]) as StaticButton;
     }
 
@@ -49,6 +50,7 @@ export function makeButton(
             k.scale(1),
             k.rotate(0),
             k.z(container.z+1),
+            `${desc}`
         ]) as DynamicButton;
         bubbleText(button)
     } else {
@@ -72,7 +74,7 @@ export function makeButton(
 
 
 
-
+// this causes a lot of bugs, best to not use it.
 export function alignObj(
     obj: UIObject, container: Container,
     offsetX: number, offsetY: number, padding: number,
@@ -147,7 +149,6 @@ export function makeContainer(
     
     let container: Container;
 
-
     if(parent) {
         container = parent.add([
             k.rect(width, height),
@@ -157,6 +158,7 @@ export function makeContainer(
             k.area(),
             k.z(2+parent.z),
             k.opacity(opacity),
+            "container",
             {
                 grandparent: parent
             }
@@ -171,6 +173,7 @@ export function makeContainer(
             k.area(),
             k.z(2),
             k.opacity(opacity),
+            "container",
         ]);
     }
     return container;
@@ -185,7 +188,7 @@ export function makeContainer(
 export function makeSlider(
     color: Color, parent: Container, 
     direction: "vertical" | "horizontal", 
-    type: "scroll" | "musicVolume" | "sfxVolume", onChange: (val: number) => void) {
+    type: "musicVolume" | "sfxVolume", onChange: (val: number) => void) {
     
     if (!parent.parent) throw new Error("SliderError: Parent of parent not set.");
     
@@ -221,9 +224,17 @@ export function makeSlider(
     ]);
 
     sliderBar.onUpdate(() => {
-        if (k.isMousePressed("left") && parent.isHovering()) dragging = true;
+        const bounds = parent.screenPos();
+    
+        const isMouseOverParent = (
+            k.mousePos().x >= bounds.x - parent.width / 2 &&
+            k.mousePos().x <= bounds.x + parent.width / 2 &&
+            k.mousePos().y >= bounds.y - parent.height / 2 &&
+            k.mousePos().y <= bounds.y + parent.height / 2
+        );
+
+        if (k.isMousePressed("left") && isMouseOverParent) dragging = true;
         if (k.isMouseReleased("left")) dragging = false;
-        
         if (dragging) {
             const worldMouse = k.toWorld(k.mousePos());
             const parentCenter = parent.toWorld(k.vec2(0, 0));
@@ -258,6 +269,40 @@ export function makeSlider(
         }
     });
 
+
+    k.onScroll((delta) => {
+        const bounds = parent.screenPos();
+        const isMouseOverParent = (
+            k.mousePos().x >= bounds.x - parent.width / 2 &&
+            k.mousePos().x <= bounds.x + parent.width / 2 &&
+            k.mousePos().y >= bounds.y - parent.height / 2 &&
+            k.mousePos().y <= bounds.y + parent.height / 2
+        );
+
+        if (!isMouseOverParent) return;
+
+        const scrollSensitivity = 10; 
+        let val = 0;
+
+        if (direction === "horizontal") {
+            sliderBar.pos.x = k.clamp(sliderBar.pos.x + (delta.y / scrollSensitivity), -limit, limit);
+            val = k.map(sliderBar.pos.x, -limit, limit, 0, 1);
+        } else {
+            sliderBar.pos.y = k.clamp(sliderBar.pos.y + (delta.y / scrollSensitivity), -limit, limit);
+            val = k.map(sliderBar.pos.y, -limit, limit, 0, 1);
+        }
+
+        if (val < 0.1) val = 0;
+
+        if (type === "musicVolume") {
+            gm.settings.musicVolume = val;
+        } else if (type === "sfxVolume") {
+            gm.settings.sfxVolume = val;
+        }
+
+        onChange(val);
+    });
+
     return sliderBar;
 }
 
@@ -268,8 +313,8 @@ export function makeSlider(
 
 
 
-
-export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj[] | ShopObj[], sliderPos: "left" | "right", ICON_COLS = 4, ICON_PADDING = 7, isStore?: boolean ): GameObj[] {
+// NOTE: Some alignment bugs occur on usage with larger containers.
+export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj[] | ShopObj[] | BagObj[], sliderPos: "left" | "right", ICON_COLS = 4, ICON_PADDING = 7, isStore?: boolean ): GameObj[] {
 
     const ICON_SIZE = 32;
     const POPUP_WIDTH = Container.width;
@@ -326,6 +371,7 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
         ]);
         icon.baseY = icon.pos.y;
 
+        // shop price 
         const priceText = icon.add([
             k.text(`${obj.price}$`, { font: "happy", size: 5}),
             k.pos(16,14.2),
@@ -350,6 +396,39 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
             k.destroy(priceText)
             k.destroy(priceTextBox)
         }
+
+        // stackable items
+        let count = 0;
+        if ("count" in icon.data) {
+            count = icon.data.count
+        }
+
+        const amountText = icon.add([
+            k.text(`${count}`, { font: "happy", size: 5}),
+            k.pos(16,14.2),
+            k.anchor("right"),
+            k.color(COLORS.ORANGE),
+            k.opacity(1),
+            k.z(4),
+            "amount-text"
+        ])
+
+        const amountTextBox = icon.add([
+            k.rect(amountText.width+3, amountText.height+3),
+            k.pos(17.4,13.4),
+            k.anchor("right"),
+            k.color(COLORS.BLACK),
+            k.opacity(amountText.opacity),
+            k.outline(1, COLORS.ORANGE),
+            k.z(3),
+            "amount-box"
+        ])
+ 
+        if (count < 2) {
+            k.destroy(amountText)
+            k.destroy(amountTextBox)
+        }
+
 
         const tooltip = k.add([
             k.rect(0, 0),
@@ -454,10 +533,15 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
                     tooltipText.opacity = 0;
                     priceText.opacity = 0;
                     priceTextBox.opacity = 0;
+                    amountText.opacity = 0;
+                    amountTextBox.opacity = 0;
+
                 } else {
                     icon.opacity = 1;
                     priceText.opacity = 1;
                     priceTextBox.opacity = 1;
+                    amountText.opacity = 1;
+                    amountTextBox.opacity = 1;
                 }
 
                 icon.onDestroy(() => {
@@ -535,14 +619,14 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
 
 
 
-
+//Don't include .onHover or .onClick in these.
 
 export function hoverProcess(obj: GameObj) {
     playSound("icon-sound-2", "sfx", -0.5)
-    const originalColor = obj.color
-    obj.color = COLORS.YELLOW;
-    obj.onHoverEnd(() => {
-    obj.color = originalColor;
+        const originalColor = obj.color
+        obj.color = COLORS.YELLOW;
+        obj.onHoverEnd(() => {
+        obj.color = originalColor;
     });
 }
 

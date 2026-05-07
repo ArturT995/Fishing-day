@@ -1,6 +1,6 @@
 import type { Vec2 } from "kaplay";
 import k from "./kaplayCtx";
-import { COLORS } from "./constants";
+import { COLORS, fishingArea } from "./constants";
 import gm from "./gm";
 import { playSound } from "./sounds";
 
@@ -13,7 +13,8 @@ export function throwLine(anchor: Vec2, power: number) {
     }
     const mouseTarget = k.mousePos();
     const dir = mouseTarget.sub(anchor).unit();
-    const landingPos = anchor.add(dir.scale(power * 50))
+    const landingPos = anchor.add(dir.scale(power * 50));
+    let catchTime = gm.endurance;
 
     const bobber = k.add([
         k.pos(anchor),
@@ -104,6 +105,7 @@ export function throwLine(anchor: Vec2, power: number) {
         }
 
         if (bobber.state === "catching") {
+            catchTime -= 0.02
             const toAnchor = anchor.sub(bobber.pos).unit();
             reelingArea.pos = k.mousePos()
             reelingArea.opacity = 1;
@@ -119,6 +121,7 @@ export function throwLine(anchor: Vec2, power: number) {
             bobber.move(bobber.fishPullDir.scale(bobber.fishPullSpeed));
             bobber.move(toAnchor.scale(-30)); 
             
+
 
             if (bobber.pos.dist(anchor) < 10) {
                 const fishId = gm.currentFishId;
@@ -137,16 +140,18 @@ export function throwLine(anchor: Vec2, power: number) {
                 gm.currentFishId = "";
                 gm.enterState("fishing")
 
-                
                 return;
                 //fish caught
             }
-            if (bobber.pos.dist(anchor) > 200) {
+            if (bobber.pos.dist(anchor) > 200
+            || (!fishingArea.hasPoint(bobber.pos) && bobber.pos.y < k.height() - 90)
+            || catchTime <= 0) {
                 k.destroy(bobber);
                 k.destroy(reelingArea);
                 gm.currentFishId = "";
                 gm.enterState("fishing")
                 playSound("fish-escaped", "sfx")
+                catchTime = gm.endurance
                 return;
                 //fish escaped
             }

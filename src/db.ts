@@ -40,6 +40,10 @@ export interface RodObj {
     endurance: number;
 }
 
+export type BagObj = ShopObj & { count: number };
+
+
+
 export const ROD_DATA: any[] = [
 
     {rodId: 1, name: "Wood rod", unlocked: true,
@@ -320,32 +324,3 @@ export const FISH_DATA: FishObj[] = [
 ];
 
 
-export function getFishName(id: string | number): string {
-    const fish = FISH_DATA.find(f => f.fishId.toString() === id.toString());
-    return fish ? fish.name : "Unknown Fish";
-}
-
-export function bagInfo() {
-    const fishNames = gm.fishCaught.map(id => getFishName(id));
-    return fishNames
-}
-
-/*
-Wood rod - A basic rod, enough to get the job done.
-Copper Rod - An improved rod, it is easier to handle.
-Elegant Rod - A graceful rod, it is lighter and feels comfortable in your hands.
-Exquisite Rod - Quite a feat of craftsmanship. It has a great grip, weight and handles well.
-Excellent Rod - This rod feels perfect! You didn't think rods could be done at such a level.
-(unlock at buying excellent and some other tasks)
-Legendary Rod - Tales have been told of an ancient ornate rod that can tame the mightiest of fish. To see it in person fills you with awe. You feel a strange tingling when you hold it.
-*/
-//rods
-//get sprites for these and replace placeholder values and add rest of rods
-
-
-
-//items
-//get icons and basics in for now, later do item specific interactions
-
-//bag
-//contains array of items, is a menu

@@ -19,13 +19,24 @@ import { musicSet, playSound, sfxSet } from "../sounds";
 export function menu() {
     k.scene("main-menu", () => {
         k.setCursor("default");//make custom cursor
-        addSprite("titlebox", k.z(1))
-        addSprite("menu-bg")
+        
+        let backgrounds = ["dayMenuScreen", "nightMenuScreen"]
+        
+        let randomBackground = backgrounds[k.randi()] //temporary, until timetracking and night is implemented
+
+        addSprite(randomBackground)
+
+
+        let chosenColor = (randomBackground === "nightMenuScreen") ? COLORS.BLUE : COLORS.BEIGE;
+
+
+        const bgMusic = (randomBackground === "nightMenuScreen") ? playSound("night-menu-1", "music", 0, true, 0, 0.8) : playSound("menu-bg-1", "music", 0, true, 0, 1);
+        
+        
 
         // change all music/sfx logic, make helper functions, some gm stuff
         // unlocked music/sfx saves.
-        const bgMusic = playSound("menu-bg-1", "music", 0, true, 0, 1);
-    
+
         //credits song? playSound("menu-bg-1","music", 1, true, 6, 3);
 
 
@@ -54,7 +65,7 @@ export function menu() {
             k.text("Click to start", {font: "happy", size: 12}),
             k.anchor("center"),
             k.pos(k.center().x, k.center().y + 25),
-            k.color(COLORS.BEIGE),
+            k.color(chosenColor),
             k.area(),
             k.scale(1),
             k.rotate(0),
@@ -66,7 +77,7 @@ export function menu() {
             k.text("Collection Log", fontConfig),
             k.anchor("center"),
             k.pos(k.center().x, k.center().y + 70),
-            k.color(COLORS.BEIGE),
+            k.color(chosenColor),
             k.area(),
             k.scale(1),
             k.rotate(0),
@@ -77,7 +88,7 @@ export function menu() {
             k.text("Settings", fontConfig),
             k.anchor("center"),
             k.pos(k.center().x, k.center().y + 55),
-            k.color(COLORS.BEIGE),
+            k.color(chosenColor),
             k.area(),
             k.scale(1),
             k.rotate(0),
@@ -100,7 +111,6 @@ export function menu() {
         settings.onClick(() => {
             if (gm.logPopupOpen) return;
             clickProcess(settings);
-            gm.logPopupOpen = true;
             openSettings();
         });
         settings.onHover(() => {
@@ -115,6 +125,7 @@ export function menu() {
             gm.logPopupOpen = true;
             clickProcess(log);
         });
+
         log.onHover(() => {
             if (gm.logPopupOpen) return;
             hoverProcess(log);
@@ -137,7 +148,8 @@ export function menu() {
 
 // Log and settings functions
 
-function openCollectionLog() {
+export function openCollectionLog() {
+    if (gm.logPopupOpen) return;
     gm.logPopupOpen = true;
     
     const ICON_COLS = 4;
@@ -154,7 +166,6 @@ function openCollectionLog() {
     POPUP_WIDTH, POPUP_HEIGHT, 1)
 
     
-
     const closeBtn = makeButton("Close", 8, COLORS.ORANGE, logContainer, "static")
     alignObj(closeBtn, logContainer, 5, -2, 3, "botright")
     
@@ -175,34 +186,59 @@ function openCollectionLog() {
 
 
 
+//alignObj broke hover properties on this when "shop" button was clicked in that scene so
+//adjusting things manually here, makeSlider has some issues too, but circumvented them.
+export function openSettings() {
+    if (gm.logPopupOpen) return;
+    gm.logPopupOpen = true;
 
-function openSettings() {
-    
     const POPUP_WIDTH = k.width() / 1.4;
     const POPUP_HEIGHT = k.height() / 2;
     const PADDING = 8;
+    const ROW_HEIGHT = 18;
 
     const blocker = makeContainer("center", COLORS.BLACK, k.width(), k.height(), 0.5)
     const border = makeContainer("center", COLORS.BLACK, POPUP_WIDTH+4, POPUP_HEIGHT+4, 1)
     const settingsMenu = makeContainer("center", COLORS.BROWN, POPUP_WIDTH, POPUP_HEIGHT, 1)
 
     
-    let musicVolumeContainer = makeContainer("left", COLORS.DARKRED, 
+    let musicVolumeContainer = makeContainer("center", COLORS.DARKRED, 
             settingsMenu.width/2, 10, 1, settingsMenu)
-    alignObj(musicVolumeContainer, settingsMenu, 0, 0, 10, "topleft")
-    let volumeText = makeButton("MUSIC VOLUME", 8, COLORS.ORANGE, settingsMenu,"static")
-    alignObj(volumeText, settingsMenu, 0, 2, 10, "topright")
+    musicVolumeContainer.pos = k.vec2(
+        -settingsMenu.width / 2 + (musicVolumeContainer.width / 2) + PADDING, 
+        -settingsMenu.height / 2 + 15
+    );
+
+    const volumeText = settingsMenu.add([
+        k.text("MUSIC VOLUME", fontConfig),
+        k.color(COLORS.ORANGE),
+        k.anchor("right"),
+        k.pos(settingsMenu.width / 2 - PADDING, -settingsMenu.height / 2 + 16),
+        k.area(),
+    ]);
+    
     const volumeSlider = makeSlider(COLORS.ORANGE, musicVolumeContainer, "horizontal", "musicVolume", (val) => {
         musicSet.forEach((offset, song) => {
             song.volume = val + offset;
         });
     });
 
-    let sfxVolumeContainer = makeContainer("left", COLORS.DARKRED, 
+
+    let sfxVolumeContainer = makeContainer("center", COLORS.DARKRED, 
             settingsMenu.width/2, 10, 1, settingsMenu)
-    alignObj(sfxVolumeContainer, settingsMenu, 0, 18, 10, "topleft")
-    let sfxText = makeButton("SFX VOLUME", 8, COLORS.ORANGE, settingsMenu,"static")
-    alignObj(sfxText, settingsMenu, 0, 20, 10, "topright")
+    sfxVolumeContainer.pos = k.vec2(
+        -settingsMenu.width / 2 + (sfxVolumeContainer.width / 2) + PADDING, 
+        -settingsMenu.height / 2 + 15 + ROW_HEIGHT
+    );
+
+    const sfxText = settingsMenu.add([
+        k.text("SFX VOLUME", fontConfig),
+        k.color(COLORS.ORANGE),
+        k.anchor("right"),
+        k.pos(settingsMenu.width / 2 - PADDING,-settingsMenu.height / 2 + 16 + ROW_HEIGHT),
+        k.area(),
+    ]);
+    
     const sfxSlider = makeSlider(COLORS.ORANGE, sfxVolumeContainer,"horizontal", "sfxVolume", (val) =>  {
         sfxSet.forEach((offset, sfx) => {
             sfx.volume = val + offset;
@@ -222,11 +258,11 @@ function openSettings() {
     closeBtn.onHover(() => {
         hoverProcess(closeBtn)
     });
-    closeBtn.onClick(() => {
-        clickProcess(closeBtn)
-        gm.logPopupOpen = false
+    closeBtn.onClick(async () => {
         settingsMenu.destroy();
         blocker.destroy();
         border.destroy();
+        await k.wait(0.1)
+        gm.logPopupOpen = false
     });
 }

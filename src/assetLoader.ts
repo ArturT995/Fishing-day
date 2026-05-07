@@ -6,8 +6,12 @@ export async function assetLoader() {
     //k.loadFont("happy", "./fonts/happy-font.ttf")
     k.loadFont("happy", "./fonts/Easy-Pixel.ttf")
 
-    k.loadSprite("menu-bg", "./graphics/menu-bg.png")
-    k.loadSprite("titlebox", "./graphics/titlebox.png")
+    k.loadSprite("dayMenuScreen", "./graphics/dayMenuScreen.png")
+    k.loadSprite("nightMenuScreen", "./graphics/nightMenuScreen.png")
+    
+    k.loadSprite("sunIcon", "./graphics/sunIcon.png")
+    k.loadSprite("moonIcon", "./graphics/moonIcon.png")
+    //k.loadSprite("titlebox", "./graphics/titlebox.png")
 
     k.loadSprite("shop-bg", "./graphics/shop-bg.png")
     k.loadSprite("shopborder", "./graphics/shopborder.png")
