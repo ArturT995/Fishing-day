@@ -47,22 +47,22 @@ export type BagObj = ShopObj & { count: number };
 export const ROD_DATA: any[] = [
 
     {rodId: 1, name: "Wood rod", unlocked: true,
-    selected: true, reelSpeed: 8, catchArea: 10, endurance: 5},
+    selected: true, reelSpeed: 60, catchArea: 8, endurance: 12},
 
     {rodId: 2, name: "Copper rod", unlocked: false,
-    selected: false, reelSpeed: 11, catchArea: 12, endurance: 6},
+    selected: false, reelSpeed: 80, catchArea: 10, endurance: 12},
 
     {rodId: 3, name: "Elegant Rod", unlocked: false,
-    selected: false, reelSpeed: 14, catchArea: 13, endurance: 7},
+    selected: false, reelSpeed: 100, catchArea: 12, endurance: 13},
 
     {rodId: 4, name: "Exquisite rod", unlocked: true,
-    selected: true, reelSpeed: 15, catchArea: 14, endurance: 8},
+    selected: true, reelSpeed: 120, catchArea: 14, endurance: 14},
 
     {rodId: 5, name: "Excellent rod", unlocked: false,
-    selected: false, reelSpeed: 17, catchArea: 16, endurance: 9},
+    selected: false, reelSpeed: 150, catchArea: 16, endurance: 15},
 
     {rodId: 6, name: "Legendary rod", unlocked: false,
-    selected: false, reelSpeed: 25, catchArea: 20, endurance: 12},
+    selected: false, reelSpeed: 200, catchArea: 20, endurance: 17},
 
 ]
 

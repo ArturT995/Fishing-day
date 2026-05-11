@@ -22,6 +22,7 @@ export function shop() {
             k.opacity(0.7),
             k.z(2),
         ])
+        let sellFlag = false;
 
         const smoke = k.add([k.sprite("smoke"),k.pos(67,54), k.z(2), k.opacity(0.7)])
         smoke.play("normal");
@@ -127,6 +128,28 @@ export function shop() {
                 })
             }
 
+            // BUG: doesnt update so u can spam it for gold, also doesnt sell fish off screen.
+            //sellAll
+            const sellAll = makeButton(`Sell All`, 8, COLORS.ORANGE, botContainer, "static")
+            alignObj(sellAll, botContainer, 70, -2, 3, "botright")
+            
+
+            sellAll.onClick(() => {
+                for (let iconR of rightIcons) {
+                    if (gm.logpopupOpen === false) return;
+                    if (sellFlag === true) return;
+                    const id = iconR.objId.toString();
+                    gm.removeFish(id);
+                    (iconR.price >= 100) ? playSound("rare-sell", "sfx") : playSound("sell-item", "sfx");
+                    gm.addMoney(iconR.price);
+                    priceText.text = `${gm.money}$`
+                    iconR.destroy();
+                    k.debug.log(`Sold fish ID: ${id}`);
+                };
+                sellFlag = true;
+            });
+            
+
             //buy
             for (let iconL of leftIcons) {
                 iconL.onClick(() => {
@@ -142,16 +165,18 @@ export function shop() {
                     gm.addItem(id)
                     gm.removeMoney(iconL.price);
                     priceText.text = `${gm.money}$`
-                    k.debug.log(iconL.data.feature)
                     if (iconL.data.feature.includes("Unique")) iconL.destroy();
                     k.debug.log(`Bought item ID: ${id}`);
                 })
             }
 
+
+
             hideBtn.onClick(() => {
                 clickProcess(hideBtn)
                 popupObjects.forEach(obj => obj.destroy())
                 gm.logPopupOpen = false
+                sellFlag = false
             })
         };
 
@@ -189,6 +214,7 @@ export function shop() {
         levelBtn.onHover(() => hoverProcess(levelBtn))
         levelBtn.onClick(() => {
             clickProcess(levelBtn)
+            
             k.go("day");
         })
 
@@ -198,6 +224,7 @@ export function shop() {
             bg.destroy();
             smoke.stop();
             gm.logPopupOpen = false
+            sellFlag = false
         });
     })
 };

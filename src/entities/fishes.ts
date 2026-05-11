@@ -187,9 +187,7 @@ export function makeFish(fish: FishObj, pos: Vec2) {
         spawnCaughtFish(entity);
         if(!entity.fishId) throw new Error("id not found when spawning fish")
 
-        gm.currentFishId = entity.fishId.toString()
         gm.enterState("catching")
-        gm.fishReelSpeed = entity.size * 2
         entity.destroy();
         fishHooked = false;
         
@@ -225,7 +223,7 @@ function spawnCaughtFish(fish: GameObj) {
     const bobber = k.get("bobber")[0];
     if (!bobber) return;
 
-    const size = fish.size / 5
+    const size = fish.size / 5 // CHANGE: Once u set up the correct size conversion above, change this too.
     const sizeSprite = k.rect(size*2,size, {radius: 3})
     const caughtFish = bobber.add([
         k.pos(0,-3),
@@ -243,17 +241,53 @@ function spawnCaughtFish(fish: GameObj) {
         },
         "caughtFish",
     ]);
-    bobber.fishReference = caughtFish;
-    bobber.reelSpeed = bobber.reelSpeed - fish.size
 
-    caughtFish.onUpdate(() => {
+    gm.currentFishId = fish.fishId.toString();
+    gm.currentFishDifficulty = fish.difficulty;
+    gm.currentFishSize = fish.size;
+
+    let sizemodifier = k.clamp(fish.size, 2, 40) / 6
+
+    bobber.onUpdate(() => {
         caughtFish.angle = k.rand(60, 120);
+        if (k.chance(0.10))
+        {
+            let randomX = k.randi(-3-sizemodifier, 3+sizemodifier)
+            let randomY = k.randi(-3-sizemodifier, 3+sizemodifier)
+
+            let bubbles = k.add([
+                k.pos(bobber.pos.x + randomX, bobber.pos.y + randomY),
+                k.circle(k.rand(0.2, 0.3)),
+                k.color(COLORS.WHITE),
+                k.opacity(0.4),
+                k.lifespan(0.4, {fade: 0.3}),
+                k.z(8),
+            ]);
+            
+            k.tween(
+                bubbles.pos,
+                bubbles.pos.add(k.vec2(randomX * 1.2, randomY * 1.2)),
+                0.3,
+                (p) =>  bubbles.pos = p, k.easings.easeInQuad
+            ).then(() => {
+                
+                const ripple = bubbles.add([
+                    k.pos(0, 0),
+                    k.circle(0.3, { fill: false }),
+                    k.outline(0.5, COLORS.BLUE),
+                    k.opacity(0.3),
+                    k.lifespan(0.4, { fade: 0.2 }),
+                    k.anchor("center"),
+                    {
+                        update() {
+                            ripple.radius += 0.2;
+                        }
+                    }
+                ]);
+            });
+        }
     });
 
     return fish;
-}
 
-
-
-export { FISH_DATA };
-
+};

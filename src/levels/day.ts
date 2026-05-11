@@ -13,7 +13,6 @@ import type { GameObj } from "kaplay";
 
 export async function day() {
     k.scene("day", () => {
-
         let canCast = false;
     
         // Wait a tiny bit of time before allowing input
@@ -31,6 +30,16 @@ export async function day() {
         //remember to load assets for any sound you add
 
         //make a popup that has option to go back or adjust settings.
+
+        // TODO: add a pier or change rod position so its less awkward to fish
+        const rodArea = k.add([
+            k.circle(40),
+            k.pos(k.width()/2, k.height()),
+            k.area(),
+            k.opacity(0.3),
+            "rodArea",
+            k.z(44)
+        ]);
 
         const PADDING = 5;
 
@@ -114,10 +123,11 @@ export async function day() {
             "bagBtn"
         ]);
         bagBtn.onHover(() => hoverProcess(bagBtn))
-        bagBtn.onClick(() => {
+        bagBtn.onClick(async () => {
             let bobber = k.get("bobber");
             if (bobber.length !== 0) return;
             clickProcess(bagBtn)
+            await k.wait(0.1)
             openBag();
         })
 

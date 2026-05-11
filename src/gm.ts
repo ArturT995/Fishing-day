@@ -13,9 +13,13 @@ interface GameManager extends GameObj {
     itemsUnlocked: string[];
     itemsOwned: string[];
     currentFishId: string;
+    currentFishDifficulty: number;
+    currentFishSize: number;
+    currentRodIcon: GameObj | null;
     settings: GameSettings;
     isPaused: boolean;
     logPopupOpen: boolean;
+    intoxication: number;
     money: number;
 
     saveProgress(): void;
@@ -62,7 +66,6 @@ function makeGameManager() {
             itemsUnlocked: savedItems,
             itemsOwned: savedOwned,
             settings: settings,
-            currentFishId: "",
             money: savedMoney,
 
             saveProgress(this: GameManager) {
@@ -130,6 +133,11 @@ function makeGameManager() {
 
             isPaused: false,
             logPopupOpen: false,
+            intoxication: 0,
+            currentFishId: "",
+            currentFishDifficulty: 0,
+            currentFishSize: 0,
+            currentRodIcon: null,
             // adjust these to reflect rod stats
             reelSpeed: 200,
             noticeArea: 40,
@@ -139,6 +147,8 @@ function makeGameManager() {
             resetGameState(this:GameObj) {
                 this.isPaused = false;
                 this.logPopupOpen = false;
+                this.intoxication = 0;
+                this.currentFishDifficulty = 0;
             },
        },
 

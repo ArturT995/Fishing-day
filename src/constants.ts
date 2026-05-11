@@ -15,6 +15,7 @@ export const COLORS = {
     RED: k.rgb(201, 79, 79),    
     ORANGE: k.rgb(184, 139, 54),
     GREEN: k.rgb(47, 227, 41),
+    LIGHTGREEN: k.rgb(129, 255, 117),
     BEIGE: k.rgb(231, 166, 133),
     BROWN: k.rgb(72, 52, 37),
     YELLOW: k.rgb(255, 233, 109),
@@ -46,18 +47,33 @@ export const fontConfigSmall: FontConfig = {
 export let fishHooked = false;
 
 export const fishingArea = k.add([
+        k.polygon([
+            k.vec2(20, 67),
+            k.vec2(78, 5),
+            k.vec2(170, 5),
+            k.vec2(190, 50),
+            k.vec2(252,118),
+            k.vec2(163,188),
+            k.vec2(120,168),
+            k.vec2(20,67),
+        ]),
+        k.pos(0, 0),
+        k.area(),
+        k.opacity(0),
+        "fishingarea"
+    ]);
+
+export const rodArea = k.add([
     k.polygon([
-        k.vec2(10, 67),
-        k.vec2(78, 10),
-        k.vec2(180, 17),
-        k.vec2(252,118),
         k.vec2(163,188),
-        k.vec2(10,67),
+        k.vec2(153,200),
+        k.vec2(120,130),
+        k.vec2(110,112),
     ]),
     k.pos(0, 0),
-    k.area(),
-    k.opacity(1),
-    "fishingarea"
+        k.area(),
+        k.opacity(0),
+        "rodArea"
 ]);
 
 export type Stats = { 
