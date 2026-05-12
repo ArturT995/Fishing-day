@@ -1,6 +1,6 @@
 import type { GameObj } from "kaplay";
 import { COLORS } from "./constants";
-import { ITEM_DATA, ROD_DATA, type BagObj, type RodObj, type ShopObj } from "./db";
+import { ITEM_DATA, ROD_DATA, type BagObj, type RodObj} from "./db";
 import gm from "./gm";
 import k from "./kaplayCtx";
 import { playSound } from "./sounds";

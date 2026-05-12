@@ -1,4 +1,3 @@
-import { addSprite } from "../assetLoader";
 import { COLORS, fontConfigSmall } from "../constants";
 import { FISH_DATA, ITEM_DATA, type FishObj, type ShopObj } from "../db";
 import gm from "../gm";

@@ -133,7 +133,7 @@ export function throwLine(anchor: Vec2, power: number) {
             reelingArea.opacity = 1;
             
             const fishId = gm.currentFishId;
-            const size = gm.currentFishSize;
+            //const size = gm.currentFishSize;
             const difficulty = gm.currentFishDifficulty/2;
             const timeModifier = difficulty / 100
 
