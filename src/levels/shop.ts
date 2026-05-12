@@ -3,6 +3,7 @@ import { COLORS, fontConfigSmall } from "../constants";
 import { FISH_DATA, ITEM_DATA, type FishObj, type ShopObj } from "../db";
 import gm from "../gm";
 import k from "../kaplayCtx";
+import { message } from "../messages";
 import { playSound } from "../sounds";
 import { makeContainer, makeButton, alignObj, makeIcons, clickProcess, hoverProcess } from "../ui";
 
@@ -53,6 +54,8 @@ export function shop() {
                 "shop-Popup"
             ])
 
+            // TODO: change close and leave button locations
+            // make a Toggle shop button and close leaves scene
 
             const botContainer = makeContainer("center", COLORS.BLACK,
                 shopMenuContainer.width, 20, 0.7, shopMenuContainer)
@@ -124,7 +127,6 @@ export function shop() {
                     gm.addMoney(iconR.price);
                     priceText.text = `${gm.money}$`
                     iconR.destroy();
-                    k.debug.log(`Sold fish ID: ${id}`);
                 })
             }
 
@@ -144,7 +146,6 @@ export function shop() {
                     gm.addMoney(iconR.price);
                     priceText.text = `${gm.money}$`
                     iconR.destroy();
-                    k.debug.log(`Sold fish ID: ${id}`);
                 };
                 sellFlag = true;
             });
@@ -166,7 +167,7 @@ export function shop() {
                     gm.removeMoney(iconL.price);
                     priceText.text = `${gm.money}$`
                     if (iconL.data.feature.includes("Unique")) iconL.destroy();
-                    k.debug.log(`Bought item ID: ${id}`);
+                    message(`You bought: ${iconL.data.name}`);
                 })
             }
 

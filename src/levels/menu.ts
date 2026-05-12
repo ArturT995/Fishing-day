@@ -99,7 +99,7 @@ export function menu() {
         start.onClick( async () => {
             if (gm.logPopupOpen) return;
             clickProcess(start)
-            await k.wait(0.1)
+            await k.wait(0.2)
             k.go("day") //change this later to be time based and pull from gamestate
         });
         start.onHover(() => {

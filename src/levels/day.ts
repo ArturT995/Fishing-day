@@ -19,6 +19,7 @@ export async function day() {
         k.wait(0.5, () => canCast = true);
         k.setCursor("default");
         addSprite("sea")
+        // TODO: update the sea sprite to use the same one as in the menu.
         addSprite("ground", k.z(2))
         const waves = k.add([k.sprite("waves"), k.z(1)])
         waves.play("normal");
@@ -32,6 +33,7 @@ export async function day() {
         //make a popup that has option to go back or adjust settings.
 
         // TODO: add a pier or change rod position so its less awkward to fish
+        /*
         const rodArea = k.add([
             k.circle(40),
             k.pos(k.width()/2, k.height()),
@@ -40,6 +42,9 @@ export async function day() {
             "rodArea",
             k.z(44)
         ]);
+        */
+
+        // TODO: Change button positions, put shop btn to left, next to bag.
 
         const PADDING = 5;
 
@@ -156,14 +161,43 @@ export async function day() {
         generateFishes()
     
 
-
-
+        const powerBar = k.add([
+                k.rect(2,0),
+                k.pos(ANCHOR.x + 7, ANCHOR.y + 6),
+                k.color(COLORS.GREEN),
+                k.anchor("bot"),
+                k.rotate(0),
+                k.z(5),
+                k.opacity(0.8)
+            ])
+        const powerBarBox = k.add([
+                k.rect(3,8),
+                k.pos(ANCHOR.x + 7, ANCHOR.y + 6),
+                k.color(COLORS.BLACK),
+                k.anchor("bot"),
+                k.z(4),
+                k.outline(1 , COLORS.ORANGE),
+                k.rotate(0),
+                k.opacity(0)
+            ])
+        
         let power = 0;
         k.onMouseDown("left", () => {
             if (!canCast) return;
             if (gm.logPopupOpen) return;
+            if (gm.state === "catching") return;
+            const bobber = k.get("bobber")[0]
+            if(bobber) return;
+
             k.play("icon-sound-1", {volume: 0.1})
-            power += 0.03
+            power += 0.05
+            powerBar.height += 0.12;
+            powerBarBox.opacity = 1;
+            if (powerBar.height > 8) {
+                let random = k.randi(0,4)
+                powerBar.angle = random;
+                powerBarBox.angle = random;
+                powerBar.height = 8} 
         });
         
         if (k.isMouseDown("left")) {
@@ -173,7 +207,10 @@ export async function day() {
         k.onMouseRelease("left", () => {
             if (gm.logPopupOpen) return;
             if (!canCast) return;
-
+            powerBar.height = 0;
+            powerBarBox.opacity = 0;
+            powerBar.angle = 0;
+            powerBarBox.angle = 0;
             const dir = k.mousePos().sub(ANCHOR).unit();
 
             const existingBobber = k.get("bobber");
@@ -186,7 +223,6 @@ export async function day() {
             while (!fishingArea.hasPoint(targetPos) && power > 1.7) {
                 power -= 0.1
                 targetPos = ANCHOR.add(dir.scale(power * 50));
-                k.debug.log("power",power)
             }
 
             

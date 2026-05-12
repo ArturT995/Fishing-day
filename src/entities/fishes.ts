@@ -1,5 +1,5 @@
 import type { Vec2, GameObj } from "kaplay";
-import { COLORS, FISH_AMOUNT, fishingArea } from "../constants";
+import { COLORS, FISH_AMOUNT, fishingArea, fontConfigSmall } from "../constants";
 import gm from "../gm";
 import k from "../kaplayCtx";
 import { type FishObj, FISH_DATA } from "../db";
@@ -39,7 +39,11 @@ export function generateFishes() {
 }
 
 export function makeFish(fish: FishObj, pos: Vec2) {
-    const size = (k.randi(1, 1.2)*fish.maxSize) / 6
+    const sizeInput = (k.rand(1, 1.2)*fish.maxSize)
+    const exponent = 0.45;
+    let size = Math.pow(sizeInput, exponent);
+
+    
     const speed = k.rand(1, 5)
     const sizeSprite = k.rect(size*2,size+(fish.maxWeight/50), {radius: 3})
     const r = 50;
@@ -75,6 +79,19 @@ export function makeFish(fish: FishObj, pos: Vec2) {
         "fish",
     ]);
     
+
+    let fishName = k.add([
+            k.text(`${entity.name}`, {size: 4, font: "happy"}),
+            k.pos(entity.pos.x + 5, entity.pos.y + 5),
+            k.rotate(0),
+            k.color(COLORS.ORANGE),
+            k.z(6),
+    ])
+
+    if (fish.name === "Beardy") {
+        fishName.text = "Beardy"
+    }
+
     /* disable in debug
     const delay = k.rand(1, 8);
 
@@ -119,6 +136,7 @@ export function makeFish(fish: FishObj, pos: Vec2) {
 
     let fishHooked = false
     entity.onUpdate(() => {
+        fishName.pos = entity.pos;
 
         if (!fishingArea.hasPoint(entity.pos)) {
             const safePoint = k.vec2(k.randi(70,150), k.randi(60,130)); 
@@ -189,6 +207,7 @@ export function makeFish(fish: FishObj, pos: Vec2) {
 
         gm.enterState("catching")
         entity.destroy();
+        fishName.destroy();
         fishHooked = false;
         
     })
@@ -223,7 +242,10 @@ function spawnCaughtFish(fish: GameObj) {
     const bobber = k.get("bobber")[0];
     if (!bobber) return;
 
-    const size = fish.size / 5 // CHANGE: Once u set up the correct size conversion above, change this too.
+    const sizeInput = (k.rand(1, 1.2)*fish.size)
+    const exponent = 0.45;
+    let size = Math.pow(sizeInput, exponent);
+
     const sizeSprite = k.rect(size*2,size, {radius: 3})
     const caughtFish = bobber.add([
         k.pos(0,-3),

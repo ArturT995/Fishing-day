@@ -1,3 +1,4 @@
+import { ITEM_DATA, ROD_DATA, type RodObj } from "./db";
 import k from "./kaplayCtx";
 import type { GameObj } from "kaplay";
 
@@ -12,6 +13,7 @@ interface GameManager extends GameObj {
     fishCaught: string[];
     itemsUnlocked: string[];
     itemsOwned: string[];
+    equippedRodId: string;
     currentFishId: string;
     currentFishDifficulty: number;
     currentFishSize: number;
@@ -36,6 +38,7 @@ interface GameManager extends GameObj {
     removeMoney(number:number): void;
 
     updateVolume(type: "music" | "sfx", val: number): void;
+    equipRod(rodId:string): void;
     resetGameState(): void;
 }
 
@@ -46,11 +49,14 @@ function makeGameManager() {
     const savedItems = k.getData("itemsUnlocked", [] as string[]);
     const savedOwned = k.getData("itemsOwned", [] as string[]);
     const savedMoney = k.getData<number>("money", 0);
+    const savedRodId = k.getData<string>("rodEquippedId");
     
     const settings = { 
         musicVolume: 0.5, 
         sfxVolume: 1,
     };
+
+    const currentRod = ROD_DATA.find((rod: RodObj) => rod.rodId === savedRodId) as RodObj;
 
     return k.add([
         k.state("menu", [
@@ -60,13 +66,14 @@ function makeGameManager() {
             "fish-caught",
             "shop",
         ]),
-       {
+       {    
             fishUnlocked: savedUnlocks,
             fishCaught: savedCaught,
             itemsUnlocked: savedItems,
             itemsOwned: savedOwned,
             settings: settings,
             money: savedMoney,
+            equippedRodId: savedRodId,
 
             saveProgress(this: GameManager) {
                 k.setData("fishUnlocked", this.fishUnlocked);
@@ -74,8 +81,8 @@ function makeGameManager() {
                 k.setData("itemsUnlocked", this.itemsUnlocked);
                 k.setData("itemsOwned", this.itemsOwned);
                 k.setData("money", this.money);
+                k.setData("rodEquippedId", this.equippedRodId);
             },
-
 
             unlockFish(this: GameManager, fishId: string) {
                 if (!this.fishUnlocked.includes(fishId)) {
@@ -131,24 +138,41 @@ function makeGameManager() {
                 this.saveProgress();
             },
 
+            
+            equipRod(this: GameManager, rodId: string) {
+                this.equippedRodId = rodId;
+                const rodData = ROD_DATA.find(rod => rod.rodId === rodId) as RodObj;
+                if (rodData) {
+                    this.reelSpeed = rodData.reelSpeed as number;
+                    this.catchArea = rodData.catchArea as number;
+                    this.endurance = rodData.endurance as number;
+                }
+                this.saveProgress();
+            },
+
+
             isPaused: false,
             logPopupOpen: false,
             intoxication: 0,
             currentFishId: "",
             currentFishDifficulty: 0,
             currentFishSize: 0,
+
+            noticeArea: currentRod.catchArea + 15,
+
+            // rod stats
             currentRodIcon: null,
-            // adjust these to reflect rod stats
-            reelSpeed: 200,
-            noticeArea: 40,
-            catchArea: 45,
-            endurance: 9,
+
+            reelSpeed: currentRod.reelSpeed as number,
+            catchArea: currentRod.catchArea as number,
+            endurance: currentRod.endurance as number,
 
             resetGameState(this:GameObj) {
                 this.isPaused = false;
                 this.logPopupOpen = false;
                 this.intoxication = 0;
                 this.currentFishDifficulty = 0;
+                this.currentFishId = "";
             },
        },
 

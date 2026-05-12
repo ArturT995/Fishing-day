@@ -452,7 +452,7 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
 
         icon.onHover(() => {
             if (icon.opacity === 0) return;
-            playSound("icon-sound-2", "sfx", -0.7)
+            playSound("icon-sound-1", "sfx", -0.85)
             tooltip.opacity = 1;
             tooltipText.opacity = 1;
         });
@@ -460,7 +460,7 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
         icon.onClick(() => {
             if (icon.opacity === 0) return;
             // TODO add a shaking animation?
-            playSound("icon-sound-1", "sfx")
+            playSound("icon-sound-1", "sfx", -0.7)
             tooltipText.opacity = 1;
         });
 

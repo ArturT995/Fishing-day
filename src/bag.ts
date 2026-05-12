@@ -5,6 +5,7 @@ import gm from "./gm";
 import k from "./kaplayCtx";
 import { playSound } from "./sounds";
 import { alignObj, makeButton, makeContainer, makeIcons } from "./ui";
+import { message } from "./messages";
 
 
 
@@ -41,84 +42,102 @@ export function openBag() {
 
 
     for (let icon of bagIcons) {
-                icon.onClick(async () => {
-                    if (icon.opacity === 0) return;
+            
+        const isRod = icon.data.feature.includes("Rod Unique");
 
-                    const id = icon.objId.toString();
-                    const name = icon.data.name;
-
-                    if (!icon.data.feature.includes("Unique")) {
-                        gm.removeItem(id)
-                        icon.data.count -= 1;
-                        if (icon.data.count > 0) {
-                            const txt = icon.get("amount-text")[0]; 
-                            if (txt) txt.text = icon.data.count.toString();
-                        } else {
-                            icon.destroy()
-                        }
-
-                    }
-
-                    // rods
-                    // BUG: there might be another drift issue with rods after i clicked sell all
-                    // or switched rods, scenes.
-                    const selectedRod = ROD_DATA.find(rod => rod.name === name);
-
-                    if (selectedRod) {
-                        equipRod(selectedRod, icon);
-                        // ADD storage save for equipped rod.
-                    }
-
-
-                    // item effects
-
-
-                    // alcohols
-                    if (name === "Beer") {
-                        // ADD TOAST "you drink a beer"
-                        playSound("drinking-noise", "sfx", 0, false, k.randi(-500, -200));
-                        gm.intoxication += 1;
-                    }
-                    if (gm.intoxication > 13) {
-                        // ADD TOAST "you feel sick"
-                        gm.intoxication = 0;
-                        await k.wait(1)
-                        // ADD TOAST "you puke"
-                        playSound("chomps", "sfx", 0, false, k.randi(-2500, -2400), 2);
-                    }
-
-                    // pipe, cards, dice, food
-                    if (name === "Fried Fish") {
-                        // ADD TOAST "You consume the fried fish."
-                        playSound("chomps", "sfx");
-                    }
-                    if (name === "Cards") {
-                        if (!gm.logPopupOpen) return;
-                        // ADD TOAST "You shuffle the cards for fun."
-                        playSound("cards", "sfx");
-                    }
-                    if (name === "Dice") {
-                        // ADD TOAST "You roll the dice... you rolled: ${k.randi(2,12)}"
-                        playSound("dice-roll", "sfx");
-                        await k.wait(1)
-
-                        // ADD TOAST "...you rolled: ${k.randi(2,12)}"
-                        // ADD custom sounds to 2 and 12 and extra toast.
-
-                    }
-                    if (icon.data.name === "Pipe") {
-                        // ADD TOAST "You consume the fried fish."
-                        playSound("pipe", "sfx");
-                    }
-
-
-                })
+        if (isRod) {
+            const name = icon.data.name;
+            const currentObj = ROD_DATA.find(rod => rod.name === name);
+            const currentId = currentObj?.rodId?.toString();
+            const equippedId = gm.equippedRodId;
+            if (currentId === equippedId) {
+                icon.color = COLORS.LIGHTGREEN;
+                gm.currentRodIcon = icon;
             }
+        }
+
+        icon.onClick(async () => {
+            if (icon.opacity === 0) return;
+            
+            const id = icon.objId.toString();
+            const name = icon.data.name;
+
+            if (!icon.data.feature.includes("Unique")) {
+                gm.removeItem(id)
+                icon.data.count -= 1;
+                if (icon.data.count > 0) {
+                    const txt = icon.get("amount-text")[0]; 
+                    if (txt) txt.text = icon.data.count.toString();
+                } else {
+                    icon.destroy()
+                }
+
+            }
+
+            // rods
+            // BUG: there might be another drift issue with rods after i clicked sell all
+            // or switched rods, scenes.
+
+            const selectedRod = ROD_DATA.find(rod => rod.name === name);
+            if (selectedRod) {
+                equipRod(selectedRod, icon);
+            }
+
+
+            // item effects
+
+
+            // alcohols
+            if (name === "Beer") {
+
+                message("Cheers!")
+                playSound("drinking-noise", "sfx", 0, false, k.randi(-500, -200));
+                gm.intoxication += 1;
+                // ADD TOAST "intoxication level: ${gm.intoxication}"
+            }
+            if (gm.intoxication > 2) {
+                await k.wait(1)
+                message("You don't feel so good...")
+
+                await k.wait(2)
+                message("Hurrghlllhhghhh")
+                playSound("chomps", "sfx", 0, false, k.randi(-2500, -2400), 2);
+                gm.intoxication = 0;
+            }
+
+            // pipe, cards, dice, food
+            if (name === "Fried Fish") {
+                // ADD TOAST "You consume the fried fish."
+                playSound("chomps", "sfx");
+            }
+            if (name === "Cards") {
+                if (!gm.logPopupOpen) return;
+                // ADD TOAST "You shuffle the cards for fun."
+                playSound("cards", "sfx");
+            }
+            if (name === "Dice") {
+                // ADD TOAST "You roll the dice... you rolled: ${k.randi(2,12)}"
+                playSound("dice-roll", "sfx");
+                await k.wait(1)
+
+                // ADD TOAST "...you rolled: ${k.randi(2,12)}"
+                // ADD custom sounds to 2 and 12 and extra toast.
+
+            }
+            if (icon.data.name === "Pipe") {
+                // ADD TOAST "You consume the fried fish."
+                playSound("pipe", "sfx");
+            }
+
+
+        })
+    }
 
 
 
     closeBtn.onClick(() => {
         popupObjects.forEach(obj => obj.destroy());
+        gm.currentRodIcon = null
         gm.logPopupOpen = false;
     });
 }
@@ -160,13 +179,8 @@ function equipRod(rod: RodObj, currentIcon: GameObj) {
     if (gm.currentRodIcon) {
         gm.currentRodIcon.color = COLORS.WHITE;
     }
-
-
-    gm.reelSpeed = rod.reelSpeed;
-    gm.catchArea = rod.catchArea;
-    gm.endurance = rod.endurance;
+    gm.equipRod(rod.rodId.toString());
 
     currentIcon.color = COLORS.LIGHTGREEN
-
     gm.currentRodIcon = currentIcon;
 }
