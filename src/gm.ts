@@ -21,8 +21,10 @@ interface GameManager extends GameObj {
     settings: GameSettings;
     isPaused: boolean;
     logPopupOpen: boolean;
+    identifierOn: boolean;
     intoxication: number;
     money: number;
+    baitPower: number;
 
     saveProgress(): void;
 
@@ -153,6 +155,8 @@ function makeGameManager() {
 
             isPaused: false,
             logPopupOpen: false,
+            identifierOn: false,
+            baitPower: 0,
             intoxication: 0,
             currentFishId: "",
             currentFishDifficulty: 0,

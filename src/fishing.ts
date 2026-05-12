@@ -25,7 +25,11 @@ export function throwLine(anchor: Vec2, power: number) {
     let center = k.vec2(centerX, centerY);
 
     let catchTime = gm.endurance;
-    
+    let baitPower = 0;
+    if (gm.baitPower >= 5) {
+        baitPower = 5;
+        gm.baitPower -= 1;
+    }
     
 
     const bobber = k.add([
@@ -40,9 +44,9 @@ export function throwLine(anchor: Vec2, power: number) {
         k.state("flying", ["flying","floating","reeling","splash","catching"]),
         {
                 targetPos: landingPos,
-                reelSpeed: gm.reelSpeed,
+                reelSpeed: gm.reelSpeed + baitPower*3,
                 catchArea: gm.catchArea,
-                noticeArea: gm.noticeArea,
+                noticeArea: gm.noticeArea + baitPower,
                 fishPullDir: k.vec2(0,0),
                 fishPullTime: 0,
                 fishPullSpeed: 0,
@@ -62,7 +66,7 @@ export function throwLine(anchor: Vec2, power: number) {
     });
 
     bobber.onStateEnter("splash", () => {
-        k.play("fishing-thunk")
+        playSound("fishing-thunk", "sfx")
         spawnRipple(bobber.pos);
         bobber.enterState("floating");
     });
@@ -104,6 +108,9 @@ export function throwLine(anchor: Vec2, power: number) {
         bobber.reelSpeed = bobber.reelSpeed - gm.currentFishDifficulty/2
     })
 
+    const reelSound = k.play("icon-sound-1", { volume: 1.0, loop: true, detune: 3200, speed: 12 });
+    reelSound.volume = 0;
+
     bobber.onUpdate(() => {
 
         const toAnchor = anchor.sub(bobber.pos).unit();
@@ -131,6 +138,7 @@ export function throwLine(anchor: Vec2, power: number) {
             catchTime -= 0.02
             reelingArea.pos = k.mousePos()
             reelingArea.opacity = 1;
+            reelSound.volume = 1;
             
             const fishId = gm.currentFishId;
             //const size = gm.currentFishSize;
@@ -154,7 +162,8 @@ export function throwLine(anchor: Vec2, power: number) {
             // catch
             if (bobber.pos.dist(anchor) < 15) {
                 catchingFlag = false
-
+                reelSound.volume = 0;
+                reelSound.stop();
                 if (gm.fishUnlocked.includes(fishId)) {
                     playSound("new-fish-caught", "sfx")
                 } else {
@@ -186,11 +195,12 @@ export function throwLine(anchor: Vec2, power: number) {
                 playSound("fish-escaped", "sfx")
                 message(". . .")
                 catchTime = gm.endurance
+                reelSound.volume = 0;
+                reelSound.stop();
                 return;
             }
 
             //bounce
-            // TODO: Add a sound for bouncing and maybe some effect/splash too.
             if (!fishingArea.hasPoint(bobber.pos) && !rodArea.hasPoint(bobber.pos)) {
                 playSound("fishing-thunk", "sfx");
                 spawnRipple(bobber.pos)
@@ -207,6 +217,7 @@ export function throwLine(anchor: Vec2, power: number) {
             const isInside = bobber.pos.dist(reelingArea.pos) < reelingArea.radius;
             if (isInside) {   
                 const isResisting = k.chance(difficulty / 200);
+                reelSound.volume = 2;
 
                 if (!isResisting) {
                     bobber.move(toAnchor.scale(bobber.reelSpeed));
@@ -222,6 +233,7 @@ export function throwLine(anchor: Vec2, power: number) {
                     const pulse = 1 + Math.sin(k.time() * 25) * 0.2;
                     bobber.scale = k.vec2(pulse);
                 } else {
+                    reelSound.volume = 1;
                     bobber.opacity = 1;
                     bobber.scale = k.vec2(1);
                 }

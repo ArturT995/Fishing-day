@@ -5,6 +5,7 @@ import { ANCHOR, generateFishes } from "../entities/fishes";
 import { throwLine } from "../fishing";
 import gm from "../gm";
 import k from "../kaplayCtx";
+import { playSound } from "../sounds";
 import { clickProcess, hoverProcess } from "../ui";
 import { openCollectionLog, openSettings } from "./menu";
 import type { GameObj } from "kaplay";
@@ -189,7 +190,7 @@ export async function day() {
             const bobber = k.get("bobber")[0]
             if(bobber) return;
 
-            k.play("icon-sound-1", {volume: 0.1})
+            playSound("icon-sound-1", "sfx", -0.9)
             power += 0.05
             powerBar.height += 0.12;
             powerBarBox.opacity = 1;
@@ -200,9 +201,7 @@ export async function day() {
                 powerBar.height = 8} 
         });
         
-        if (k.isMouseDown("left")) {
-            k.play("icon-sound-1")
-        }
+        
 
         k.onMouseRelease("left", () => {
             if (gm.logPopupOpen) return;

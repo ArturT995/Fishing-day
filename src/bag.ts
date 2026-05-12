@@ -6,6 +6,7 @@ import k from "./kaplayCtx";
 import { playSound } from "./sounds";
 import { alignObj, makeButton, makeContainer, makeIcons } from "./ui";
 import { message } from "./messages";
+import { generateFishes } from "./entities/fishes";
 
 
 
@@ -75,9 +76,6 @@ export function openBag() {
             }
 
             // rods
-            // BUG: there might be another drift issue with rods after i clicked sell all
-            // or switched rods, scenes.
-
             const selectedRod = ROD_DATA.find(rod => rod.name === name);
             if (selectedRod) {
                 equipRod(selectedRod, icon);
@@ -85,18 +83,74 @@ export function openBag() {
 
 
             // item effects
+            if (name === "Fish Feed Can") {
+                message("You scatter the contents into the lake.")
+                splashSounds()
+                generateFishes()
+            }
+            if (name === "Fish Feed Deluxe") {
+                message("The Fish go wild.")
+                thunkSounds()
+                splashSounds()
+                let fishes = k.get("fish");
+                fishes.forEach(fish => fish.destroy())
+                generateFishes()
+                generateFishes() // TODO: add a generateRarerFishes instead
+                await k.wait(0.5)
+                thunkSounds()
+            }
+            if (name === "Rancid gloop") {
+                message("Disgusting.")
+                let fishes = k.get("fish");
+                playSound("rancid-gloop", "sfx")
+                splashSounds()
+                fishes.forEach(fish => fish.destroy())
+            }
+            if (name === "Deluxe Bait") {
+                message("You apply some of that fancy bait.")
+                playSound("powerup", "sfx",0, false, -500)
+                gm.baitPower += 5;
+            }
+            if (name === "Fish identifier") {
+                if (gm.identifierOn) {
+                    message("You turn on the identifier off.")
+                    playSound("fishing-thunk", "sfx", 0, false, 1000);
+                    await k.wait(0.1)
+                    playSound("fishing-thunk", "sfx", 0, false, 500);
+                    await k.wait(2)
+                    message("It feels like a relief.")
+                    gm.identifierOn = false;
+                } else {
+                    message("You turn on the identifier and hear a hum.")
+                    playSound("powerup", "sfx",0, false, -2500)
+                    gm.identifierOn = true;
+                }
 
+            }
 
             // alcohols
             if (name === "Beer") {
-
                 message("Cheers!")
                 playSound("drinking-noise", "sfx", 0, false, k.randi(-500, -200));
                 gm.intoxication += 1;
-                // ADD TOAST "intoxication level: ${gm.intoxication}"
             }
-            if (gm.intoxication > 2) {
-                await k.wait(1)
+            if (name === "Grog") {
+                message("Tastes bland.")
+                playSound("drinking-noise", "sfx", 0, false, k.randi(-500, -200));
+                gm.intoxication += 2;
+            }
+            if (name === "Red Rum") {
+                message("This stuff is quite strong!")
+                playSound("drinking-noise", "sfx", 0, false, k.randi(-500, -200));
+                gm.intoxication += 3;
+            }
+            if (name === "Coffee") {
+                message("You happily drink the coffee, it tastes good.")
+                playSound("drinking-noise", "sfx");
+                gm.intoxication += 1;
+            }
+            if (gm.intoxication >= 6) {
+                await k.wait(2)
                 message("You don't feel so good...")
 
                 await k.wait(2)
@@ -105,31 +159,60 @@ export function openBag() {
                 gm.intoxication = 0;
             }
 
-            // pipe, cards, dice, food
+            // Misc items
             if (name === "Fried Fish") {
-                // ADD TOAST "You consume the fried fish."
+                message("You consume the fried fish.")
                 playSound("chomps", "sfx");
             }
             if (name === "Cards") {
                 if (!gm.logPopupOpen) return;
-                // ADD TOAST "You shuffle the cards for fun."
+                message("You shuffle the cards for fun.")
                 playSound("cards", "sfx");
             }
+            if (name === "Glasses") {
+                message("You got some dandruff on the glasses.")
+                await k.wait(1.5)
+                message("You wipe them clean.")
+                playSound("powerup", "sfx");
+                if (k.chance(0.3)) {
+                    endlessCleaning()
+                }
+            }
             if (name === "Dice") {
-                // ADD TOAST "You roll the dice... you rolled: ${k.randi(2,12)}"
+                message("You roll the dice...")
                 playSound("dice-roll", "sfx");
-                await k.wait(1)
-
-                // ADD TOAST "...you rolled: ${k.randi(2,12)}"
-                // ADD custom sounds to 2 and 12 and extra toast.
-
+                await k.wait(2)
+                const dicenum = k.randi(2,13)
+                message(`...you rolled: ${dicenum}`)
+                if (dicenum === 12) {
+                    playSound("fish-caught", "sfx")
+                    await k.wait(1)
+                    message(`Nice!`)
+                    await k.wait(1.5)
+                    message(`You also find 20 bucks in your pocket.`)
+                    await k.wait(1.5)
+                    message(`How fortunate.`)
+                    gm.addMoney(20);
+                }
+                if (dicenum === 2) {
+                    playSound("fish-escaped", "sfx")
+                    await k.wait(1)
+                    message(`Unlucky!`)
+                }
             }
             if (icon.data.name === "Pipe") {
-                // ADD TOAST "You consume the fried fish."
+                message(`You relax for a bit.`)
                 playSound("pipe", "sfx");
             }
-
-
+            // TODO: randomise selected sounds for these
+            if (icon.data.name === "Birdfeed") {
+                message(`You throw some pellets at the bird.`)
+                playSound("bird3", "sfx");
+            }
+            if (icon.data.name === "Bugfeed") {
+                message(`You throw some pellets at the bug.`)
+                playSound("night-bug-1", "sfx");
+            }
         })
     }
 
@@ -174,6 +257,7 @@ function getStackableItems(): BagObj[] {
 
 
 function equipRod(rod: RodObj, currentIcon: GameObj) {
+    playSound("icon-sound-1", "sfx", 0, false, 2000)
     ROD_DATA.forEach(r => r.selected = false);
     rod.selected = true;
     if (gm.currentRodIcon) {
@@ -183,4 +267,48 @@ function equipRod(rod: RodObj, currentIcon: GameObj) {
 
     currentIcon.color = COLORS.LIGHTGREEN
     gm.currentRodIcon = currentIcon;
+}
+
+async function splashSounds() {
+    playSound("fishing-thunk", "sfx", 0, false, k.randi(-3000, -2000));
+    await k.wait(0.3)
+    playSound("fishing-thunk", "sfx", 0, false, k.randi(-1000, -2000));
+    playSound("fishing-thunk", "sfx", 0, false, k.randi(-2000, -1000));
+    await k.wait(0.1)
+    playSound("fishing-thunk", "sfx", 0, false, k.randi(-3000, -2000));
+    playSound("fishing-thunk", "sfx", 0, false, k.randi(-3000, -1000));
+    playSound("fishing-thunk", "sfx", 0, false, k.randi(-4000, -2000));
+}
+
+async function thunkSounds() {
+    playSound("fishing-thunk", "sfx", 0, false, k.randi(300, 200));
+    await k.wait(0.3)
+    playSound("fishing-thunk", "sfx", 0, false, k.randi(1000, 2000));
+    playSound("fishing-thunk", "sfx", 0, false, k.randi(200, 100));
+    await k.wait(0.1)
+    playSound("fishing-thunk", "sfx", 0, false, k.randi(3000, 20));
+    playSound("fishing-thunk", "sfx", 0, false, k.randi(300, 1000));
+    playSound("fishing-thunk", "sfx", 0, false, k.randi(40, 200));
+}
+
+async function endlessCleaning() {
+    await k.wait(1.5)
+    message("Hold on...There's some more marks.")
+    await k.wait(1.5)
+    message("You try to clean them.")
+    playSound("powerup", "sfx");
+    if (k.chance(0.8)){
+        await k.wait(1.5)
+        message("You notice they are still dirty.")
+        playSound("rancid-gloop", "sfx");
+        await k.wait(1.5)
+        message("You wipe them clean again.")
+        playSound("powerup", "sfx");
+        endlessCleaning()
+    } else {
+        await k.wait(1.5)
+        message("You finally cleaned them!")
+        playSound("rare-catch", "sfx", 0, false, k.randi(300, 1000))
+    }
+
 }

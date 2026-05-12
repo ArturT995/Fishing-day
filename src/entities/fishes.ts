@@ -81,16 +81,18 @@ export function makeFish(fish: FishObj, pos: Vec2) {
     
 
     let fishName = k.add([
-            k.text(`${entity.name}`, {size: 4, font: "happy"}),
+            k.text("", {size: 4, font: "happy"}),
             k.pos(entity.pos.x + 5, entity.pos.y + 5),
             k.rotate(0),
+            k.opacity(0),
             k.color(COLORS.ORANGE),
-            k.z(6),
-    ])
+            k.z(2),
+    ]);
 
-    if (fish.name === "Beardy") {
-        fishName.text = "Beardy"
-    }
+    if (gm.identifierOn) {
+        fishName.text = `${entity.name}`
+        fishName.opacity = 0.5
+    };
 
     /* disable in debug
     const delay = k.rand(1, 8);
@@ -137,6 +139,14 @@ export function makeFish(fish: FishObj, pos: Vec2) {
     let fishHooked = false
     entity.onUpdate(() => {
         fishName.pos = entity.pos;
+        
+        if (gm.identifierOn) {
+            fishName.text = `${entity.name}`
+            fishName.opacity = 0.5
+        } else {
+            fishName.text = `${entity.name}`
+            if (fishName.opacity > 0) fishName.opacity -= 0.01
+        };
 
         if (!fishingArea.hasPoint(entity.pos)) {
             const safePoint = k.vec2(k.randi(70,150), k.randi(60,130)); 
