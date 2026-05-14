@@ -305,7 +305,7 @@ export const FISH_DATA: FishObj[] = [
     unlocked: false, difficulty: 8, price: 550, feature: "Unique"},
 
     {fishId: "20", name: "Old Boot", sprite: "oldboot", spriteLocked: "oldboot-locked", activeTime: "Day",
-    maxSize: 14, maxWeight: 9, rarityScore: 3, 
+    maxSize: 14, maxWeight: 9, rarityScore: 18, 
     desc: `Junk, maybe the shopkeeper will take pity on you and buy it for a coin.`,  
     unlocked: false, difficulty: 1, price: 4, feature: "plays failure sound"},
 

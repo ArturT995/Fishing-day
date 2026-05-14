@@ -134,6 +134,7 @@ export function throwLine(anchor: Vec2, power: number) {
             }
         }
 
+        // difficulty modifications here
         if (bobber.state === "catching") {
             catchTime -= 0.02
             reelingArea.pos = k.mousePos()
@@ -162,19 +163,21 @@ export function throwLine(anchor: Vec2, power: number) {
             // catch
             if (bobber.pos.dist(anchor) < 15) {
                 catchingFlag = false
+                const fish = FISH_DATA.find(fish=> fish.fishId === fishId)
+                if (fish === undefined) throw new Error("Fish undefined")
+                
                 reelSound.volume = 0;
                 reelSound.stop();
-                if (gm.fishUnlocked.includes(fishId)) {
-                    playSound("new-fish-caught", "sfx")
+                
+                if (!gm.fishUnlocked.includes(fishId)) {
+                    playSound("fish-caught", "sfx") //normal sounds better here
                 } else {
-                    playSound("fish-caught", "sfx")
+                    if (fish.feature === "Grunting") playSound("thumping", "sfx", 3, false, -2000, 2)
+                    else playSound("new-fish-caught", "sfx")
                 }
 
                 gm.addFish(fishId);
                 gm.unlockFish(fishId);
-
-                const fish = FISH_DATA.find(fish=> fish.fishId === fishId)
-                if (fish === undefined) throw new Error("Fish undefined")
 
                 k.destroy(bobber);
                 k.destroy(reelingArea);

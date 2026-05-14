@@ -63,6 +63,24 @@ export const fishingArea = k.add([
         "fishingarea"
     ]);
 
+export const fishingAreaWarning = k.add([
+    k.polygon([
+        k.vec2(45.9,  70.3),
+        k.vec2(91.8,  21.8),
+        k.vec2(164.0, 21.8),
+        k.vec2(180.0, 57.5),
+        k.vec2(229.3, 114.3),
+        k.vec2(158.3, 168.9),
+        k.vec2(122.5, 156.9),
+        k.vec2(45.9,  70.3),
+    ]),
+    k.pos(0, 0),
+    k.area(),
+    k.opacity(0),
+    k.z(2),
+    "fishingareawarning"
+]);
+
 export const rodArea = k.add([
     k.polygon([
         k.vec2(163,188),

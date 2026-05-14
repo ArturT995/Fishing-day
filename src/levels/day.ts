@@ -1,7 +1,7 @@
 import { addSprite } from "../assetLoader";
 import { openBag } from "../bag";
-import { COLORS, fishingArea, fontConfigSmall } from "../constants";
-import { ANCHOR, generateFishes } from "../entities/fishes";
+import { ANCHOR, COLORS, fishingArea, fishingAreaWarning, fontConfigSmall } from "../constants";
+import { generateFishes } from "../entities/fishes";
 import { throwLine } from "../fishing";
 import gm from "../gm";
 import k from "../kaplayCtx";

@@ -94,6 +94,8 @@ export function openBag() {
                 splashSounds()
                 let fishes = k.get("fish");
                 fishes.forEach(fish => fish.destroy())
+                let fishNames = k.get("fishName");
+                fishNames.forEach(name => name.destroy())
                 generateFishes()
                 generateFishes() // TODO: add a generateRarerFishes instead
                 await k.wait(0.5)
@@ -102,9 +104,11 @@ export function openBag() {
             if (name === "Rancid gloop") {
                 message("Disgusting.")
                 let fishes = k.get("fish");
+                let fishNames = k.get("fishName");
                 playSound("rancid-gloop", "sfx")
                 splashSounds()
                 fishes.forEach(fish => fish.destroy())
+                fishNames.forEach(name => name.destroy())
             }
             if (name === "Deluxe Bait") {
                 message("You apply some of that fancy bait.")
