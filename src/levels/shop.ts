@@ -11,10 +11,11 @@ export function shop() {
     k.scene("shop", () => {
         k.setCursor("default");
         let bgMusicShop = playSound("night-shop-1", "music", 0, true)
-        let bg:any; //modify at night to be darker and bluer
 
-        bg = k.add([
-            k.sprite("shop-bg"),
+        let bgSprite = gm.nightTime ? "shop-night" : "shop-bg"
+
+        let bg = k.add([
+            k.sprite(bgSprite),
             k.anchor("center"),
             k.color(),
             k.area(),

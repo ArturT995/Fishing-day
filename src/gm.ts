@@ -23,6 +23,7 @@ interface GameManager extends GameObj {
     logPopupOpen: boolean;
     identifierOn: boolean;
     intoxication: number;
+    nightTime: boolean;
     money: number;
     baitPower: number;
 
@@ -161,6 +162,7 @@ function makeGameManager() {
             currentFishId: "",
             currentFishDifficulty: 0,
             currentFishSize: 0,
+            nightTime: false,
 
             noticeArea: currentRod.catchArea + 15,
 

@@ -1,6 +1,6 @@
 import { addSprite } from "../assetLoader";
 import { openBag } from "../bag";
-import { ANCHOR, COLORS, fishingArea, fishingAreaWarning, fontConfigSmall } from "../constants";
+import { ANCHOR, COLORS, fishingArea, fontConfigSmall } from "../constants";
 import { generateFishes } from "../entities/fishes";
 import { throwLine } from "../fishing";
 import gm from "../gm";
@@ -8,7 +8,7 @@ import k from "../kaplayCtx";
 import { playSound } from "../sounds";
 import { clickProcess, hoverProcess } from "../ui";
 import { openCollectionLog, openSettings } from "./menu";
-import type { GameObj } from "kaplay";
+
 
 
 
@@ -19,10 +19,13 @@ export async function day() {
         // Wait a tiny bit of time before allowing input
         k.wait(0.5, () => canCast = true);
         k.setCursor("default");
-        addSprite("sea")
-        // TODO: update the sea sprite to use the same one as in the menu.
-        addSprite("ground", k.z(2))
-        const waves = k.add([k.sprite("waves"), k.z(1)])
+
+        
+        gm.nightTime ? addSprite("night-sea") : addSprite("sea");
+        gm.nightTime ? addSprite("night-ground", k.z(2)) : addSprite("ground", k.z(2));
+
+
+        const waves = k.add([k.sprite("waves"), k.z(1)]) // TODO: add nightwaves, currently ground color too light on anim
         waves.play("normal");
 
         //add crab and bird sprites
@@ -45,7 +48,7 @@ export async function day() {
         ]);
         */
 
-        // TODO: Change button positions, put shop btn to left, next to bag.
+        let btnColor = gm.nightTime ? COLORS.ORANGE : COLORS.DARKRED
 
         const PADDING = 5;
 
@@ -53,7 +56,7 @@ export async function day() {
             k.text("Menu", fontConfigSmall),
             k.anchor("right"),
             k.pos(k.width()-PADDING, k.height() - 5),
-            k.color(COLORS.DARKRED),
+            k.color(btnColor),
             k.area(),
             k.scale(1),
             k.z(3),
@@ -70,7 +73,7 @@ export async function day() {
             k.text("Shop", fontConfigSmall),
             k.anchor("right"),
             k.pos(k.width()-(PADDING+20), k.height() - 5),
-            k.color(COLORS.DARKRED),
+            k.color(btnColor),
             k.area(),
             k.scale(1),
             k.z(3),
@@ -87,7 +90,7 @@ export async function day() {
             k.text("Collection Log", fontConfigSmall),
             k.anchor("left"),
             k.pos(PADDING, k.height() - 5),
-            k.color(COLORS.DARKRED),
+            k.color(btnColor),
             k.area(),
             k.scale(1),
             k.z(3),
@@ -104,7 +107,7 @@ export async function day() {
             k.text("Settings", fontConfigSmall),
             k.anchor("left"),
             k.pos(PADDING+42, k.height() - 5),
-            k.color(COLORS.DARKRED),
+            k.color(btnColor),
             k.area(),
             k.scale(1),
             k.z(3),
@@ -122,7 +125,7 @@ export async function day() {
             k.text("Bag", fontConfigSmall),
             k.anchor("left"),
             k.pos(PADDING+70, k.height() - 5),
-            k.color(COLORS.DARKRED),
+            k.color(btnColor),
             k.area(),
             k.scale(1),
             k.z(3),

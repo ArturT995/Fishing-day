@@ -20,17 +20,11 @@ export function menu() {
     k.scene("main-menu", () => {
         k.setCursor("default");//make custom cursor
         
-        let backgrounds = ["dayMenuScreen", "nightMenuScreen"]
-        
-        let randomBackground = backgrounds[k.randi()] //temporary, until timetracking and night is implemented
+        let background = gm.nightTime ? "nightMenuScreen" : "dayMenuScreen";
+        addSprite(background)
 
-        addSprite(randomBackground)
-
-
-        let chosenColor = (randomBackground === "nightMenuScreen") ? COLORS.BLUE : COLORS.BEIGE;
-
-
-        const bgMusic = (randomBackground === "nightMenuScreen") ? playSound("night-menu-1", "music", 0, true, 0, 0.8) : playSound("menu-bg-1", "music", 0, true, 0, 1);
+        let chosenColor = (background === "nightMenuScreen") ? COLORS.BLUE : COLORS.BEIGE;
+        const bgMusic = (background === "nightMenuScreen") ? playSound("night-menu-1", "music", 0, true, 0, 0.8) : playSound("menu-bg-1", "music", 0, true, 0, 1);
         
         
 

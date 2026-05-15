@@ -174,7 +174,7 @@ export const ITEM_DATA: ShopObj[] = [
 
 export const FISH_DATA: FishObj[] = [
     {fishId:" 1", name: "Yuppie", sprite: "yuppie", spriteLocked: "yuppie-locked", activeTime: "Day",
-    maxSize: 10, maxWeight: 0.3, rarityScore: 4,
+    maxSize: 10, maxWeight: 0.3, rarityScore: 10,
     desc: `This little denizen gets up at the crack of dawn and displays a high level of activity throughout the day and well into the late evening.
     It has a sleek look and a go-getter attitude.`,
     unlocked: false, difficulty: 2, price: 50, feature: ""},
@@ -187,7 +187,7 @@ export const FISH_DATA: FishObj[] = [
     unlocked: false, difficulty: 1, price: 30, feature: ""},
 
     {fishId:" 3", name: "Ghost Carp", sprite: "ghostcarp", spriteLocked: "ghostcarp-locked", activeTime: "Night",
-    maxSize: 25, maxWeight: 14, rarityScore: 8,
+    maxSize: 25, maxWeight: 14, rarityScore: 20,
     desc: `The ghost of a fallen carp, 
     roaming the lake after sun has passed.
     "How did you catch this?" - Shopkeeper`,
@@ -202,7 +202,7 @@ export const FISH_DATA: FishObj[] = [
     unlocked: false, difficulty: 2, price: 20, feature: "extra bubbling"},
 
     {fishId:" 5", name: "Fishbones", sprite: "fishbones", spriteLocked: "fishbones-locked", activeTime: "Night",
-    maxSize: 20, maxWeight: 0.5, rarityScore: 8,
+    maxSize: 20, maxWeight: 0.5, rarityScore: 20,
     desc: `Lifeless remains of a fish you can't identify, you are
     unsure how it got hooked.
     "You want me to buy this?" - Shopkeeper`, 
@@ -224,7 +224,7 @@ export const FISH_DATA: FishObj[] = [
     unlocked: false, difficulty: 4, price: 30, feature: ""},
 
     {fishId:" 8", name: "Alligator Gar", sprite: "alligatorgar", spriteLocked: "alligatorgar-locked", activeTime: "Night",
-    maxSize: 45, maxWeight: 120, rarityScore: 12,
+    maxSize: 45, maxWeight: 120, rarityScore: 35,
     desc: `A massive, slow moving fish. The largest species of the gar family.
     It stalks the waters, looking to ambush other fish, waterfowl and small mammals.
     The scales have serrated edges and have a tough inner layer of bone.
@@ -233,7 +233,7 @@ export const FISH_DATA: FishObj[] = [
     unlocked: false, difficulty: 10, price: 220, feature: ""},
 
     {fishId:" 9", name: "Esox", sprite: "esox", spriteLocked: "esox-locked", activeTime: "Day",
-    maxSize: 32, maxWeight: 25, rarityScore: 6,
+    maxSize: 32, maxWeight: 25, rarityScore: 14,
     desc: `Commonly known as pike. They have a torpedo-like shape typical of predatory fishes.
     Typically of grey-green color and mottled appearance. Many unwary anglers have
     been bitten by them.`,
@@ -262,7 +262,7 @@ export const FISH_DATA: FishObj[] = [
     unlocked: false, difficulty: 3, price: 30, feature: ""},
 
     {fishId: "13", name: "Catfish", sprite: "catfish", spriteLocked: "catfish-locked", activeTime: "Night",
-    maxSize: 150, maxWeight: 97, rarityScore: 8, 
+    maxSize: 150, maxWeight: 97, rarityScore: 35, 
     desc: `These large bottom feeders are negatively buoyant and have a heavy, bony head. It likes to dig through the substrate.
     Catfish don't have scales, but some have bony plates. They posess an ability to taste anything they touch and "smell" chemicals
     in the water, the barbels are particularly sensitive. Some catfish don't posess eyes and rely entirely on other senses.`,  
@@ -287,30 +287,30 @@ export const FISH_DATA: FishObj[] = [
     unlocked: false, difficulty: 4, price: 45, feature: ""},
 
     {fishId: "17", name: "Starbass", sprite: "starbass", spriteLocked: "starbass-locked", activeTime: "Night",
-    maxSize: 41, maxWeight: 19, rarityScore: 7, 
+    maxSize: 41, maxWeight: 19, rarityScore: 17, 
     desc: `A curious fish, it has some scales that catch the light.
     "Bet you haven't seen this fella before eh? It's a local specialty" - Shopkeeper`,  
     unlocked: false, difficulty: 6, price: 100, feature: ""},
 
     {fishId: "18", name: "Olly", sprite: "olly", spriteLocked: "olly-locked", activeTime: "Day",
-    maxSize: 39, maxWeight: 18, rarityScore: 15, 
+    maxSize: 39, maxWeight: 18, rarityScore: 39, 
     desc: `You're not sure what sort of a fish this is, it looks pale though. 
     The shopkeeper could only scratch his head when you presented him this fish`,
     unlocked: false, difficulty: 9, price: 460, feature: "Unique"},
 
     {fishId: "19", name: "Shyfish", sprite: "shyfish", spriteLocked: "shyfish-locked", activeTime: "Night",
-    maxSize: 18, maxWeight: 9, rarityScore: 16, 
+    maxSize: 18, maxWeight: 9, rarityScore: 42, 
     desc: `A small pale fish, it really seems to like bread. It has a long dark fins.
     The shopkeeper massaged his chin when you presented him this fish`,  
     unlocked: false, difficulty: 8, price: 550, feature: "Unique"},
 
     {fishId: "20", name: "Old Boot", sprite: "oldboot", spriteLocked: "oldboot-locked", activeTime: "Day",
-    maxSize: 14, maxWeight: 9, rarityScore: 18, 
+    maxSize: 14, maxWeight: 9, rarityScore: 30, 
     desc: `Junk, maybe the shopkeeper will take pity on you and buy it for a coin.`,  
     unlocked: false, difficulty: 1, price: 4, feature: "plays failure sound"},
 
     {fishId: "21", name: "Beardy", sprite: "beardy", spriteLocked: "beardy-locked", activeTime: "Day",
-    maxSize: 68, maxWeight: 40, rarityScore: 12, 
+    maxSize: 68, maxWeight: 40, rarityScore: 40, 
     desc: `You've heard tales of this crafty fish in the local area. 
     Despite it's size it has managed to outsmart the fishermen and has remained uncaught until now.
     It looks quite old and has many thin barbels around its head.

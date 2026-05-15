@@ -14,11 +14,15 @@ export async function assetLoader() {
     //k.loadSprite("titlebox", "./graphics/titlebox.png")
 
     k.loadSprite("shop-bg", "./graphics/shop-bg.png")
+    k.loadSprite("night-shop", "./graphics/night-shop.png")
     k.loadSprite("shopborder", "./graphics/shopborder.png")
 
     k.loadSprite("ground", "./graphics/ground.png")
     k.loadSprite("sea", "./graphics/sea.png")
+    k.loadSprite("night-ground", "./graphics/night-ground.png")
+    k.loadSprite("night-sea", "./graphics/night-sea.png")
 
+    
     k.loadSprite("waves", "./graphics/waves.png", {
         sliceX: 4,
         anims: {
