@@ -3,7 +3,8 @@ import k from "./kaplayCtx";
 
 
 export const FISH_AMOUNT = k.randi(12, 18)
-export const ANCHOR = k.vec2(k.width() / 2, k.height() - 12)
+export const ANCHOR = k.vec2(k.width() / 2, k.height() - 47)
+
 
 
 export const COLORS = {
@@ -48,14 +49,15 @@ export let fishHooked = false;
 
 export const fishingArea = k.add([
         k.polygon([
-            k.vec2(20, 67),
+            k.vec2(30, 57),
             k.vec2(78, 5),
             k.vec2(170, 5),
             k.vec2(190, 50),
-            k.vec2(252,118),
-            k.vec2(163,188),
-            k.vec2(120,168),
-            k.vec2(20,67),
+            k.vec2(242,108),
+            k.vec2(242,128),
+            k.vec2(154,178),
+            k.vec2(120,158),
+            k.vec2(30, 87),
         ]),
         k.pos(0, 0),
         k.area(),
@@ -70,8 +72,8 @@ export const fishingAreaWarning = k.add([
         k.vec2(164.0, 21.8),
         k.vec2(180.0, 57.5),
         k.vec2(229.3, 114.3),
-        k.vec2(158.3, 168.9),
-        k.vec2(122.5, 156.9),
+        k.vec2(158.3, 120.9),
+        k.vec2(122.5, 110.9),
         k.vec2(45.9,  70.3),
     ]),
     k.pos(0, 0),
@@ -82,16 +84,12 @@ export const fishingAreaWarning = k.add([
 ]);
 
 export const rodArea = k.add([
-    k.polygon([
-        k.vec2(163,188),
-        k.vec2(153,200),
-        k.vec2(120,130),
-        k.vec2(110,112),
-    ]),
-    k.pos(0, 0),
-        k.area(),
-        k.opacity(0),
-        "rodArea"
+    k.circle(20),
+    k.pos(ANCHOR.x, ANCHOR.y),
+    k.z(3),
+    k.opacity(0),
+    k.area(),
+    "rodArea"
 ]);
 
 export type Stats = { 

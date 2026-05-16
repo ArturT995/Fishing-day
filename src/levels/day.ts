@@ -1,11 +1,11 @@
 import { addSprite } from "../assetLoader";
 import { openBag } from "../bag";
-import { ANCHOR, COLORS, fishingArea, fontConfigSmall } from "../constants";
+import { ANCHOR, COLORS, fishingArea, fishingAreaWarning, fontConfigSmall } from "../constants";
 import { generateFishes } from "../entities/fishes";
 import { throwLine } from "../fishing";
 import gm from "../gm";
 import k from "../kaplayCtx";
-import { playSound } from "../sounds";
+import { playNextSong, playSound } from "../sounds";
 import { clickProcess, hoverProcess } from "../ui";
 import { openCollectionLog, openSettings } from "./menu";
 
@@ -29,29 +29,69 @@ export async function day() {
         waves.play("normal");
 
         //add crab and bird sprites
-        const bgMusic = k.play("fishing-bg-1", {volume: 0.5, loop: true});
-        //add more tracks later, start with random one
-        const seaSound = k.play("sea", {volume: 0.1, loop: true}); 
-        //remember to load assets for any sound you add
+        const dayMusic = ["fishing-bg-1", "day-bg-3", "fishing-bg-2", "fishing-bg-1", "fishing-bg-3", "night-menu-1", "menu-bg-1"]
+        const nightMusic = ["night-bg-1", "night-bg-2", "fishing-bg-1", "night-menu-1"]
+        let pickedMusic = gm.nightTime ? nightMusic : dayMusic;
 
-        //make a popup that has option to go back or adjust settings.
+        let bgMusic = playNextSong(pickedMusic, k.randi(0, pickedMusic.length))
 
-        // TODO: add a pier or change rod position so its less awkward to fish
-        /*
-        const rodArea = k.add([
-            k.circle(40),
-            k.pos(k.width()/2, k.height()),
-            k.area(),
-            k.opacity(0.3),
-            "rodArea",
-            k.z(44)
-        ]);
-        */
+        const daySfx = ["bird1", "bird2", "bird3", "day-bird-2", "day-bird-3"]
+
+        const nightSfx = ["night-bird-1", "night-bird-2", "night-bird-3", "night-bird-4", 
+            "night-bug-1", "night-bug-2"]
+
+        const creatureSfx = ["crabclack", "fly", "frog-1", "frog-2",
+            "laughing-bird", "thumping", "shaking"]
+
+        let pickedSfx = gm.nightTime ? nightSfx : daySfx; 
+        
+        const finalsfx = creatureSfx.concat(pickedSfx)
+
+        // TODO: play "fast-tune" when boss fish hooked.
+
+
+        const seaSound = playSound("sea", "sfx", -0.9, true);
+
+        k.debug.log(finalsfx)
+        let canPlaySound = true;
+        k.loop(4, () => {
+            if (canPlaySound && k.rand(1, 9) > 8) {
+                canPlaySound = false;
+                const birdSound = playSound(finalsfx[k.randi(0, finalsfx.length)], "sfx", -0.5);
+                birdSound.onEnd(() => {
+                    canPlaySound = true;
+                });
+            }
+        });
+
+
+        //toggle night and other effects here
+        k.onKeyPress("w", () => {
+            if (gm.nightTime) gm.nightTime = false;
+            else gm.nightTime = true;
+        });
 
         let btnColor = gm.nightTime ? COLORS.ORANGE : COLORS.DARKRED
 
         const PADDING = 5;
 
+        let pier = k.add ([
+            "pier",
+            k.rect(30,40),
+            k.color(COLORS.BROWN),
+            k.pos(k.width()/2, k.height()),
+            k.anchor("bot"),
+            k.z(2)
+        ])
+        k.add([
+            "player",
+            k.pos(k.vec2(k.width() / 2, k.height() -pier.height)),
+            k.anchor("center"),
+            k.rect(1,14),
+            k.z(2),
+            k.color(COLORS.DARKRED) // TODO: update to reflect equipped rod color
+        ]);
+        
         const menuBtn = k.add([
             k.text("Menu", fontConfigSmall),
             k.anchor("right"),
@@ -140,28 +180,6 @@ export async function day() {
             openBag();
         })
 
-        //add more random sounds into onUpdate that run every now and then
-        let canPlayBird = true;
-        k.loop(3, () => {
-            if (canPlayBird && k.rand(1, 9) > 8) {
-                canPlayBird = false;
-                const birdSound = k.play("laughing-bird", { volume: 0.3 });
-                birdSound.onEnd(() => {
-                    canPlayBird = true;
-                });
-            }
-        });
-
-        k.add([
-            k.pos(k.vec2(k.width() / 2, k.height() -5)),
-            k.anchor("center"),
-            k.rect(2,14),
-            k.z(3),
-            k.color(COLORS.RED),
-            "player"
-        ]);
-
-
         generateFishes()
     
 
@@ -222,7 +240,7 @@ export async function day() {
             if (power < 0.5) power = 0.5;
             
             let targetPos = ANCHOR.add(dir.scale(power * 50))
-            while (!fishingArea.hasPoint(targetPos) && power > 1.7) {
+            while (!fishingArea.hasPoint(targetPos) && power > 0.7) {
                 power -= 0.1
                 targetPos = ANCHOR.add(dir.scale(power * 50));
             }
@@ -262,11 +280,12 @@ export async function day() {
 
             let mouse = k.mousePos();
 
-            if (mouse.y < k.height() - 10 && fishingArea.hasPoint(mouse)) {
+            if (mouse.y < ANCHOR.y && fishingArea.hasPoint(mouse)) {
                 canCast = true;
             } else {
                 canCast = false;
             }
+
         })
 
         k.onMouseDown("right", () => {

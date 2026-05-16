@@ -6,6 +6,7 @@ import { COLORS, FISH_AMOUNT, fishingAreaWarning } from "../constants";
 import gm from "../gm";
 import k from "../kaplayCtx";
 import { type FishObj, FISH_DATA } from "../db";
+import { playSound } from "../sounds";
 
 
 
@@ -239,7 +240,7 @@ export function makeFish(fish: FishObj, pos: Vec2) {
             if (fishName.opacity > 0) fishName.opacity -= 0.01
         };
 
-        if (!fishingAreaWarning.hasPoint(entity.pos)) {
+        if (!fishingAreaWarning.hasPoint(entity.pos) && entity.state !== "pursue") {
             const safePoint = k.vec2(k.randi(80,130), k.randi(60,100)); 
             if (entity.waypoints[entity.currentWaypoint].dist(safePoint) > 1) {
                 entity.waypoints[entity.currentWaypoint] = safePoint;
@@ -325,19 +326,10 @@ export function makeFish(fish: FishObj, pos: Vec2) {
                     k.drawCircle({ pos, radius: r, color, resolution: 0.07 })
                 }
                 
-                
-                /*
                 // settings for fun or possible future item effects.
+                
+                //wildcolors(color)
 
-                color.r -= 1
-                color.g -= 1
-                color.b -= 1
-                if (color.r < 10 || color.g < 10 || color.b < 10) {
-                    color.r = k.randi(23,230)
-                    color.g = k.randi(23,230)
-                    color.b = k.randi(23,230)
-                }*/
-                // add a fade to black/white alternating color with -= and if statements on color.r
             })
 
         } else {
@@ -462,7 +454,7 @@ function spawnCaughtFish(fish: GameObj) {
                 0.3,
                 (p) =>  bubbles.pos = p, k.easings.easeInQuad
             ).then(() => {
-                
+                playSound("fishing-thunk", "sfx", -0.7, false, 0, 1.5);
                 const ripple = bubbles.add([
                     k.pos(0, 0),
                     k.circle(0.3, { fill: false }),
@@ -480,10 +472,13 @@ function spawnCaughtFish(fish: GameObj) {
         }
     });
     bobber.onDraw(() => {
-        caughtFish.data.forEach(({ pos, r, color }) => {
-            pos.x = k.randi(1,-1)
-            r = r + k.randi(1,-1)
-            k.drawCircle({ pos, radius: r, color })
+        caughtFish.data.slice().reverse().forEach(({ pos, r, color }) => {
+        color = COLORS.WHITE
+        if (k.chance(0.2)) {
+            pos.x = k.randi(1*(caughtFish.data.length/2), -1*(caughtFish.data.length/2))
+            pos.y = k.randi(1*(caughtFish.data.length/2), -1*(caughtFish.data.length/2))
+        }
+            k.drawCircle({ pos, radius: r/k.rand(1.3, 3), color, resolution: 0.07, opacity: k.rand(0.2,0.8)})
     })
 
     })
@@ -571,4 +566,16 @@ function smoothOutline(r: number[], passes = 3): number[] {
         out = next
     }
     return out
+}
+
+
+function wildcolors(color: Color) {
+    color.r -= 1
+    color.g -= 1
+    color.b -= 1
+    if (color.r < 10 || color.g < 10 || color.b < 10) {
+        color.r = k.randi(23,230)
+        color.g = k.randi(23,230)
+        color.b = k.randi(23,230)
+    }
 }

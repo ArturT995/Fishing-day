@@ -1,6 +1,6 @@
 import type { Vec2 } from "kaplay";
 import k from "./kaplayCtx";
-import { COLORS, fishingArea, rodArea } from "./constants";
+import { ANCHOR, COLORS, fishingArea, rodArea } from "./constants";
 import gm from "./gm";
 import { playSound } from "./sounds";
 import { message } from "./messages";
@@ -77,7 +77,8 @@ export function throwLine(anchor: Vec2, power: number) {
             k.circle(bobber.noticeArea, { fill: false }),
             k.opacity(0),
             k.outline(0.2, COLORS.BEIGE, 0.001),
-            k.pos(),
+            k.anchor("center"),
+            k.pos(0,0),
             k.area(),
             "noticeArea"
         ])
@@ -114,7 +115,6 @@ export function throwLine(anchor: Vec2, power: number) {
     bobber.onUpdate(() => {
 
         const toAnchor = anchor.sub(bobber.pos).unit();
-        const escapeDir = k.vec2(-toAnchor.y, toAnchor.x);
 
         if (bobber.state === "floating") {
             if (gm.state === "catching") {
@@ -135,6 +135,7 @@ export function throwLine(anchor: Vec2, power: number) {
         }
 
         // difficulty modifications here
+        // TODO: Rework fish movement, make it dark further and less frequently, current version is a pain on the wrist on earlier rods and easier in later rods.
         if (bobber.state === "catching") {
             catchTime -= 0.02
             reelingArea.pos = k.mousePos()
@@ -144,21 +145,37 @@ export function throwLine(anchor: Vec2, power: number) {
             const fishId = gm.currentFishId;
             //const size = gm.currentFishSize;
             const difficulty = gm.currentFishDifficulty/2;
-            const timeModifier = difficulty / 100
 
 
             bobber.fishPullTime -= k.dt();
-
+            const maxFishDifficulty = 32;
             if (bobber.fishPullTime <= 0) {
-                const angle = k.rand(0, 360);
+                bobber.fishPullTime = 3 + ((maxFishDifficulty - (gm.currentFishDifficulty + 3)) / 10);
+                const angle = k.rand(130, 300);
                 bobber.fishPullDir = k.Vec2.fromAngle(angle);
-                bobber.fishPullSpeed = k.rand(10+difficulty*5, 25+difficulty*10);
-                bobber.fishPullTime = k.rand(0.5-timeModifier, 1-timeModifier);
+                bobber.fishPullSpeed = k.rand(10+difficulty*3, 25+difficulty*6);
             }
 
-            bobber.move(bobber.fishPullDir.scale(bobber.fishPullSpeed));
-            bobber.move(toAnchor.scale(-30)); 
-            
+            // set to 2 to allow a refresh period between movements
+            if (bobber.fishPullTime >= 2) {
+                bobber.move(bobber.fishPullDir.scale(bobber.fishPullSpeed));
+                //bounce
+                if (!fishingArea.hasPoint(bobber.pos) && !rodArea.hasPoint(bobber.pos)) {
+                    playSound("fishing-thunk", "sfx");
+                    spawnRipple(bobber.pos)
+                    mvTime = 10;
+                }
+                if (mvTime > 0) {
+                    mvTime -= 0.2
+                    const toCenter = center.sub(bobber.pos).unit();
+                    bobber.move(toCenter.scale(k.randi(80, 140)));
+                    if (!fishingArea.hasPoint(bobber.pos)) bobber.move(toCenter.scale(k.randi(50)));
+                }
+            }
+
+            // constantly moves away from bobber at all times
+            bobber.move(toAnchor.scale(-30 - difficulty));
+
 
             // catch
             if (bobber.pos.dist(anchor) < 15) {
@@ -188,7 +205,7 @@ export function throwLine(anchor: Vec2, power: number) {
             }
 
             //escape
-            if (bobber.pos.dist(anchor) > 190 || catchTime <= 0 ||
+            if (bobber.pos.dist(anchor) > k.height() - 50 || catchTime <= 0 ||
             (!fishingArea.hasPoint(bobber.pos) && bobber.pos.dist(anchor) > 160 )) {
                 catchingFlag = false
                 k.destroy(bobber);
@@ -203,43 +220,35 @@ export function throwLine(anchor: Vec2, power: number) {
                 return;
             }
 
-            //bounce
-            if (!fishingArea.hasPoint(bobber.pos) && !rodArea.hasPoint(bobber.pos)) {
-                playSound("fishing-thunk", "sfx");
-                spawnRipple(bobber.pos)
-                mvTime = 10;
-            }
-            if (mvTime > 0) {
-                mvTime -= 0.2
-                const toCenter = center.sub(bobber.pos).unit();
-                bobber.move(toCenter.scale(k.randi(80, 160)));
-                if (!fishingArea.hasPoint(bobber.pos)) bobber.move(toCenter.scale(k.randi(100)));
-            }
-
+            // resist
 
             const isInside = bobber.pos.dist(reelingArea.pos) < reelingArea.radius;
             if (isInside) {   
-                const isResisting = k.chance(difficulty / 200);
+                const isResisting = k.chance(difficulty / 100);
                 reelSound.volume = 2;
 
-                if (!isResisting) {
-                    bobber.move(toAnchor.scale(bobber.reelSpeed));
-                } else {
-                    const escapeSpeed = difficulty * 10
-                    bobber.move(escapeDir.scale(escapeSpeed * k.choose([1, -1])));
-                }
-
                 if (isResisting) {
-                    const shakePower = 2;
-                    bobber.move(k.vec2(k.rand(-1, 1), k.rand(-1, 1)).scale(shakePower * 100));
-                    bobber.opacity = k.wave(0.5, 1, k.time() * 20);
-                    const pulse = 1 + Math.sin(k.time() * 25) * 0.2;
-                    bobber.scale = k.vec2(pulse);
+                    bobber.move(toAnchor.scale(bobber.reelSpeed - gm.currentFishDifficulty*2));
                 } else {
-                    reelSound.volume = 1;
-                    bobber.opacity = 1;
-                    bobber.scale = k.vec2(1);
+                    bobber.move(toAnchor.scale(bobber.reelSpeed - gm.currentFishDifficulty));
                 }
+            }
+
+            //bounce
+            if (!fishingArea.hasPoint(bobber.pos) && !rodArea.hasPoint(bobber.pos)) {
+                mvTime = 10;
+            }
+
+
+            if (mvTime > 0) {
+                mvTime -= 0.2
+                if (mvTime === 2) {
+                    playSound("fishing-thunk", "sfx");
+                    spawnRipple(bobber.pos)
+                }
+                const toCenter = center.sub(bobber.pos).unit();
+                bobber.move(toCenter.scale(k.randi(40, 70)));
+                if (!fishingArea.hasPoint(bobber.pos)) bobber.move(toCenter.scale(50));
             }
 
         }

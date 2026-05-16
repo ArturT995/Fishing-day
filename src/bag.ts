@@ -260,7 +260,7 @@ function getStackableItems(): BagObj[] {
 
 
 
-function equipRod(rod: RodObj, currentIcon: GameObj) {
+export function equipRod(rod: RodObj, currentIcon: GameObj) {
     playSound("icon-sound-1", "sfx", 0, false, 2000)
     ROD_DATA.forEach(r => r.selected = false);
     rod.selected = true;

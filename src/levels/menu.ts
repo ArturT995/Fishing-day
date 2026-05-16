@@ -203,15 +203,15 @@ export function openSettings() {
         -settingsMenu.height / 2 + 15
     );
 
-    const volumeText = settingsMenu.add([
+    // volume text and slider
+    settingsMenu.add([
         k.text("MUSIC VOLUME", fontConfig),
         k.color(COLORS.ORANGE),
         k.anchor("right"),
         k.pos(settingsMenu.width / 2 - PADDING, -settingsMenu.height / 2 + 16),
         k.area(),
     ]);
-    
-    const volumeSlider = makeSlider(COLORS.ORANGE, musicVolumeContainer, "horizontal", "musicVolume", (val) => {
+    makeSlider(COLORS.ORANGE, musicVolumeContainer, "horizontal", "musicVolume", (val) => {
         musicSet.forEach((offset, song) => {
             song.volume = val + offset;
         });
@@ -225,15 +225,15 @@ export function openSettings() {
         -settingsMenu.height / 2 + 15 + ROW_HEIGHT
     );
 
-    const sfxText = settingsMenu.add([
+    // SFX text and slider
+    settingsMenu.add([
         k.text("SFX VOLUME", fontConfig),
         k.color(COLORS.ORANGE),
         k.anchor("right"),
         k.pos(settingsMenu.width / 2 - PADDING,-settingsMenu.height / 2 + 16 + ROW_HEIGHT),
         k.area(),
     ]);
-    
-    const sfxSlider = makeSlider(COLORS.ORANGE, sfxVolumeContainer,"horizontal", "sfxVolume", (val) =>  {
+    makeSlider(COLORS.ORANGE, sfxVolumeContainer,"horizontal", "sfxVolume", (val) =>  {
         sfxSet.forEach((offset, sfx) => {
             sfx.volume = val + offset;
         });

@@ -5,7 +5,7 @@ import { soundsList } from "./assetLoader"
 
 
 
-
+/*
 export const menuMusic = ["menu-bg-1", "day-bg-4", "night-menu-1"]
 export const dayMusic = ["day-bg-3", "fishing-bg-1", "fishing-bg-2", "fishing-bg-3"]
 export const ambientSounds = ["sea", "wind"]
@@ -20,13 +20,15 @@ export const nightSfx = ["night-bird-1", "night-bird-2", "night-bird-3", "night-
 export const creatureSfx = ["chomps", "crabclack", "fly", "frog-1", "frog-2",
     "laughing-bird", "mosquito", "thumping", "shaking"]
 
+/*
+    const eventSfx = ["new-fish-caught", "new-fish-unlocked", "fish-caught", 
+        "fish-escaped", "fishing-thunk", "flying-2", "powerbar", "powerup", 
+        "rare-catch"]
 
-const eventSfx = ["new-fish-caught", "new-fish-unlocked", "fish-caught", 
-    "fish-escaped", "fishing-thunk", "flying-2", "powerbar", "powerup", 
-    "rare-catch"]
-
-const itemSfx = ["chomps", "cards", "dice-roll", "drinking-noise", 
-    "pipe", "rancid-gloop", "shaking"]
+    const itemSfx = ["chomps", "cards", "dice-roll", "drinking-noise", 
+        "pipe", "rancid-gloop", "shaking"]
+   const transferSfx = ["cards", "pipe", "drinking-noise", "frog-1", "frog-2", "bird1", "bird2",]
+*/
 
 
 export let sfxSet = new Map<AudioPlay, number>();
@@ -39,16 +41,14 @@ export function playSound(sound: string, type: "sfx" | "music" , volumeAdd = 0,
     if (!soundsList.includes(sound)) throw new Error(`Sound "${sound}" not found in soundsList`)
 
     if (type === "music") {
-        musicSet.forEach((offset, song) => {
-            offset = 0;
+        musicSet.forEach((_, song) => {
             musicSet.delete(song);
         })
     }
 
     if (type === "sfx" && sfxSet.size > 10) {
-        sfxSet.forEach((offset, sfx) => {
-            offset = 0;
-            musicSet.delete(sfx);
+        sfxSet.forEach((_, sfx) => {
+            sfxSet.delete(sfx);
         })
     }
 
@@ -79,4 +79,21 @@ export function playSound(sound: string, type: "sfx" | "music" , volumeAdd = 0,
     
     return soundObj;
 
+}
+
+const transferSfx = ["cards", "pipe", "drinking-noise", "frog-1", "frog-2", "bird1", "bird2",]
+export function playNextSong(songs: string[], index: number) {
+
+    const track = songs[index];
+    index = (index + 1) % songs.length;
+    let bgMusic = playSound(track, "music", -0.1, false);
+
+    bgMusic.onEnd(() => {
+        let sfx = playSound(transferSfx[k.randi(0,transferSfx.length)], "sfx", -0.3, false);
+        sfx.onEnd(() => {
+            playNextSong(songs, index);
+        })
+    });
+
+    return bgMusic;
 }

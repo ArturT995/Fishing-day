@@ -1,5 +1,6 @@
+import { equipRod } from "../bag";
 import { COLORS, fontConfigSmall } from "../constants";
-import { FISH_DATA, ITEM_DATA, type FishObj, type ShopObj } from "../db";
+import { FISH_DATA, ITEM_DATA, ROD_DATA, type FishObj, type RodObj, type ShopObj } from "../db";
 import gm from "../gm";
 import k from "../kaplayCtx";
 import { message } from "../messages";
@@ -12,7 +13,7 @@ export function shop() {
         k.setCursor("default");
         let bgMusicShop = playSound("night-shop-1", "music", 0, true)
 
-        let bgSprite = gm.nightTime ? "shop-night" : "shop-bg"
+        let bgSprite = gm.nightTime ? "night-shop" : "shop-bg"
 
         let bg = k.add([
             k.sprite(bgSprite),
@@ -63,7 +64,7 @@ export function shop() {
 
 
             let icons = ["sunIcon", "moonIcon"]
-            let chosenIcon = icons[k.randi()]
+            let chosenIcon = gm.nightTime ? "moonIcon" : "sunIcon"
             const sunIcon = botContainer.add([
                 k.sprite(chosenIcon),
                 k.anchor("center"),
@@ -157,13 +158,17 @@ export function shop() {
                     if (gm.logpopupOpen === false) return;
                     if (iconL.opacity === 0) return;
                     if (iconL.price > gm.money) {
-                        k.debug.log(`No money for that`);
+                        message(`No money for that`);
                         return;
-                    }                
+                    }
                     const id = iconL.objId.toString();
                     playSound("item-bought", "sfx")
                     gm.unlockItem(id)
                     gm.addItem(id)
+
+                    const rodData: RodObj = ROD_DATA.find(rod => rod.name === iconL.data.name)
+                    if (rodData) equipRod(rodData, iconL)
+                        
                     gm.removeMoney(iconL.price);
                     priceText.text = `${gm.money}$`
                     if (iconL.data.feature.includes("Unique")) iconL.destroy();

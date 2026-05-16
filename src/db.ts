@@ -43,23 +43,22 @@ export type BagObj = ShopObj & { count: number };
 export const ROD_DATA: any[] = [
 
     {rodId: "1", name: "Wood rod", unlocked: true,
-    selected: true, reelSpeed: 70, catchArea: 10, endurance: 12},
+    selected: true, reelSpeed: 65, catchArea: 14, endurance: 12},
 
     {rodId: "2", name: "Copper rod", unlocked: false,
-    selected: false, reelSpeed: 80, catchArea: 12, endurance: 12},
+    selected: false, reelSpeed: 75, catchArea: 15, endurance: 12},
 
     {rodId: "3", name: "Elegant Rod", unlocked: false,
-    selected: false, reelSpeed: 90, catchArea: 13, endurance: 13},
+    selected: false, reelSpeed: 85, catchArea: 16, endurance: 13},
 
     {rodId: "4", name: "Exquisite rod", unlocked: true,
-    selected: true, reelSpeed: 100, catchArea: 14, endurance: 14},
+    selected: true, reelSpeed: 90, catchArea: 17, endurance: 14},
 
     {rodId: "5", name: "Excellent rod", unlocked: false,
-    selected: false, reelSpeed: 110, catchArea: 16, endurance: 15},
+    selected: false, reelSpeed: 110, catchArea: 18, endurance: 15},
 
     {rodId: "6", name: "Legendary rod", unlocked: false,
-    selected: false, reelSpeed: 130, catchArea: 20, endurance: 17},
-
+    selected: false, reelSpeed: 130, catchArea: 23, endurance: 17},
 ]
 
 //make function that assigns a sprite/fixed size range depending on fish size
@@ -177,7 +176,7 @@ export const FISH_DATA: FishObj[] = [
     maxSize: 10, maxWeight: 0.3, rarityScore: 10,
     desc: `This little denizen gets up at the crack of dawn and displays a high level of activity throughout the day and well into the late evening.
     It has a sleek look and a go-getter attitude.`,
-    unlocked: false, difficulty: 2, price: 50, feature: ""},
+    unlocked: false, difficulty: 4, price: 50, feature: ""},
 
     {fishId:" 2", name: "Carp", sprite: "carp", spriteLocked: "carp-locked", activeTime: "Day",
     maxSize: 25, maxWeight: 14, rarityScore: 1,
@@ -191,7 +190,7 @@ export const FISH_DATA: FishObj[] = [
     desc: `The ghost of a fallen carp, 
     roaming the lake after sun has passed.
     "How did you catch this?" - Shopkeeper`,
-    unlocked: false, difficulty: 5, price: 75, feature: "no bubbling"},
+    unlocked: false, difficulty: 7, price: 75, feature: "no bubbling"},
 
     {fishId:" 4", name: "Tench", sprite: "tench", spriteLocked: "tench-locked", activeTime: "Day",
     maxSize: 15, maxWeight: 4, rarityScore: 1,
@@ -215,7 +214,7 @@ export const FISH_DATA: FishObj[] = [
     Alchemists grind the scales into dust and treat it chemically, 
     removing imperfections and sell it as gold powder.
     "Now this is a rare sight! Folks used to fish entire lakes dry in search of this fish." - Shopkeeper`, 
-    unlocked: false, difficulty: 3, price: 1500, feature: "Icon sparkles/glows"},
+    unlocked: false, difficulty: 4, price: 1500, feature: "Icon sparkles/glows"},
 
     {fishId:" 7", name: "Spotted Gar", sprite: "spottedgar", spriteLocked: "spottedgar-locked", activeTime: "Day",
     maxSize: 28, maxWeight: 4, rarityScore: 1,
@@ -230,14 +229,14 @@ export const FISH_DATA: FishObj[] = [
     The scales have serrated edges and have a tough inner layer of bone.
     It's estimated to live between 50 to 70 years.
     "How did you manage to catch that?!" - Shopkeeper.`,
-    unlocked: false, difficulty: 10, price: 220, feature: ""},
+    unlocked: false, difficulty: 13, price: 220, feature: ""},
 
     {fishId:" 9", name: "Esox", sprite: "esox", spriteLocked: "esox-locked", activeTime: "Day",
     maxSize: 32, maxWeight: 25, rarityScore: 14,
     desc: `Commonly known as pike. They have a torpedo-like shape typical of predatory fishes.
     Typically of grey-green color and mottled appearance. Many unwary anglers have
     been bitten by them.`,
-    unlocked: false, difficulty: 6, price: 70, feature: "Aggressive"},
+    unlocked: false, difficulty: 9, price: 70, feature: "Aggressive"},
 
     {fishId: "10", name: "Freshwater drum", sprite: "freshwaterdrum", spriteLocked: "freshwaterdrum-locked", activeTime: "Day",
     maxSize: 15, maxWeight: 10, rarityScore: 4,
@@ -252,7 +251,7 @@ export const FISH_DATA: FishObj[] = [
     desc: `Also known as swamp bass, this vigorous fish usually has a greenish coat of scales. It is the largest of the
     black basses genus and prefers habitats close to the shore with abundant vegetation. It is a voracious hunter,
     going after prey who can be as large as half of the bass' size. In some cases they go after even larger creatures`,  
-    unlocked: false, difficulty: 5, price: 45, feature: ""},
+    unlocked: false, difficulty: 6, price: 45, feature: ""},
 
     {fishId: "12", name: "Smallmouth bass", sprite: "smallmouthbass", spriteLocked: "smallmouthbass-locked", activeTime: "Night",
     maxSize: 16, maxWeight: 5, rarityScore: 3, 
@@ -266,7 +265,7 @@ export const FISH_DATA: FishObj[] = [
     desc: `These large bottom feeders are negatively buoyant and have a heavy, bony head. It likes to dig through the substrate.
     Catfish don't have scales, but some have bony plates. They posess an ability to taste anything they touch and "smell" chemicals
     in the water, the barbels are particularly sensitive. Some catfish don't posess eyes and rely entirely on other senses.`,  
-    unlocked: false, difficulty: 9, price: 250, feature: ""},
+    unlocked: false, difficulty: 14, price: 250, feature: ""},
 
     {fishId: "14", name: "Humpback chub", sprite: "humpbackchub", spriteLocked: "humpbackchub-locked", activeTime: "Day",
     maxSize: 27, maxWeight: 9, rarityScore: 4, 
@@ -296,13 +295,13 @@ export const FISH_DATA: FishObj[] = [
     maxSize: 39, maxWeight: 18, rarityScore: 39, 
     desc: `You're not sure what sort of a fish this is, it looks pale though. 
     The shopkeeper could only scratch his head when you presented him this fish`,
-    unlocked: false, difficulty: 9, price: 460, feature: "Unique"},
+    unlocked: false, difficulty: 13, price: 460, feature: "Unique"},
 
     {fishId: "19", name: "Shyfish", sprite: "shyfish", spriteLocked: "shyfish-locked", activeTime: "Night",
     maxSize: 18, maxWeight: 9, rarityScore: 42, 
     desc: `A small pale fish, it really seems to like bread. It has a long dark fins.
     The shopkeeper massaged his chin when you presented him this fish`,  
-    unlocked: false, difficulty: 8, price: 550, feature: "Unique"},
+    unlocked: false, difficulty: 14, price: 550, feature: "Unique"},
 
     {fishId: "20", name: "Old Boot", sprite: "oldboot", spriteLocked: "oldboot-locked", activeTime: "Day",
     maxSize: 14, maxWeight: 9, rarityScore: 30, 
@@ -315,7 +314,7 @@ export const FISH_DATA: FishObj[] = [
     Despite it's size it has managed to outsmart the fishermen and has remained uncaught until now.
     It looks quite old and has many thin barbels around its head.
     "Is that what I think it is?! You actually managed to catch Ol'Beardy?!" - Shopkeeper`,
-    unlocked: false, difficulty: 23, price: 770, feature: "Unique"},
+    unlocked: false, difficulty: 32, price: 770, feature: "Unique"},
     
 ];
 

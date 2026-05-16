@@ -59,7 +59,11 @@ function makeGameManager() {
         sfxVolume: 1,
     };
 
-    const currentRod = ROD_DATA.find((rod: RodObj) => rod.rodId === savedRodId) as RodObj;
+    const foundRod = ROD_DATA.find((rod: RodObj) => rod.rodId === savedRodId) as RodObj;
+    const trashRod = {rodId: "0", name: "Trash rod", unlocked: true,
+    selected: true, reelSpeed: 65, catchArea: 11, endurance: 11}
+
+    const currentRod = foundRod ?? trashRod;
 
     return k.add([
         k.state("menu", [
@@ -75,7 +79,7 @@ function makeGameManager() {
             itemsUnlocked: savedItems,
             itemsOwned: savedOwned,
             settings: settings,
-            money: savedMoney,
+            money: savedMoney ?? 0,
             equippedRodId: savedRodId,
 
             saveProgress(this: GameManager) {
@@ -164,7 +168,7 @@ function makeGameManager() {
             currentFishSize: 0,
             nightTime: false,
 
-            noticeArea: currentRod.catchArea + 15,
+            noticeArea: currentRod.catchArea ?? 10 + 20,
 
             // rod stats
             currentRodIcon: null,
