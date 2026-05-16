@@ -75,7 +75,7 @@ export function makeButton(
 
 
 // this causes a lot of bugs, best to not use it.
-export function alignObj(
+function alignObj(
     obj: UIObject, container: Container,
     offsetX: number, offsetY: number, padding: number,
     alignment: "center" | "left" | "right" |
@@ -152,7 +152,7 @@ export function makeContainer(
     if(parent) {
         container = parent.add([
             k.rect(width, height),
-            k.pos(parent.width/2, parent.height/2),
+            k.pos(parent.width/2 - width/2, parent.height/2 - height/2),
             k.anchor(anchor),
             k.color(color),
             k.area(),

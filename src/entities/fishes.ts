@@ -15,7 +15,7 @@ export function fishingPool(FISH_DATA: FishObj[], poolSize: number): FishObj[] {
     const dayFishes = FISH_DATA.filter((fish: FishObj) => fish.activeTime === "Day");
     const nightFishes = FISH_DATA.filter((fish: FishObj) => fish.activeTime === "Night");
     const chosenPool = gm.nightTime ? nightFishes : dayFishes
-    return chosenPool
+    return chosenPool //disable after testing
 
     const chosenFishes: FishObj[] = []
 
@@ -286,9 +286,8 @@ export function makeFish(fish: FishObj, pos: Vec2) {
 
         
         if (entity.state === "pursue") {
-            if (gm.state === "catching") return;
             const bobber = k.get("bobber")[0];
-            if (!bobber) {
+            if (!bobber || gm.state === "catching") {
                 entity.enterState("idle");
             } else {
                 const dir = bobber.pos.sub(entity.pos).unit();
@@ -359,7 +358,7 @@ export function makeFish(fish: FishObj, pos: Vec2) {
     
     entity.onCollide("catchArea", () => {
         if (gm.state === "catching") return;
-        k.play("icon-sound-2",{volume: 0.7}) //placeholder
+        playSound("fishing-thunk", "sfx", 0.5 , false, -1000)
         spawnCaughtFish(entity);
         if(!entity.fishId) throw new Error("id not found when spawning fish")
 
@@ -380,9 +379,11 @@ export function makeFish(fish: FishObj, pos: Vec2) {
 
     entity.onStateEnter("notice", async () => {
         if (fishHooked) entity.enterState("idle");
-        k.play("icon-sound-2",{volume: 0.2}) //placeholder
+        playSound("icon-sound-1", "sfx", -0.3, false, 1000)
         const notice = entity.add([
-            k.circle(0.5),
+            k.rect(1, 1),
+            k.pos(1,-1),
+            k.opacity(0.4),
             k.color(COLORS.BEIGE)
         ])
         await k.wait(k.rand(1, 2))
@@ -569,7 +570,7 @@ function smoothOutline(r: number[], passes = 3): number[] {
 }
 
 
-function wildcolors(color: Color) {
+export function wildcolors(color: Color) {
     color.r -= 1
     color.g -= 1
     color.b -= 1

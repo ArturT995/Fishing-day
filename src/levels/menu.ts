@@ -3,7 +3,7 @@ import { addSprite } from "../assetLoader";
 import { COLORS, fontConfig } from "../constants";
 import { FISH_DATA } from "../db";
 import gm from "../gm";
-import { alignObj, bubbleText, clickProcess, hoverProcess, makeButton, makeContainer, makeIcons, makeSlider } from "../ui";
+import { bubbleText, clickProcess, hoverProcess, makeContainer, makeIcons, makeSlider } from "../ui";
 import { musicSet, playSound, sfxSet } from "../sounds";
 
 
@@ -160,16 +160,26 @@ export function openCollectionLog() {
     POPUP_WIDTH, POPUP_HEIGHT, 1)
 
     
-    const closeBtn = makeButton("Close", 8, COLORS.ORANGE, logContainer, "static")
-    alignObj(closeBtn, logContainer, 5, -2, 3, "botright")
+    const closeBtn = logContainer.add ([
+        k.text("Close", fontConfig),
+        k.pos(POPUP_WIDTH / 2 - 15, POPUP_HEIGHT / 2 - 5),
+        k.anchor("center"),
+        k.color(COLORS.ORANGE),
+        k.area(),
+        k.z(4)
+    ]);
     
 
     let popupObjects = [blocker, logContainer, closeBtn, border]
 
     //fish icons
     makeIcons(logContainer, popupObjects, FISH_DATA, "right", ICON_COLS)
-
+    
+    closeBtn.onHover(() => {
+        hoverProcess(closeBtn)
+    });
     closeBtn.onClick(() => {
+        clickProcess(closeBtn)
         popupObjects.forEach(obj => obj.destroy());
         gm.logPopupOpen = false;
     });

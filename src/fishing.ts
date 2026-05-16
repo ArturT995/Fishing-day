@@ -1,6 +1,6 @@
 import type { Vec2 } from "kaplay";
 import k from "./kaplayCtx";
-import { ANCHOR, COLORS, fishingArea, rodArea } from "./constants";
+import { COLORS, fishingArea, rodArea } from "./constants";
 import gm from "./gm";
 import { playSound } from "./sounds";
 import { message } from "./messages";

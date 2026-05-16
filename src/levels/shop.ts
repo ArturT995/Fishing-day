@@ -5,7 +5,7 @@ import gm from "../gm";
 import k from "../kaplayCtx";
 import { message } from "../messages";
 import { playSound } from "../sounds";
-import { makeContainer, makeButton, alignObj, makeIcons, clickProcess, hoverProcess } from "../ui";
+import { makeContainer, makeButton, makeIcons, clickProcess, hoverProcess } from "../ui";
 
 
 export function shop() {
@@ -39,6 +39,7 @@ export function shop() {
             gm.logPopupOpen = true
             let POPUP_WIDTH = k.width() - 10 
             let POPUP_HEIGHT = k.height() - (k.width()/5)
+            let PADDING = 10;
 
             const blocker = makeContainer("center", COLORS.BLACK,
             k.width(), k.height(), 0.3)
@@ -60,38 +61,41 @@ export function shop() {
 
             const botContainer = makeContainer("center", COLORS.BLACK,
                 shopMenuContainer.width, 20, 0.7, shopMenuContainer)
-            alignObj(botContainer ,shopMenuContainer, 0, 0, 0, "bot")
+
+            
 
 
-            let icons = ["sunIcon", "moonIcon"]
             let chosenIcon = gm.nightTime ? "moonIcon" : "sunIcon"
             const sunIcon = botContainer.add([
                 k.sprite(chosenIcon),
                 k.anchor("center"),
-                k.pos(botContainer.x,botContainer.y),
+                k.pos(-botContainer.width/2 + PADDING , botContainer.height/2 - PADDING),
                 k.z(botContainer.z+1)
-            ])
-            alignObj(sunIcon ,botContainer, 0, 0, 0, "botleft")
+            ]);
 
             if (chosenIcon === "moonIcon") shopMenuBorder.color = COLORS.BLUE;
 
             const leftBuyContainer = makeContainer("center", COLORS.GRAYBLUE, 
                 shopMenuContainer.width/2, 
                 shopMenuContainer.height - botContainer.height, 0.6)
+            leftBuyContainer.pos.y -= 10;
+            leftBuyContainer.pos.x = k.width()/2 - leftBuyContainer.width/2;
 
             const rightSellContainer = makeContainer("center", COLORS.GRAYBLUE, 
                 shopMenuContainer.width/2, 
                 shopMenuContainer.height - botContainer.height, 0.6)
-
-            
             rightSellContainer.pos.y -= 10;
             rightSellContainer.pos.x = k.width()/2 + rightSellContainer.width/2
 
-            leftBuyContainer.pos.y -= 10;
-            leftBuyContainer.pos.x = k.width()/2 - leftBuyContainer.width/2;
-
             const hideBtn = makeButton("Close", 8, COLORS.ORANGE, botContainer, "static")
-            alignObj(hideBtn, botContainer, 5, -2, 3, "botright")
+            hideBtn.pos.x -= PADDING*1.5
+            hideBtn.pos.y -= PADDING/2
+            const priceText = makeButton(`${gm.money}$`, 8, COLORS.ORANGE, botContainer, "static")
+            priceText.pos.x -= PADDING*5
+            priceText.pos.y -= PADDING/2
+            const sellAll = makeButton(`Sell All`, 8, COLORS.ORANGE, botContainer, "static")
+            sellAll.pos.x -= PADDING*10
+            sellAll.pos.y -= PADDING/2
             
             const popupObjects = [shopMenuContainer, botContainer, leftBuyContainer, rightSellContainer, hideBtn, blocker, shopMenuBorder, sunIcon]
 
@@ -110,12 +114,10 @@ export function shop() {
 
 
             const rightIcons = makeIcons(rightSellContainer, popupObjects, caughtFishes, "right", 3, 5, true)
-
             const leftIcons = makeIcons(leftBuyContainer, popupObjects, shopItems, "left", 3, 5, true)
 
 
-            const priceText = makeButton(`${gm.money}$`, 8, COLORS.ORANGE, botContainer, "static")
-            alignObj(priceText, botContainer, 40, -2, 3, "botright")
+
 
             //sell
             for (let iconR of rightIcons) {
@@ -131,12 +133,8 @@ export function shop() {
                 })
             }
 
-            // BUG: doesnt update so u can spam it for gold, also doesnt sell fish off screen.
-            //sellAll
-            const sellAll = makeButton(`Sell All`, 8, COLORS.ORANGE, botContainer, "static")
-            alignObj(sellAll, botContainer, 70, -2, 3, "botright")
-            
 
+            
             sellAll.onClick(() => {
                 for (let iconR of rightIcons) {
                     if (gm.logpopupOpen === false) return;

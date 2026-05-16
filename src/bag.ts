@@ -1,10 +1,10 @@
 import type { GameObj } from "kaplay";
-import { COLORS } from "./constants";
+import { COLORS, fontConfig } from "./constants";
 import { ITEM_DATA, ROD_DATA, type BagObj, type RodObj} from "./db";
 import gm from "./gm";
 import k from "./kaplayCtx";
 import { playSound } from "./sounds";
-import { alignObj, makeButton, makeContainer, makeIcons } from "./ui";
+import { clickProcess, hoverProcess, makeContainer, makeIcons } from "./ui";
 import { message } from "./messages";
 import { generateFishes } from "./entities/fishes";
 
@@ -33,8 +33,14 @@ export function openBag() {
 
     
 
-    const closeBtn = makeButton("Close", 8, COLORS.ORANGE, bagContainer, "static")
-    alignObj(closeBtn, bagContainer, 5, -2, 3, "botright")
+    const closeBtn = bagContainer.add ([
+        k.text("Close", fontConfig),
+        k.pos(POPUP_WIDTH / 2 - 15, POPUP_HEIGHT / 2 - 5),
+        k.anchor("center"),
+        k.color(COLORS.ORANGE),
+        k.area(),
+        k.z(4)
+    ]);
     
 
     let popupObjects = [blocker, bagContainer, closeBtn, border]
@@ -220,9 +226,11 @@ export function openBag() {
         })
     }
 
-
-
+    closeBtn.onHover(() => {
+        hoverProcess(closeBtn)
+    });
     closeBtn.onClick(() => {
+        clickProcess(closeBtn)
         popupObjects.forEach(obj => obj.destroy());
         gm.currentRodIcon = null
         gm.logPopupOpen = false;

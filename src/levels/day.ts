@@ -1,6 +1,6 @@
 import { addSprite } from "../assetLoader";
 import { openBag } from "../bag";
-import { ANCHOR, COLORS, fishingArea, fishingAreaWarning, fontConfigSmall } from "../constants";
+import { ANCHOR, COLORS, fishingArea, fontConfigSmall } from "../constants";
 import { generateFishes } from "../entities/fishes";
 import { throwLine } from "../fishing";
 import gm from "../gm";
@@ -29,8 +29,8 @@ export async function day() {
         waves.play("normal");
 
         //add crab and bird sprites
-        const dayMusic = ["fishing-bg-1", "day-bg-3", "fishing-bg-2", "fishing-bg-1", "fishing-bg-3", "night-menu-1", "menu-bg-1"]
-        const nightMusic = ["night-bg-1", "night-bg-2", "fishing-bg-1", "night-menu-1"]
+        const dayMusic = ["fishing-bg-1", "day-bg-3", "fishing-bg-2", "fishing-bg-1", "fishing-bg-3", "night-menu-1" ]
+        const nightMusic = ["night-bg-1", "night-bg-2", "fishing-bg-1", "menu-bg-1"]
         let pickedMusic = gm.nightTime ? nightMusic : dayMusic;
 
         let bgMusic = playNextSong(pickedMusic, k.randi(0, pickedMusic.length))
@@ -52,7 +52,6 @@ export async function day() {
 
         const seaSound = playSound("sea", "sfx", -0.9, true);
 
-        k.debug.log(finalsfx)
         let canPlaySound = true;
         k.loop(4, () => {
             if (canPlaySound && k.rand(1, 9) > 8) {

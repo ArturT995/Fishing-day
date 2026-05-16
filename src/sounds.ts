@@ -45,12 +45,12 @@ export function playSound(sound: string, type: "sfx" | "music" , volumeAdd = 0,
             musicSet.delete(song);
         })
     }
-
     if (type === "sfx" && sfxSet.size > 10) {
         sfxSet.forEach((_, sfx) => {
             sfxSet.delete(sfx);
         })
     }
+    if (gm.settings.musicVolume === 0)
 
     if (gm.settings.musicVolume === 0 && type === "music") {
         volumeAdd = 0;
@@ -61,7 +61,12 @@ export function playSound(sound: string, type: "sfx" | "music" , volumeAdd = 0,
 
     let soundObj: AudioPlay
     let soundTypeVolume = (type === "music") ? gm.settings.musicVolume : gm.settings.sfxVolume;
-    
+    let finalVolume = soundTypeVolume + volumeAdd
+
+    while (soundTypeVolume + volumeAdd < 0) volumeAdd += 0.1
+
+    if (finalVolume > 5) finalVolume = 5
+
     soundObj = k.play(sound, {
         volume: soundTypeVolume + volumeAdd,
         loop: loop,
@@ -81,15 +86,16 @@ export function playSound(sound: string, type: "sfx" | "music" , volumeAdd = 0,
 
 }
 
-const transferSfx = ["cards", "pipe", "drinking-noise", "frog-1", "frog-2", "bird1", "bird2",]
+const transferSfx = ["cards", "pipe", "drinking-noise", "frog-1", "frog-2", "bird1", "bird2"]
 export function playNextSong(songs: string[], index: number) {
 
     const track = songs[index];
     index = (index + 1) % songs.length;
     let bgMusic = playSound(track, "music", -0.1, false);
-
+    if (!bgMusic) throw new Error("bgMusic undefined")
     bgMusic.onEnd(() => {
         let sfx = playSound(transferSfx[k.randi(0,transferSfx.length)], "sfx", -0.3, false);
+        if (!sfx) throw new Error("sfx undefined")
         sfx.onEnd(() => {
             playNextSong(songs, index);
         })
