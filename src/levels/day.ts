@@ -191,6 +191,10 @@ export async function day() {
         })
 
 
+        
+        generateFishes() //debug only
+
+        
         // initialize
         if (gm.lastLogin === 0) generateFishes(FISH_AMOUNT)
 

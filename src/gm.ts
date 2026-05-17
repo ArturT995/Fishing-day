@@ -1,4 +1,3 @@
-import { FISH_TIMER } from "./constants";
 import { ROD_DATA, type RodObj } from "./db";
 import k from "./kaplayCtx";
 import type { GameObj } from "kaplay";

@@ -17,7 +17,7 @@ export function fishingPool(FISH_DATA: FishObj[], poolSize: number, rarityMod = 
     const chosenPool = gm.nightTime ? nightFishes : dayFishes
     
     
-    //return chosenPool //disable after testing
+    return chosenPool //disable after testing
 
     const chosenFishes: FishObj[] = []
 
@@ -552,10 +552,12 @@ function makeShape(fish: FishObj, size: number, length: number) {
     const big = [3.5, 4, 4.5, 4.5, 5, 2, 4.5, 4.5, 4, 4, 3.5, 3, 3, 4, 4];
     const long = smoothOutline([0.8, 1.0, 1.2, 1.2, 1.2, 1.1, 1.0, 0.9, 0.8, 0.7, 0.5, 1, 0.9])
 
+    const ale = smoothOutline([0.8, 0.8, 1.0, 1.0, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.3, 1.3, 1.3, 1.3, 1.2, 1.2, 1.2, 1.2, 1.1, 1.1, 1.0, 1.0, 0.9, 0.9, 0.8, 0.8, 0.7, 0.7, 0.6, 0.6, 0.5, 0.4])
 
-
-
-
+    const originalLength = ale.length;
+    for (let idx = 0; idx < originalLength; idx++) {
+        ale[idx] = ale[idx]*2
+    }
 
 
     if (size < 4.5) radices = mid
@@ -564,11 +566,13 @@ function makeShape(fish: FishObj, size: number, length: number) {
     if (size >= 5) radices = semibig
     if (size <= 2) radices = small
 
+    if (fish.name === "Eel") radices = long
     if (fish.name === "Tench") radices = tench
     if (fish.name === "Beardy") radices = beardy
     if (fish.name === "Catfish") radices = catfish
     if (fish.name === "Esox") radices = esox
-  
+    if (fish.name === "Åle") radices = ale
+
     //k.debug.log(`Size: ${size} , Length: ${length}`)
     return radices;
 }

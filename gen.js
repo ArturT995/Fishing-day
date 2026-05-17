@@ -35,4 +35,4 @@ function generate(names) {
 }
 
 
-generate("items")
+generate("fishes")

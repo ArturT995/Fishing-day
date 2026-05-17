@@ -16,7 +16,7 @@ import gm from "./gm";
 //make cursor sprite
 
 
-
+// sounds play over eachother sometimes, make stronger guards and killswitches
 // noticearea bug seems to be better now, i think ill just turn off fullscreen
 
 

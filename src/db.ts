@@ -315,6 +315,54 @@ export const FISH_DATA: FishObj[] = [
     It looks quite old and has many thin barbels around its head.
     "Is that what I think it is?! You actually managed to catch Ol'Beardy?!" - Shopkeeper`,
     unlocked: false, difficulty: 32, price: 770, feature: "Unique"},
+
+    // TBA
+
+    {fishId: "22", name: "Bobo", sprite: "bobo", spriteLocked: "bobo-locked", activeTime: "Day",
+    maxSize: 13, maxWeight: 5, rarityScore: 30,
+    desc: `This pinkish fish seems to swim in interesting dance-like patterns.
+    It seems to get along well with the other fish.
+    "I remember seeing this little fella on my travels, it's a far way from home." - ShopKeeper`,
+    unlocked: false, difficulty: 12, price: 330, feature: "Unique"},
+
+    {fishId: "23", name: "Eel", sprite: "eel", spriteLocked: "eel-locked", activeTime: "Night",
+    maxSize: 75, maxWeight: 12, rarityScore: 18,
+    desc: `Eels hunt by scent at night and can be eaten by larger eels. They have 110 to 120 vertebrae.
+    "I wonder where they come from, I've never seen a juvenile eel - Shopkeeper"`,
+    unlocked: false, difficulty: 5, price: 150, feature: ""},
+
+    {fishId: "24", name: "Bream", sprite: "bream", spriteLocked: "bream-locked", activeTime: "Day",
+    maxSize: 40, maxWeight: 5, rarityScore: 3,
+    desc: `Lives in rivers and nutrient-rich lakes, they are known to overpopulate places, thus leading
+    to stunted growth`,
+    unlocked: false, difficulty: 5, price: 50, feature: ""},
+
+    {fishId: "25", name: "Blackbanded Sunfish", sprite: "blackbandedsunfish", spriteLocked: "blackbandedsunfish-locked", activeTime: "Day",
+    maxSize: 10, maxWeight: 1, rarityScore: 4,
+    desc: `A tiny fish that eats larvae of small bugs and other insects. They are friendly and like to group
+    with others of the same species, but can become aggressive when spawning`,
+    unlocked: false, difficulty: 2, price: 35, feature: ""},
+    
+    {fishId: "26", name: "Bleak", sprite: "bleak", spriteLocked: "bleak-locked", activeTime: "Night",
+    maxSize: 24, maxWeight: 5, rarityScore: 5,
+    desc: `Easily confused with many other species such as breams and young roaches and ruffe.
+    They feed on small molluscs and are a common food for predatory fish.`,
+    unlocked: false, difficulty: 5, price: 45, feature: ""},
+
+    {fishId: "27", name: "Rudd", sprite: "rudd", spriteLocked: "rudd-locked", activeTime: "Day",
+    maxSize: 50, maxWeight: 12, rarityScore: 10,
+    desc: `Rudds have an upturned mouth, allowing them to easily feed at the top of the water.
+    The reddish coloring of the fins has earned the fish its namesake
+    "A rudd? Too bad it's not a golden rudd, would have paid good coin for that" -ShopKeeper`,
+    unlocked: false, difficulty: 10, price: 100, feature: ""},
+
+    {fishId: "28", name: "Åle", sprite: "ale", spriteLocked: "ale-locked", activeTime: "Night",
+    maxSize: 190, maxWeight: 25, rarityScore: 43,
+    desc: `A gargantuan eel with purplish skin, it looks centuries old...
+    What is this monstrosity?! - Shopkeeper"`,
+    unlocked: false, difficulty: 36, price: 960, feature: "Unique"},
+
+    // next 12 can be made up fish, leaning towards harder/rarer
     
 ];
 
