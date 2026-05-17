@@ -1,3 +1,4 @@
+import { FISH_TIMER } from "./constants";
 import { ROD_DATA, type RodObj } from "./db";
 import k from "./kaplayCtx";
 import type { GameObj } from "kaplay";
@@ -11,6 +12,7 @@ type GameSettings = {
 interface GameManager extends GameObj {
     fishUnlocked: string[];
     fishCaught: string[];
+    fishPool: string[];
     itemsUnlocked: string[];
     itemsOwned: string[];
     equippedRodId: string;
@@ -26,12 +28,17 @@ interface GameManager extends GameObj {
     nightTime: boolean;
     money: number;
     baitPower: number;
+    lastLogin: number;
+    debug: boolean;
 
     saveProgress(): void;
 
     unlockFish(fishId: string): void;
     addFish(fishId: string): void;
     removeFish(fishId: string): void;
+
+    addFishToPool(fishId: string): void;
+    removeFishFromPool(fishId: string): void;
 
     unlockItem(itemId: string): void;
     addItem(itemId: string): void;
@@ -49,10 +56,12 @@ function makeGameManager() {
 
     const savedUnlocks = k.getData("fishUnlocked", [] as string[]);
     const savedCaught = k.getData("fishCaught", [] as string[]);
+    const savedPool = k.getData("fishPool", [] as string[])
     const savedItems = k.getData("itemsUnlocked", [] as string[]);
     const savedOwned = k.getData("itemsOwned", [] as string[]);
     const savedMoney = k.getData<number>("money", 0);
     const savedRodId = k.getData<string>("rodEquippedId");
+    const savedLoginTime = k.getData<number>("lastLogin", 0);
     
     const settings = { 
         musicVolume: 0.4, 
@@ -76,15 +85,19 @@ function makeGameManager() {
        {    
             fishUnlocked: savedUnlocks,
             fishCaught: savedCaught,
+            fishPool: savedPool,
             itemsUnlocked: savedItems,
             itemsOwned: savedOwned,
             settings: settings,
             money: savedMoney ?? 0,
             equippedRodId: savedRodId,
+            lastLogin: savedLoginTime ?? 0,
 
             saveProgress(this: GameManager) {
+                k.setData("lastLogin", Date.now());
                 k.setData("fishUnlocked", this.fishUnlocked);
                 k.setData("fishCaught", this.fishCaught);
+                k.setData("fishPool", this.fishPool)
                 k.setData("itemsUnlocked", this.itemsUnlocked);
                 k.setData("itemsOwned", this.itemsOwned);
                 k.setData("money", this.money);
@@ -108,6 +121,17 @@ function makeGameManager() {
                     this.saveProgress();
                 }
                 
+            },
+            addFishToPool(this: GameManager, fishId: string) {
+                this.fishPool.push(fishId);
+                this.saveProgress();
+            },
+            removeFishFromPool(this: GameManager, fishId: string) {
+                const index = this.fishPool.indexOf(fishId)
+                if (index !== -1) {
+                    this.fishPool.splice(index, 1);
+                    this.saveProgress();
+                }
             },
 
             unlockItem(this: GameManager, itemId: string) {
@@ -167,6 +191,8 @@ function makeGameManager() {
             currentFishDifficulty: 0,
             currentFishSize: 0,
             nightTime: false,
+            fishTimer: 0,
+            debug: true, // TODO: set to false in release
 
             noticeArea: currentRod.catchArea ?? 10 + 20,
 

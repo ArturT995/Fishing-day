@@ -10,12 +10,14 @@ import { playSound } from "../sounds";
 
 
 
-export function fishingPool(FISH_DATA: FishObj[], poolSize: number): FishObj[] {
+export function fishingPool(FISH_DATA: FishObj[], poolSize: number, rarityMod = 1): FishObj[] {
 
     const dayFishes = FISH_DATA.filter((fish: FishObj) => fish.activeTime === "Day");
     const nightFishes = FISH_DATA.filter((fish: FishObj) => fish.activeTime === "Night");
     const chosenPool = gm.nightTime ? nightFishes : dayFishes
-    return chosenPool //disable after testing
+    
+    
+    //return chosenPool //disable after testing
 
     const chosenFishes: FishObj[] = []
 
@@ -24,8 +26,9 @@ export function fishingPool(FISH_DATA: FishObj[], poolSize: number): FishObj[] {
     while (poolSize > 0) {
         let roll = Math.random() * totalWeight
         for (const fish of chosenPool) {
-            roll -= (1 / fish.rarityScore);
+            roll -= (1 / Math.ceil((fish.rarityScore/rarityMod)));
             if (roll <= 0) {
+                gm.addFishToPool(fish.fishId)
                 chosenFishes.push(fish)
                 poolSize--
                 break
@@ -37,18 +40,42 @@ export function fishingPool(FISH_DATA: FishObj[], poolSize: number): FishObj[] {
 };
 
 
-export function generateFishes() {
-    let fishes = fishingPool(FISH_DATA, FISH_AMOUNT)
-    for (let fish of fishes) {
-        let randomPos = k.vec2(
-            k.randi(12, 240),
-            k.randi(12, 170)
-        );
-        if (!fishingAreaWarning.hasPoint(randomPos)) {
-            randomPos = k.vec2(k.randi(70,150), k.randi(60,130))
+export function generateFishes(amount = 0, rarityMod = 1) {
+    const currentPool = [...gm.fishPool];
+    
+    currentPool.forEach(id => {
+        const data = FISH_DATA.find(f => f.fishId === id);
+        const isWrongTime = gm.nightTime 
+            ? data?.activeTime === "Day" 
+            : data?.activeTime === "Night";      
+        if (isWrongTime) {
+            gm.removeFishFromPool(id);
         }
-        makeFish(fish, randomPos)
+    });
+
+    // prevents duplication
+    if (amount > 0) {
+        const newFishes = fishingPool(FISH_DATA, amount, rarityMod);
+        for (let fish of newFishes) {
+            spawnFishInScene(fish);
+        }
+    } else {
+        const existingFishes = gm.fishPool.map(id => 
+            FISH_DATA.find(f => f.fishId === id)
+        ).filter(f => f !== undefined) as FishObj[];
+
+        for (let fish of existingFishes) {
+            spawnFishInScene(fish);
+        }
     }
+}
+
+function spawnFishInScene(fish: FishObj) {
+    let randomPos = k.vec2(k.randi(12, 240), k.randi(12, 170));
+    if (!fishingAreaWarning.hasPoint(randomPos)) {
+        randomPos = k.vec2(k.randi(70, 150), k.randi(60, 130));
+    }
+    makeFish(fish, randomPos);
 }
 
 
@@ -153,7 +180,7 @@ export function makeFish(fish: FishObj, pos: Vec2) {
         "fish",
     ]);
     
-    // Remove if you want shilouette look.
+    // Remove if you want silhouette look.
     // TODO: add option for turning colors on
     
     entity.randomColors()
@@ -168,16 +195,6 @@ export function makeFish(fish: FishObj, pos: Vec2) {
             "fishName",
     ]);
 
-
-    /* fadein, move to .ondraw
-    const delay = k.rand(1, 8);
-
-    k.wait(delay, () => {
-        entity.opacity = k.rand(0.4, 0.7);
-
-        entity.fadeIn(k.rand(5, 18));
-    });
-    */
 
     entity.onStateEnter("idle", async () => {
         entity.enterState("move");

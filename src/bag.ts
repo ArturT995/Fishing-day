@@ -1,5 +1,5 @@
 import type { GameObj } from "kaplay";
-import { COLORS, fontConfig } from "./constants";
+import { COLORS, FISH_AMOUNT, fontConfig } from "./constants";
 import { ITEM_DATA, ROD_DATA, type BagObj, type RodObj} from "./db";
 import gm from "./gm";
 import k from "./kaplayCtx";
@@ -92,28 +92,45 @@ export function openBag() {
             if (name === "Fish Feed Can") {
                 message("You scatter the contents into the lake.")
                 splashSounds()
-                generateFishes()
+                await k.wait(1.5)
+                if (gm.fishPool.length >= FISH_AMOUNT) message("No new fish show up")
+                else if (gm.fishPool.length === 0) {
+                    message("The empty lake fills with fish")
+                    generateFishes(FISH_AMOUNT)
+                } else {
+                    if (gm.fishPool.length > 12) message("Some new fish emerge")
+                    if (gm.fishPool.length < 12) message("Many new fish emerge")
+                    generateFishes(FISH_AMOUNT - gm.fishPool.length)
+                }
             }
             if (name === "Fish Feed Deluxe") {
-                message("The Fish go wild.")
+                message("You scatter the pricy goods into the lake.")
                 thunkSounds()
                 splashSounds()
-                let fishes = k.get("fish");
-                fishes.forEach(fish => fish.destroy())
-                let fishNames = k.get("fishName");
-                fishNames.forEach(name => name.destroy())
-                generateFishes()
-                generateFishes() // TODO: add a generateRarerFishes instead
+                await k.wait(1.5)
+                if (gm.fishPool.length >= FISH_AMOUNT) message("No new fish show up, the remainder happily eats the Fish Feed Deluxe")
+                else if (gm.fishPool.length === 0) {
+                    message("The empty lake fills with fish, competing to eat the appetizing meal")
+                    generateFishes(FISH_AMOUNT+5, 1.5)
+                } else {
+                    if (gm.fishPool.length > 12) message("Some new fish rush to eat")
+                    if (gm.fishPool.length < 12) message("Many new fish rush to the lake")
+                    generateFishes(FISH_AMOUNT - gm.fishPool.length, 1.5)
+                }
                 await k.wait(0.5)
                 thunkSounds()
             }
+            // empties the lake, allowing better usage for fish feed can/deluxe and fish cycling
             if (name === "Rancid gloop") {
                 message("Disgusting.")
                 let fishes = k.get("fish");
                 let fishNames = k.get("fishName");
                 playSound("rancid-gloop", "sfx")
                 splashSounds()
-                fishes.forEach(fish => fish.destroy())
+                fishes.forEach(fish => {
+                    gm.removeFishFromPool(fish.fishId);
+                    fish.destroy();
+                });
                 fishNames.forEach(name => name.destroy())
             }
             if (name === "Deluxe Bait") {
@@ -214,7 +231,7 @@ export function openBag() {
                 message(`You relax for a bit.`)
                 playSound("pipe", "sfx");
             }
-            // TODO: randomise selected sounds for these
+
             if (icon.data.name === "Birdfeed") {
                 message(`You throw some pellets at the bird.`)
                 playSound("bird3", "sfx");

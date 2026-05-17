@@ -3,6 +3,7 @@ import k from "./kaplayCtx";
 import { menu } from "./levels/menu";
 import { day } from "./levels/day";
 import { shop } from "./levels/shop";
+import gm from "./gm";
 
 
 
@@ -16,14 +17,8 @@ import { shop } from "./levels/shop";
 
 
 
-// TODO: theres 2 big bugs in the game that happen at times, both have to do with hover behavior and active zones.
-// in testing the noticearea was affected and seemed to be below the bobber or smth(FIXED, test to see if works) and some menu buttons, prolly ones with alignObj use were sent to bottom right
-// check anchors and position changes and go over noticearea
+// noticearea bug seems to be better now, i think ill just turn off fullscreen
 
-// one way to trigger it in build mode is the fullscreen button toggling and it breaks the game quite fast. maybe turn fullscreen off?
-
-
-// TODO: wire up all the sounds and add music lists. and randomly played sfx lists
 
 await assetLoader()
 
@@ -33,7 +28,6 @@ menu()
 day()
 
 shop()
-
 
 
 // this addresses an issue where the hover/click areas drift to left from the ui element positions on the screen caused by

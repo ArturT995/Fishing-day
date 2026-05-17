@@ -1,6 +1,6 @@
 import { addSprite } from "../assetLoader";
 import { openBag } from "../bag";
-import { ANCHOR, COLORS, fishingArea, fontConfigSmall } from "../constants";
+import { ANCHOR, COLORS, FISH_AMOUNT, FISH_TIMER, fishingArea, fontConfigSmall } from "../constants";
 import { generateFishes } from "../entities/fishes";
 import { throwLine } from "../fishing";
 import gm from "../gm";
@@ -15,25 +15,32 @@ import { openCollectionLog, openSettings } from "./menu";
 export async function day() {
     k.scene("day", () => {
         let canCast = false;
-    
+        
+        
+        // TODO: add crab and bird sprites
         // Wait a tiny bit of time before allowing input
         k.wait(0.5, () => canCast = true);
         k.setCursor("default");
 
-        
         gm.nightTime ? addSprite("night-sea") : addSprite("sea");
         gm.nightTime ? addSprite("night-ground", k.z(2)) : addSprite("ground", k.z(2));
-
 
         const waves = k.add([k.sprite("waves"), k.z(1)]) // TODO: add nightwaves, currently ground color too light on anim
         waves.play("normal");
 
-        //add crab and bird sprites
+
+
+        // sounds
         const dayMusic = ["fishing-bg-1", "day-bg-3", "fishing-bg-2", "fishing-bg-1", "fishing-bg-3", "night-menu-1" ]
         const nightMusic = ["night-bg-1", "night-bg-2", "fishing-bg-1", "menu-bg-1"]
         let pickedMusic = gm.nightTime ? nightMusic : dayMusic;
 
         let bgMusic = playNextSong(pickedMusic, k.randi(0, pickedMusic.length))
+        
+        const reelSound = playSound("icon-sound-1", "sfx", 0, true, 3200, 12);
+        reelSound.volume = 0;
+        const flySound = playSound("icon-sound-1", "sfx", 0, true, 3200, 16);
+        flySound.volume = 0;
 
         const daySfx = ["bird1", "bird2", "bird3", "day-bird-2", "day-bird-3"]
 
@@ -49,7 +56,6 @@ export async function day() {
 
         // TODO: play "fast-tune" when boss fish hooked.
 
-
         const seaSound = playSound("sea", "sfx", -0.9, true);
 
         let canPlaySound = true;
@@ -63,12 +69,17 @@ export async function day() {
             }
         });
 
+        // debug
+        // toggle night and other effects here
+        if (gm.debug) {
+            k.onKeyPress("w", () => {
+                if (gm.nightTime) gm.nightTime = false;
+                else gm.nightTime = true;
+            });
+        }
 
-        //toggle night and other effects here
-        k.onKeyPress("w", () => {
-            if (gm.nightTime) gm.nightTime = false;
-            else gm.nightTime = true;
-        });
+
+        // Buttons and shapes
 
         let btnColor = gm.nightTime ? COLORS.ORANGE : COLORS.DARKRED
 
@@ -179,9 +190,22 @@ export async function day() {
             openBag();
         })
 
-        generateFishes()
-    
 
+        // initialize
+        if (gm.lastLogin === 0) generateFishes(FISH_AMOUNT)
+
+        // this draws fish when returning to scene
+        if (gm.fishPool.length > 0) generateFishes()
+        
+        
+        if (gm.fishTimer < 1 && gm.fishPool.length < 18) {
+                generateFishes(3)
+                gm.fishTimer = FISH_TIMER
+            }
+
+
+
+        // Fishing rod Power bar
         const powerBar = k.add([
                 k.rect(2,0),
                 k.pos(ANCHOR.x + 7, ANCHOR.y + 6),
@@ -221,8 +245,6 @@ export async function day() {
                 powerBar.height = 8} 
         });
         
-        
-
         k.onMouseRelease("left", () => {
             if (gm.logPopupOpen) return;
             if (!canCast) return;
@@ -249,6 +271,8 @@ export async function day() {
             power = 0;
         });
 
+
+
         k.onDraw(() => {
             const bobber = k.get("bobber")[0];
             if (bobber) {
@@ -263,12 +287,13 @@ export async function day() {
         });
 
 
-        const reelSound = k.play("icon-sound-1", { volume: 1.0, loop: true, detune: 3200, speed: 12 });
-        reelSound.volume = 0;
-        const flySound = k.play("icon-sound-1", { volume: 1.0, loop: true, detune: 3200, speed: 16 });
-        flySound.volume = 0;
-
         k.onUpdate(() => {
+            //k.debug.log(gm.lastLogin)
+            gm.fishTimer -= 1
+            if (gm.fishTimer < -200) {
+                gm.fishTimer = FISH_TIMER
+            }
+
             if (gm.logPopupOpen) return;
             const bobber = k.get("bobber")[0];
             if (bobber && (bobber.state === "flying")) {

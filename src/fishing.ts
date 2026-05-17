@@ -112,6 +112,14 @@ export function throwLine(anchor: Vec2, power: number) {
     const reelSound = k.play("icon-sound-1", { volume: 1.0, loop: true, detune: 3200, speed: 12 });
     reelSound.volume = 0;
 
+    if (gm.debug === true) {
+        k.onKeyPress("1", () => {
+            reelingArea.opacity = 0.5
+            if (!bobber.noticeArea) return;
+            bobber.noticeArea.opacity = 0.5
+        })
+    }
+
     bobber.onUpdate(() => {
 
         const toAnchor = anchor.sub(bobber.pos).unit();
@@ -135,7 +143,6 @@ export function throwLine(anchor: Vec2, power: number) {
         }
 
         // difficulty modifications here
-        // TODO: Rework fish movement, make it dark further and less frequently, current version is a pain on the wrist on earlier rods and easier in later rods.
         if (bobber.state === "catching") {
             catchTime -= 0.02
             reelingArea.pos = k.mousePos()
@@ -195,6 +202,7 @@ export function throwLine(anchor: Vec2, power: number) {
 
                 gm.addFish(fishId);
                 gm.unlockFish(fishId);
+                gm.removeFishFromPool(fishId)
 
                 k.destroy(bobber);
                 k.destroy(reelingArea);
