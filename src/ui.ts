@@ -1,5 +1,4 @@
-import type { AnchorComp, AreaComp, Color, ColorComp, FormattedText, GameObj, 
-            PosComp, RotateComp, ScaleComp, TextComp, ZComp } from "kaplay";
+import type { Color, GameObj } from "kaplay";
 
 import { COLORS } from "./constants";
 import k from "./kaplayCtx";
@@ -8,36 +7,26 @@ import { playSound } from "./sounds";
 import { ROD_DATA, type BagObj, type FishObj, type RodObj, type ShopObj } from "./db";
 
 
-export type UIObject = StaticButton | DynamicButton | Container;
-
-export type StaticButton = GameObj<
-    PosComp & AnchorComp & ColorComp & FormattedText &
-    AreaComp & ZComp & TextComp>;
-
-export type DynamicButton = GameObj<
-    PosComp & AnchorComp & ColorComp & FormattedText &
-    AreaComp & ZComp & TextComp & ScaleComp | RotateComp>;
-
-export type Container = GameObj<any>;
-
-
+// sets base position bottom right atm then posX and posY are subtracted
 export function makeButton(
     desc: string, fontSize: number,
     color: Color,
-    container: Container, type: "static" | "dynamic") {
+    container: GameObj, type: "static" | "dynamic",
+    posX: number, posY: number) {
 
-    let button: StaticButton | DynamicButton;
+    let button: GameObj;
 
     if (type === "static") {
         button = container.add([
             k.text(`${desc}`, {font: "happy", size: fontSize}),
             k.anchor("center"),
-            k.pos(container.width/2, container.height/2),
+            k.pos(container.width/2 - posX, container.height/2 - posY),
             k.color(color),
             k.area(),
+            k.opacity(1),
             k.z(container.z+1),
             `${desc}`
-        ]) as StaticButton;
+        ]) as GameObj;
     }
 
     else if (type === "dynamic") {
@@ -48,10 +37,11 @@ export function makeButton(
             k.color(color),
             k.area(),
             k.scale(1),
+            k.opacity(1),
             k.rotate(0),
             k.z(container.z+1),
             `${desc}`
-        ]) as DynamicButton;
+        ]) as GameObj;
         bubbleText(button)
     } else {
         throw new Error("invalid button type")
@@ -76,7 +66,7 @@ export function makeButton(
 
 // this causes a lot of bugs, best to not use it.
 function alignObj(
-    obj: UIObject, container: Container,
+    obj: GameObj, container: GameObj,
     offsetX: number, offsetY: number, padding: number,
     alignment: "center" | "left" | "right" |
     "top" | "bot" | "topleft" | "botleft" | "topright" | "botright" | "popbotright") {
@@ -147,7 +137,7 @@ export function makeContainer(
     width: number, height: number,
     opacity: number, parent?: GameObj) {
     
-    let container: Container;
+    let container: GameObj;
 
     if(parent) {
         container = parent.add([
@@ -156,6 +146,7 @@ export function makeContainer(
             k.anchor(anchor),
             k.color(color),
             k.area(),
+            k.opacity(1),
             k.z(2+parent.z),
             k.opacity(opacity),
             "container",
@@ -186,7 +177,7 @@ export function makeContainer(
 
 
 export function makeSlider(
-    color: Color, parent: Container, 
+    color: Color, parent: GameObj, 
     direction: "vertical" | "horizontal", 
     type: "musicVolume" | "sfxVolume", onChange: (val: number) => void) {
     
@@ -452,7 +443,7 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
 
         icon.onHover(() => {
             if (icon.opacity === 0) return;
-            playSound("icon-sound-1", "sfx", -0.85)
+            playSound("icon-sound-1", "sfx", -0.8)
             tooltip.opacity = 1;
             tooltipText.opacity = 1;
         });

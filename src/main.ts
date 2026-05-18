@@ -3,7 +3,7 @@ import k from "./kaplayCtx";
 import { menu } from "./levels/menu";
 import { day } from "./levels/day";
 import { shop } from "./levels/shop";
-import gm from "./gm";
+
 
 
 
@@ -16,9 +16,13 @@ import gm from "./gm";
 //make cursor sprite
 
 
-// sounds play over eachother sometimes, make stronger guards and killswitches
+// sounds play over eachother sometimes, make stronger guards and killswitches Done?
 // noticearea bug seems to be better now, i think ill just turn off fullscreen
 
+
+// sound crackle and slowing down seems to occus consistantly when changing scenes fast and even when playing 
+// the game normally if u reel in fish fast enough.
+// 
 
 await assetLoader()
 

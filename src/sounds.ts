@@ -34,28 +34,26 @@ export const creatureSfx = ["chomps", "crabclack", "fly", "frog-1", "frog-2",
 export let sfxSet = new Map<AudioPlay, number>();
 export let musicSet = new Map<AudioPlay, number>();
 
-
 export function playSound(sound: string, type: "sfx" | "music" , volumeAdd = 0, 
     loop = false, detune = 0, speed = 1) {
-    
+
     if (!soundsList.includes(sound)) throw new Error(`Sound "${sound}" not found in soundsList`)
 
     if (type === "music") {
-        musicSet.forEach((_, song) => {
-            musicSet.delete(song);
-        })
+        for (const [song] of musicSet) {
+            song.stop();
+        }
+        musicSet.clear();
     }
-    if (type === "sfx" && sfxSet.size > 10) {
-        sfxSet.forEach((_, sfx) => {
-            sfxSet.delete(sfx);
-        })
-    }
-    if (gm.settings.musicVolume === 0)
 
+ 
+    let minimumVolume = 0.1;
     if (gm.settings.musicVolume === 0 && type === "music") {
+        minimumVolume = 0;
         volumeAdd = 0;
     }
     if (gm.settings.sfxVolume === 0 && type === "sfx") {
+        minimumVolume = 0;
         volumeAdd = 0;
     }
 
@@ -63,10 +61,12 @@ export function playSound(sound: string, type: "sfx" | "music" , volumeAdd = 0,
     let soundTypeVolume = (type === "music") ? gm.settings.musicVolume : gm.settings.sfxVolume;
     let finalVolume = soundTypeVolume + volumeAdd
 
-    while (soundTypeVolume + volumeAdd < 0) volumeAdd += 0.1
+    
+    if (soundTypeVolume + volumeAdd < minimumVolume) {
+        volumeAdd = minimumVolume - soundTypeVolume;
+    }
 
-    if (finalVolume > 5) finalVolume = 5
-
+    if (finalVolume >= 3) finalVolume = 3
     soundObj = k.play(sound, {
         volume: soundTypeVolume + volumeAdd,
         loop: loop,
@@ -81,7 +81,7 @@ export function playSound(sound: string, type: "sfx" | "music" , volumeAdd = 0,
         sfxSet.set(soundObj, volumeAdd)
         soundObj.onEnd(() => sfxSet.delete(soundObj))
     }
-    
+
     return soundObj;
 
 }

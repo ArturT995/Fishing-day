@@ -5,6 +5,7 @@ import { generateFishes } from "../entities/fishes";
 import { throwLine } from "../fishing";
 import gm from "../gm";
 import k from "../kaplayCtx";
+import { message } from "../messages";
 import { playNextSong, playSound } from "../sounds";
 import { clickProcess, hoverProcess } from "../ui";
 import { openCollectionLog, openSettings } from "./menu";
@@ -31,8 +32,8 @@ export async function day() {
 
 
         // sounds
-        const dayMusic = ["fishing-bg-1", "day-bg-3", "fishing-bg-2", "fishing-bg-1", "fishing-bg-3", "night-menu-1" ]
-        const nightMusic = ["night-bg-1", "night-bg-2", "fishing-bg-1", "menu-bg-1"]
+        const dayMusic = ["fishing-bg-1", "day-bg-3", "fishing-bg-2", "fishing-bg-1", "fishing-bg-3"]
+        const nightMusic = ["night-bg-1", "night-bg-2", "fishing-bg-1"]
         let pickedMusic = gm.nightTime ? nightMusic : dayMusic;
 
         let bgMusic = playNextSong(pickedMusic, k.randi(0, pickedMusic.length))
@@ -41,6 +42,8 @@ export async function day() {
         reelSound.volume = 0;
         const flySound = playSound("icon-sound-1", "sfx", 0, true, 3200, 16);
         flySound.volume = 0;
+        let throwsound = playSound("icon-sound-1", "sfx", -0.9, true, 1800, 15)
+        throwsound.volume = 0
 
         const daySfx = ["bird1", "bird2", "bird3", "day-bird-2", "day-bird-3"]
 
@@ -129,10 +132,11 @@ export async function day() {
             k.z(3),
         ]);
         shopBtn.onHover(() => hoverProcess(shopBtn))
-        shopBtn.onClick(() => {
+        shopBtn.onClick(async () => {
             let bobber = k.get("bobber");
             if (bobber.length !== 0) return;
             clickProcess(shopBtn)
+            await k.wait(0.1)
             k.go("shop");
         })
 
@@ -192,23 +196,19 @@ export async function day() {
 
 
         
-        generateFishes() //debug only
+        //generateFishes(FISH_AMOUNT) //debug only
 
-        
+
         // initialize
         if (gm.lastLogin === 0) generateFishes(FISH_AMOUNT)
 
         // this draws fish when returning to scene
-        if (gm.fishPool.length > 0) generateFishes()
+        if (gm.fishPool.length > 0) {
+            k.wait(0.5)
+            generateFishes()
+        }
         
         
-        if (gm.fishTimer < 1 && gm.fishPool.length < 18) {
-                generateFishes(3)
-                gm.fishTimer = FISH_TIMER
-            }
-
-
-
         // Fishing rod Power bar
         const powerBar = k.add([
                 k.rect(2,0),
@@ -231,14 +231,26 @@ export async function day() {
             ])
         
         let power = 0;
+        let fishlimit = false
+        k.onMousePress("left", () => {
+            if(gm.fishCaught.length >= 30) {
+                fishlimit = true;
+                return;
+            } else {
+                fishlimit = false;
+            }
+        })
+
+
         k.onMouseDown("left", () => {
             if (!canCast) return;
             if (gm.logPopupOpen) return;
             if (gm.state === "catching") return;
             const bobber = k.get("bobber")[0]
             if(bobber) return;
+            if (fishlimit) return;
 
-            playSound("icon-sound-1", "sfx", -0.9)
+            throwsound.volume = 1
             power += 0.05
             powerBar.height += 0.12;
             powerBarBox.opacity = 1;
@@ -252,6 +264,11 @@ export async function day() {
         k.onMouseRelease("left", () => {
             if (gm.logPopupOpen) return;
             if (!canCast) return;
+            if (fishlimit) {
+                message("You can't carry anymore fish,\ngo to the store to sell them")
+                return;
+            }
+            throwsound.volume = 0
             powerBar.height = 0;
             powerBarBox.opacity = 0;
             powerBar.angle = 0;
@@ -292,9 +309,14 @@ export async function day() {
 
 
         k.onUpdate(() => {
-            //k.debug.log(gm.lastLogin)
+
             gm.fishTimer -= 1
+
             if (gm.fishTimer < -200) {
+                gm.fishTimer = 0
+            }
+            if (gm.fishTimer < 1 && gm.fishPool.length < 14) {
+                generateFishes(3)
                 gm.fishTimer = FISH_TIMER
             }
 
@@ -337,7 +359,8 @@ export async function day() {
             bgMusic.stop();
             seaSound.stop();
             reelSound.stop();
-            flySound.stop()
+            flySound.stop();
+            throwsound.stop();
             waves.stop();
         });
     });

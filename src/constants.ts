@@ -1,7 +1,7 @@
 import type { Vec2 } from "kaplay";
 import k from "./kaplayCtx";
 
-export const FISH_TIMER = 1000;
+export const FISH_TIMER = 300;
 export const FISH_AMOUNT = k.randi(12, 18)
 export const ANCHOR = k.vec2(k.width() / 2, k.height() - 47)
 

@@ -17,7 +17,7 @@ export function fishingPool(FISH_DATA: FishObj[], poolSize: number, rarityMod = 
     const chosenPool = gm.nightTime ? nightFishes : dayFishes
     
     
-    return chosenPool //disable after testing
+    //return chosenPool //disable after testing
 
     const chosenFishes: FishObj[] = []
 
@@ -106,7 +106,7 @@ export function makeFish(fish: FishObj, pos: Vec2) {
     const entity = k.add([
         k.pos(pos),
         k.circle(0),
-        k.opacity(1),
+        k.opacity(0),
         k.anchor("center"),
         k.area(),
         k.color(randomColor),
@@ -116,6 +116,7 @@ export function makeFish(fish: FishObj, pos: Vec2) {
             fishId: fish.fishId,
             name: fish.name,
             speed: speed,
+            fadeSpeed: k.rand(0.05,0.3),
             size: fish.maxSize,
             hooked: false,
             difficulty: fish.difficulty,
@@ -257,6 +258,11 @@ export function makeFish(fish: FishObj, pos: Vec2) {
             if (fishName.opacity > 0) fishName.opacity -= 0.01
         };
 
+        if (entity.opacity < 1) {
+            entity.opacity += k.dt() * entity.fadeSpeed;
+            if (entity.opacity > 1) entity.opacity = 1;
+        }
+
         if (!fishingAreaWarning.hasPoint(entity.pos) && entity.state !== "pursue") {
             const safePoint = k.vec2(k.randi(80,130), k.randi(60,100)); 
             if (entity.waypoints[entity.currentWaypoint].dist(safePoint) > 1) {
@@ -331,21 +337,21 @@ export function makeFish(fish: FishObj, pos: Vec2) {
 
 
     entity.onDraw(() => {
-        
+        const currentOpacity = entity.opacity;
         // fish shape drawn here
         if (entity.name !== "Old Boot") {
             
             entity.data.slice().reverse().forEach(({ pos, r, color }, i) => {
-                if (i < 2) {
-                    k.drawCircle({ pos, radius: r, color, resolution: 0.05 })
-                } else {
-                    k.drawCircle({ pos, radius: r, color, resolution: 0.07 })
-                }
-                
-                // settings for fun or possible future item effects.
-                
-                //wildcolors(color)
+                k.drawCircle({ 
+                    pos, 
+                    radius: r, 
+                    color, 
+                    opacity: currentOpacity,
+                    resolution: i < 2 ? 0.05 : 0.07 
+                })
 
+                // settings for fun or possible future item effects.
+                //wildcolors(color)
             })
 
         } else {
@@ -361,6 +367,7 @@ export function makeFish(fish: FishObj, pos: Vec2) {
                     k.vec2(pos.x - 1,   pos.y + 0.2),
                 ],
                 color: k.rgb(31, 27, 22),
+                opacity: currentOpacity
             });
         }
 
@@ -490,6 +497,7 @@ function spawnCaughtFish(fish: GameObj) {
         }
     });
     bobber.onDraw(() => {
+        k.drawRect({width: caughtFish.data.length/2, height: caughtFish.data.length/4, opacity: 1, angle: k.rand(90, 300), color: COLORS.BLACK})
         caughtFish.data.slice().reverse().forEach(({ pos, r, color }) => {
         color = COLORS.WHITE
         if (k.chance(0.2)) {
