@@ -170,7 +170,7 @@ export function openCollectionLog() {
     ]);
     
 
-    let popupObjects = [blocker, logContainer, closeBtn, border]
+    let popupObjects = [blocker, logContainer, border]
 
     //fish icons
     makeIcons(logContainer, popupObjects, FISH_DATA, "right", ICON_COLS)

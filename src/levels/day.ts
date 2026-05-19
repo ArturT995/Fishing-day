@@ -163,7 +163,7 @@ export async function day() {
         const bagBtn = k.add([
             k.text("Bag", fontConfigSmall),
             k.anchor("left"),
-            k.pos(PADDING+60, k.height() - 5),
+            k.pos(PADDING+58, k.height() - 5),
             k.color(btnColor),
             k.area(),
             k.scale(1),
@@ -235,6 +235,7 @@ export async function day() {
             const bobber = k.get("bobber")[0]
             if(bobber) return;
             if (fishlimit) return;
+
             throwsound.paused = false
 
             power += 0.05
@@ -251,6 +252,10 @@ export async function day() {
             throwsound.paused = true
             if (gm.logPopupOpen) return;
             if (!canCast) return;
+            const fish = k.get("fish")[0]
+            if(!fish) {
+                message("You've caught all the fish, \nmaybe there's a way to get more to appear.")
+            }
             if (fishlimit) {
                 playSound("fish-escaped", "sfx", -0.5, false, 500 , 4)
                 message("You can't carry anymore fish,\ngo to the store to sell them")

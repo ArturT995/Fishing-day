@@ -46,19 +46,19 @@ export const ROD_DATA: any[] = [
     selected: true, reelSpeed: 65, catchArea: 14, endurance: 12},
 
     {rodId: "2", name: "Copper rod", unlocked: false,
-    selected: false, reelSpeed: 75, catchArea: 15, endurance: 12},
+    selected: false, reelSpeed: 70, catchArea: 15, endurance: 12},
 
     {rodId: "3", name: "Elegant Rod", unlocked: false,
-    selected: false, reelSpeed: 85, catchArea: 16, endurance: 13},
+    selected: false, reelSpeed: 73, catchArea: 15, endurance: 13},
 
     {rodId: "4", name: "Exquisite rod", unlocked: true,
-    selected: true, reelSpeed: 90, catchArea: 17, endurance: 14},
+    selected: true, reelSpeed: 80, catchArea: 16, endurance: 14},
 
     {rodId: "5", name: "Excellent rod", unlocked: false,
-    selected: false, reelSpeed: 110, catchArea: 18, endurance: 15},
+    selected: false, reelSpeed: 95, catchArea: 17, endurance: 15},
 
     {rodId: "6", name: "Legendary rod", unlocked: false,
-    selected: false, reelSpeed: 130, catchArea: 23, endurance: 17},
+    selected: false, reelSpeed: 125, catchArea: 21, endurance: 17},
 ]
 
 //make function that assigns a sprite/fixed size range depending on fish size
@@ -176,14 +176,14 @@ export const FISH_DATA: FishObj[] = [
     maxSize: 10, maxWeight: 0.3, rarityScore: 10,
     desc: `This little denizen gets up at the crack of dawn and displays a high level of activity throughout the day and well into the late evening.
     It has a sleek look and a go-getter attitude.`,
-    unlocked: false, difficulty: 4, price: 50, feature: ""},
+    unlocked: false, difficulty: 5, price: 50, feature: ""},
 
     {fishId:" 2", name: "Carp", sprite: "carp", spriteLocked: "carp-locked", activeTime: "Day",
     maxSize: 25, maxWeight: 14, rarityScore: 1,
     desc: `A common coarse fish. Has a robust build and a dull gold sheen.
     It has a fixed frown on it's face. A single carp can lay over a million eggs in one year.
     Prefers cozy, brackish waters and soft sediments.`, 
-    unlocked: false, difficulty: 1, price: 30, feature: ""},
+    unlocked: false, difficulty: 2, price: 35, feature: ""},
 
     {fishId:" 3", name: "Ghost Carp", sprite: "ghostcarp", spriteLocked: "ghostcarp-locked", activeTime: "Night",
     maxSize: 25, maxWeight: 14, rarityScore: 20,
@@ -214,15 +214,15 @@ export const FISH_DATA: FishObj[] = [
     Alchemists grind the scales into dust and treat it chemically, 
     removing imperfections and sell it as gold powder.
     "Now this is a rare sight! Folks used to fish entire lakes dry in search of this fish." - Shopkeeper`, 
-    unlocked: false, difficulty: 4, price: 1500, feature: "Icon sparkles/glows"},
+    unlocked: false, difficulty: 11, price: 1500, feature: "Icon sparkles/glows"},
 
     {fishId:" 7", name: "Spotted Gar", sprite: "spottedgar", spriteLocked: "spottedgar-locked", activeTime: "Day",
     maxSize: 28, maxWeight: 4, rarityScore: 1,
     desc: `Thick scales cover this fish, it's mouth filled with long, sharp teeth.
     It's most commonly found in clear, shallow waters and hunts smaller fish.`,
-    unlocked: false, difficulty: 4, price: 30, feature: ""},
+    unlocked: false, difficulty: 5, price: 30, feature: ""},
 
-    {fishId:" 8", name: "Alligator Gar", sprite: "alligatorgar", spriteLocked: "alligatorgar-locked", activeTime: "Night",
+    {fishId:" 8", name: "Alligator Gar", sprite: "alligatorgar", spriteLocked: "alligatorgar-locked", activeTime: "Day",
     maxSize: 45, maxWeight: 120, rarityScore: 35,
     desc: `A massive, slow moving fish. The largest species of the gar family.
     It stalks the waters, looking to ambush other fish, waterfowl and small mammals.
@@ -236,15 +236,15 @@ export const FISH_DATA: FishObj[] = [
     desc: `Commonly known as pike. They have a torpedo-like shape typical of predatory fishes.
     Typically of grey-green color and mottled appearance. Many unwary anglers have
     been bitten by them.`,
-    unlocked: false, difficulty: 9, price: 70, feature: "Aggressive"},
+    unlocked: false, difficulty: 10, price: 70, feature: "Aggressive"},
 
     {fishId: "10", name: "Freshwater drum", sprite: "freshwaterdrum", spriteLocked: "freshwaterdrum-locked", activeTime: "Day",
-    maxSize: 15, maxWeight: 10, rarityScore: 4,
+    maxSize: 15, maxWeight: 10, rarityScore: 5,
     desc: `It is also called Russell fish, Shepherd's pie, Gray bass, Gasper goo,
     Gaspergou, Gou, Grunt, Grunter, Grinder, Gooble Gobble, and Croaker.
     The males make a "grunting" noise that comes from a special set of muscles
     that vibrate against the swim bladder. The purpose of the grunting is unknown.`,
-    unlocked: false, difficulty: 3, price: 25, feature: "Grunting"},
+    unlocked: false, difficulty: 9, price: 40, feature: "Grunting"},
 
     {fishId: "11", name: "Largemouth bass", sprite: "largemouthbass", spriteLocked: "largemouthbass-locked", activeTime: "Night",
     maxSize: 24, maxWeight: 11, rarityScore: 4, 
@@ -270,7 +270,7 @@ export const FISH_DATA: FishObj[] = [
     {fishId: "14", name: "Humpback chub", sprite: "humpbackchub", spriteLocked: "humpbackchub-locked", activeTime: "Day",
     maxSize: 27, maxWeight: 9, rarityScore: 4, 
     desc: `This resilient fish usually lives in the same local area for it's entire life, they have a concave head and a hump.`,
-    unlocked: false, difficulty: 2, price: 20, feature: ""},
+    unlocked: false, difficulty: 3, price: 30, feature: ""},
 
     {fishId: "15", name: "Walleye", sprite: "walleye", spriteLocked: "walleye-locked", activeTime: "Night",
     maxSize: 80, maxWeight: 10, rarityScore: 5, 
@@ -304,7 +304,7 @@ export const FISH_DATA: FishObj[] = [
     unlocked: false, difficulty: 14, price: 550, feature: "Unique"},
 
     {fishId: "20", name: "Old Boot", sprite: "oldboot", spriteLocked: "oldboot-locked", activeTime: "Day",
-    maxSize: 14, maxWeight: 9, rarityScore: 30, 
+    maxSize: 14, maxWeight: 9, rarityScore: 24, 
     desc: `Junk, maybe the shopkeeper will take pity on you and buy it for a coin.`,  
     unlocked: false, difficulty: 1, price: 4, feature: "plays failure sound"},
 
@@ -319,7 +319,7 @@ export const FISH_DATA: FishObj[] = [
     // TBA
 
     {fishId: "22", name: "Bobo", sprite: "bobo", spriteLocked: "bobo-locked", activeTime: "Day",
-    maxSize: 13, maxWeight: 5, rarityScore: 30,
+    maxSize: 13, maxWeight: 5, rarityScore: 25,
     desc: `This pinkish fish seems to swim in interesting dance-like patterns.
     It seems to get along well with the other fish.
     "I remember seeing this little fella on my travels, it's a far way from home." - ShopKeeper`,

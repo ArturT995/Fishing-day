@@ -64,7 +64,7 @@ function makeGameManager() {
     
     const settings = { 
         musicVolume: 0.4, 
-        sfxVolume: 0.7,
+        sfxVolume: 0.9,
     };
 
     const foundRod = ROD_DATA.find((rod: RodObj) => rod.rodId === savedRodId) as RodObj;

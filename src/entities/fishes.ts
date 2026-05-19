@@ -162,6 +162,7 @@ export function makeFish(fish: FishObj, pos: Vec2) {
                     if (entity.name === "Starbass")    [head, base, tail] = [k.rgb(10 + deviation, 60 + deviation, 130 + deviation),  k.rgb(40 + deviation, 120 + deviation, 180 + deviation),  k.rgb(15 + deviation, 70 + deviation, 145 + deviation)];
                     if (entity.name === "Shyfish")     [head, base, tail] = [k.rgb(60 + deviation, 20 + deviation, 100 + deviation),   k.rgb(110 + deviation, 60 + deviation, 160 + deviation),  k.rgb(70 + deviation, 25 + deviation, 115 + deviation)];
                     if (entity.name === "Olly")        [head, base, tail] = [k.rgb(120 + deviation, 70 + deviation, 70 + deviation),   k.rgb(165 + deviation, 130 + deviation, 105 + deviation), k.rgb(105 + deviation, 65 + deviation, 55 + deviation)];
+                    if (entity.name === "Bobo")        [head, base, tail] = [k.rgb(180 + deviation, 55 + deviation, 112 + deviation),   k.rgb(195 + deviation, 85 + deviation, 120 + deviation), k.rgb(120 + deviation, 35 + deviation, 90 + deviation)];
                     if (entity.name === "Beardy")      [head, base, tail] = [k.rgb(15 + deviation, 45 + deviation, 35 + deviation),   k.rgb(20 + deviation, 50 + deviation, 35 + deviation),   k.rgb(10 + deviation, 40 + deviation, 25 + deviation)];
                     
                     item.color = k.rgb(base.r + deviation, base.g + deviation, base.b + deviation)
@@ -462,7 +463,7 @@ function spawnCaughtFish(fish: GameObj) {
         }
     });
     bobber.onDraw(() => {
-        k.drawRect({width: caughtFish.data.length/2, height: caughtFish.data.length/4, opacity: 1, angle: k.rand(90, 300), color: COLORS.BLACK})
+        k.drawRect({width: caughtFish.data.length/2, height: caughtFish.data.length/k.randi(2,5), opacity: 1, angle: k.rand(90, 300), color: COLORS.BLACK})
         caughtFish.data.slice().reverse().forEach(({ pos, r, color }) => {
         color = COLORS.WHITE
         if (k.chance(0.2)) {

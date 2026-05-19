@@ -108,8 +108,8 @@ export function shop() {
 
 
 
-            const popupObjects = [shopMenuContainer, botContainer, leftBuyContainer, rightSellContainer, 
-                hideBtn, blocker, shopMenuBorder, sunIcon, leftBuyContainerAdd, rightSellContainerAdd]
+            const popupObjects = [shopMenuContainer, leftBuyContainer, rightSellContainer, 
+                blocker, shopMenuBorder, leftBuyContainerAdd, rightSellContainerAdd]
 
 
             const caughtFishes = gm.fishCaught.map(id => {
