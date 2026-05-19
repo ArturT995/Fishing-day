@@ -217,26 +217,26 @@ export const FISH_DATA: FishObj[] = [
     unlocked: false, difficulty: 11, price: 1500, feature: "Icon sparkles/glows"},
 
     {fishId:" 7", name: "Spotted Gar", sprite: "spottedgar", spriteLocked: "spottedgar-locked", activeTime: "Day",
-    maxSize: 28, maxWeight: 4, rarityScore: 1,
+    maxSize: 45, maxWeight: 4, rarityScore: 5,
     desc: `Thick scales cover this fish, it's mouth filled with long, sharp teeth.
     It's most commonly found in clear, shallow waters and hunts smaller fish.`,
-    unlocked: false, difficulty: 5, price: 30, feature: ""},
+    unlocked: false, difficulty: 9, price: 60, feature: ""},
 
     {fishId:" 8", name: "Alligator Gar", sprite: "alligatorgar", spriteLocked: "alligatorgar-locked", activeTime: "Day",
-    maxSize: 45, maxWeight: 120, rarityScore: 35,
+    maxSize: 45, maxWeight: 120, rarityScore: 16,
     desc: `A massive, slow moving fish. The largest species of the gar family.
     It stalks the waters, looking to ambush other fish, waterfowl and small mammals.
     The scales have serrated edges and have a tough inner layer of bone.
     It's estimated to live between 50 to 70 years.
     "How did you manage to catch that?!" - Shopkeeper.`,
-    unlocked: false, difficulty: 13, price: 220, feature: ""},
+    unlocked: false, difficulty: 17, price: 220, feature: ""},
 
     {fishId:" 9", name: "Esox", sprite: "esox", spriteLocked: "esox-locked", activeTime: "Day",
-    maxSize: 32, maxWeight: 25, rarityScore: 14,
+    maxSize: 32, maxWeight: 25, rarityScore: 12,
     desc: `Commonly known as pike. They have a torpedo-like shape typical of predatory fishes.
     Typically of grey-green color and mottled appearance. Many unwary anglers have
     been bitten by them.`,
-    unlocked: false, difficulty: 10, price: 70, feature: "Aggressive"},
+    unlocked: false, difficulty: 14, price: 90, feature: "Aggressive"},
 
     {fishId: "10", name: "Freshwater drum", sprite: "freshwaterdrum", spriteLocked: "freshwaterdrum-locked", activeTime: "Day",
     maxSize: 15, maxWeight: 10, rarityScore: 5,
@@ -292,7 +292,7 @@ export const FISH_DATA: FishObj[] = [
     unlocked: false, difficulty: 6, price: 100, feature: ""},
 
     {fishId: "18", name: "Olly", sprite: "olly", spriteLocked: "olly-locked", activeTime: "Day",
-    maxSize: 39, maxWeight: 18, rarityScore: 39, 
+    maxSize: 39, maxWeight: 18, rarityScore: 32, 
     desc: `You're not sure what sort of a fish this is, it looks pale though. 
     The shopkeeper could only scratch his head when you presented him this fish`,
     unlocked: false, difficulty: 13, price: 460, feature: "Unique"},
@@ -309,7 +309,7 @@ export const FISH_DATA: FishObj[] = [
     unlocked: false, difficulty: 1, price: 4, feature: "plays failure sound"},
 
     {fishId: "21", name: "Beardy", sprite: "beardy", spriteLocked: "beardy-locked", activeTime: "Day",
-    maxSize: 68, maxWeight: 40, rarityScore: 40, 
+    maxSize: 68, maxWeight: 40, rarityScore: 35, 
     desc: `You've heard tales of this crafty fish in the local area. 
     Despite it's size it has managed to outsmart the fishermen and has remained uncaught until now.
     It looks quite old and has many thin barbels around its head.

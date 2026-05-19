@@ -110,7 +110,7 @@ export function throwLine(anchor: Vec2, power: number) {
     })
 
     const reelSound = playSound("icon-sound-1", "sfx", 1, true, 3200, 12 );
-    reelSound.volume = 0;
+    reelSound.paused = true;
 
     if (gm.debug === true) {
         k.onKeyPress("1", () => {
@@ -147,7 +147,7 @@ export function throwLine(anchor: Vec2, power: number) {
             catchTime -= 0.02
             reelingArea.pos = k.mousePos()
             reelingArea.opacity = 1;
-            reelSound.volume = 1;
+            reelSound.paused = false;
             
             const fishId = gm.currentFishId;
             //const size = gm.currentFishSize;
@@ -158,14 +158,16 @@ export function throwLine(anchor: Vec2, power: number) {
             const maxFishDifficulty = 32;
             if (bobber.fishPullTime <= 0) {
                 bobber.fishPullTime = 3 + ((maxFishDifficulty - (gm.currentFishDifficulty + 3)) / 10);
-                const angle = k.rand(130, 300);
+                const angle = k.rand(0, 340);
                 bobber.fishPullDir = k.Vec2.fromAngle(angle);
-                bobber.fishPullSpeed = k.rand(10+difficulty*3, 25+difficulty*6);
+                bobber.fishPullSpeed = k.rand(10+difficulty*3, 25+difficulty*5);
             }
+
 
             // set to 2 to allow a refresh period between movements
             if (bobber.fishPullTime >= 2) {
                 bobber.move(bobber.fishPullDir.scale(bobber.fishPullSpeed));
+                
                 //bounce
                 if (!fishingArea.hasPoint(bobber.pos) && !rodArea.hasPoint(bobber.pos)) {
                     playSound("fishing-thunk", "sfx");
@@ -179,6 +181,16 @@ export function throwLine(anchor: Vec2, power: number) {
                     if (!fishingArea.hasPoint(bobber.pos)) bobber.move(toCenter.scale(k.randi(50)));
                 }
             }
+            if (bobber.fishPullTime >= 1 && bobber.fishPullTime >= 0 ) {
+                /*
+                let secondmove = 0;
+                if (k.randi(gm.currentFishDifficulty,32) > 28) {
+                    k.debug.log("2nd")
+                    bobber.move(bobber.fishPullDir.scale(bobber.fishPullSpeed*4));
+                }
+                */
+            }
+            
 
             // constantly moves away from bobber at all times
             bobber.move(toAnchor.scale(-30 - difficulty));
@@ -190,7 +202,7 @@ export function throwLine(anchor: Vec2, power: number) {
                 const fish = FISH_DATA.find(fish=> fish.fishId === fishId)
                 if (fish === undefined) throw new Error("Fish undefined")
                 
-                reelSound.volume = 0;
+                reelSound.paused = true;
                 reelSound.stop();
                 
                 if (!gm.fishUnlocked.includes(fishId)) {
@@ -223,7 +235,7 @@ export function throwLine(anchor: Vec2, power: number) {
                 playSound("fish-escaped", "sfx")
                 message(". . .")
                 catchTime = gm.endurance
-                reelSound.volume = 0;
+                reelSound.paused = true;
                 reelSound.stop();
                 return;
             }
@@ -233,7 +245,6 @@ export function throwLine(anchor: Vec2, power: number) {
             const isInside = bobber.pos.dist(reelingArea.pos) < reelingArea.radius;
             if (isInside) {   
                 const isResisting = k.chance(difficulty / 100);
-                reelSound.volume = 2;
 
                 if (isResisting) {
                     bobber.move(toAnchor.scale(bobber.reelSpeed - gm.currentFishDifficulty*2));

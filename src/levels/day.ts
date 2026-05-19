@@ -8,7 +8,7 @@ import k from "../kaplayCtx";
 import { message } from "../messages";
 import { playNextSong, playSound } from "../sounds";
 import { clickProcess, hoverProcess } from "../ui";
-import { openCollectionLog, openSettings } from "./menu";
+import { openCollectionLog } from "./menu";
 
 
 
@@ -185,7 +185,10 @@ export async function day() {
 
 
         // initialize
-        if (gm.lastLogin === 0) generateFishes(FISH_AMOUNT)
+        if (gm.lastLogin === 0){
+            generateFishes(FISH_AMOUNT)
+            gm.lastLogin = Date.now()
+        }
 
         // this draws fish when returning to scene
         if (gm.fishPool.length > 0) {

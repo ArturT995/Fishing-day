@@ -69,7 +69,7 @@ export function shop() {
 
 
             let chosenIcon = gm.nightTime ? "moonIcon" : "sunIcon"
-            const sunIcon = botContainer.add([
+            botContainer.add([
                 k.sprite(chosenIcon),
                 k.anchor("center"),
                 k.opacity(1),
