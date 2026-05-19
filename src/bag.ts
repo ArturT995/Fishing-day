@@ -108,10 +108,10 @@ export function openBag() {
                 thunkSounds()
                 splashSounds()
                 await k.wait(1.5)
-                if (gm.fishPool.length >= FISH_AMOUNT) message("No new fish show up, the remainder happily eats the Fish Feed Deluxe")
+                if (gm.fishPool.length >= FISH_AMOUNT) message("No new fish show up, \nthe remainder happily eats \nthe Fish Feed Deluxe")
                 else if (gm.fishPool.length === 0) {
-                    message("The empty lake fills with fish, competing to eat the appetizing meal")
-                    generateFishes(FISH_AMOUNT+5, 1.5)
+                    message("The empty lake fills with fish, \ncompeting to eat the appetizing meal")
+                    generateFishes(FISH_AMOUNT+5, 1.25)
                 } else {
                     if (gm.fishPool.length > 12) message("Some new fish rush to eat")
                     if (gm.fishPool.length < 12) message("Many new fish rush to the lake")
@@ -172,7 +172,7 @@ export function openBag() {
                 gm.intoxication += 3;
             }
             if (name === "Coffee") {
-                message("You happily drink the coffee, it tastes good.")
+                message("You happily drink the coffee, \nit tastes good.")
                 playSound("drinking-noise", "sfx");
                 gm.intoxication += 1;
             }

@@ -61,9 +61,10 @@ export function playSound(sound: string, type: "sfx" | "music" , volumeAdd = 0,
     let soundTypeVolume = (type === "music") ? gm.settings.musicVolume : gm.settings.sfxVolume;
     let finalVolume = soundTypeVolume + volumeAdd
 
-    
+    // prevents negative values while allowing sfx settings to be adjusted
     if (soundTypeVolume + volumeAdd < minimumVolume) {
-        volumeAdd = minimumVolume - soundTypeVolume;
+        volumeAdd = 0;
+        soundTypeVolume = minimumVolume;
     }
 
     if (finalVolume >= 3) finalVolume = 3
@@ -86,7 +87,7 @@ export function playSound(sound: string, type: "sfx" | "music" , volumeAdd = 0,
 
 }
 
-const transferSfx = ["cards", "pipe", "drinking-noise", "frog-1", "frog-2", "bird1", "bird2"]
+
 export function playNextSong(songs: string[], index: number) {
 
     const track = songs[index];
@@ -94,12 +95,7 @@ export function playNextSong(songs: string[], index: number) {
     let bgMusic = playSound(track, "music", -0.1, false);
     if (!bgMusic) throw new Error("bgMusic undefined")
     bgMusic.onEnd(() => {
-        let sfx = playSound(transferSfx[k.randi(0,transferSfx.length)], "sfx", -0.3, false);
-        if (!sfx) throw new Error("sfx undefined")
-        sfx.onEnd(() => {
-            playNextSong(songs, index);
-        })
+        playNextSong(songs, index);
     });
-
     return bgMusic;
 }

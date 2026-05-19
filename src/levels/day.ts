@@ -38,12 +38,13 @@ export async function day() {
 
         let bgMusic = playNextSong(pickedMusic, k.randi(0, pickedMusic.length))
         
-        const reelSound = playSound("icon-sound-1", "sfx", 0, true, 3200, 12);
-        reelSound.volume = 0;
-        const flySound = playSound("icon-sound-1", "sfx", 0, true, 3200, 16);
-        flySound.volume = 0;
-        let throwsound = playSound("icon-sound-1", "sfx", -0.9, true, 1800, 15)
-        throwsound.volume = 0
+
+        const reelSound = playSound("icon-sound-1", "sfx", 1, true, 3200, 12);
+        reelSound.paused = true
+        const flySound = playSound("icon-sound-1", "sfx", 1, true, 3200, 16);
+        flySound.paused = true
+        let throwsound = playSound("icon-sound-1", "sfx", 0.5, true, 1800, 15)
+        throwsound.paused = true
 
         const daySfx = ["bird1", "bird2", "bird3", "day-bird-2", "day-bird-3"]
 
@@ -119,13 +120,14 @@ export async function day() {
             clickProcess(menuBtn)
             let bobber = k.get("bobber");
             if (bobber.length !== 0) return;
+            if (gm.logPopupOpen) return;
             k.go("main-menu");
         })
 
         const shopBtn = k.add([
             k.text("Shop", fontConfigSmall),
             k.anchor("right"),
-            k.pos(k.width()-(PADDING+20), k.height() - 5),
+            k.pos(PADDING+100, k.height() - 5),
             k.color(btnColor),
             k.area(),
             k.scale(1),
@@ -135,6 +137,7 @@ export async function day() {
         shopBtn.onClick(async () => {
             let bobber = k.get("bobber");
             if (bobber.length !== 0) return;
+            if (gm.logPopupOpen) return;
             clickProcess(shopBtn)
             await k.wait(0.1)
             k.go("shop");
@@ -157,28 +160,10 @@ export async function day() {
             openCollectionLog();
         })
 
-        const settingsBtn = k.add([
-            k.text("Settings", fontConfigSmall),
-            k.anchor("left"),
-            k.pos(PADDING+42, k.height() - 5),
-            k.color(btnColor),
-            k.area(),
-            k.scale(1),
-            k.z(3),
-            "settingsBtn"
-        ]);
-        settingsBtn.onHover(() => hoverProcess(settingsBtn))
-        settingsBtn.onClick(() => {
-            let bobber = k.get("bobber");
-            if (bobber.length !== 0) return;
-            clickProcess(settingsBtn)
-            openSettings();
-        })
-
         const bagBtn = k.add([
             k.text("Bag", fontConfigSmall),
             k.anchor("left"),
-            k.pos(PADDING+70, k.height() - 5),
+            k.pos(PADDING+60, k.height() - 5),
             k.color(btnColor),
             k.area(),
             k.scale(1),
@@ -239,6 +224,7 @@ export async function day() {
             } else {
                 fishlimit = false;
             }
+            
         })
 
 
@@ -249,8 +235,8 @@ export async function day() {
             const bobber = k.get("bobber")[0]
             if(bobber) return;
             if (fishlimit) return;
+            throwsound.paused = false
 
-            throwsound.volume = 1
             power += 0.05
             powerBar.height += 0.12;
             powerBarBox.opacity = 1;
@@ -262,13 +248,15 @@ export async function day() {
         });
         
         k.onMouseRelease("left", () => {
+            throwsound.paused = true
             if (gm.logPopupOpen) return;
             if (!canCast) return;
             if (fishlimit) {
+                playSound("fish-escaped", "sfx", -0.5, false, 500 , 4)
                 message("You can't carry anymore fish,\ngo to the store to sell them")
                 return;
             }
-            throwsound.volume = 0
+
             powerBar.height = 0;
             powerBarBox.opacity = 0;
             powerBar.angle = 0;
@@ -305,8 +293,8 @@ export async function day() {
                     opacity: 0.5,
                 });
             }
-        });
 
+        });
 
         k.onUpdate(() => {
 
@@ -321,11 +309,12 @@ export async function day() {
             }
 
             if (gm.logPopupOpen) return;
+
             const bobber = k.get("bobber")[0];
             if (bobber && (bobber.state === "flying")) {
-                flySound.volume = 2;
+                flySound.paused = false;
             } else {
-                flySound.volume = 0;
+                flySound.paused = true;
             }
 
             let mouse = k.mousePos();
@@ -338,16 +327,17 @@ export async function day() {
 
         })
 
+
         k.onMouseDown("right", () => {
             const bobber = k.get("bobber")[0];
             if (bobber && (bobber.state === "floating" || bobber.state === "reeling")) {
                 bobber.enterState("reeling");
-                reelSound.volume = 1.8;
+                reelSound.paused = false;
             }
         });
 
         k.onMouseRelease("right", () => {
-            reelSound.volume = 0;
+            reelSound.paused = true;
             const bobber = k.get("bobber")[0];
             if(bobber) bobber.enterState("floating");
         });

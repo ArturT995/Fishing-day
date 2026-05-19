@@ -16,13 +16,14 @@ import { shop } from "./levels/shop";
 //make cursor sprite
 
 
-// sounds play over eachother sometimes, make stronger guards and killswitches Done?
-// noticearea bug seems to be better now, i think ill just turn off fullscreen
+// noticearea bug seems to be better now, test again in build mode and with resizing
 
 
 // sound crackle and slowing down seems to occus consistantly when changing scenes fast and even when playing 
 // the game normally if u reel in fish fast enough.
-// 
+// this seems tied to browser single thread updates and sound stuff going out of sync with game code
+// and is performance related, maybe allocations/deallocations and too many objects?
+// framerate and other stuff stays fine, just sound gets bugged.
 
 await assetLoader()
 

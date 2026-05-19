@@ -41,7 +41,7 @@ export function throwLine(anchor: Vec2, power: number) {
         k.anchor("center"),
         k.opacity(1),
         k.scale(1),
-        k.state("flying", ["flying","floating","reeling","splash","catching"]),
+        k.state("flying", ["flying", "floating", "reeling", "splash", "catching"]),
         {
                 targetPos: landingPos,
                 reelSpeed: gm.reelSpeed + baitPower*3,
@@ -109,7 +109,7 @@ export function throwLine(anchor: Vec2, power: number) {
         bobber.reelSpeed = bobber.reelSpeed - gm.currentFishDifficulty/2
     })
 
-    const reelSound = k.play("icon-sound-1", { volume: 1.0, loop: true, detune: 3200, speed: 12 });
+    const reelSound = playSound("icon-sound-1", "sfx", 1, true, 3200, 12 );
     reelSound.volume = 0;
 
     if (gm.debug === true) {

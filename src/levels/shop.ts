@@ -1,4 +1,3 @@
-import type { AudioPlay } from "kaplay";
 import { equipRod } from "../bag";
 import { COLORS, fontConfigSmall } from "../constants";
 import { FISH_DATA, ITEM_DATA, ROD_DATA, type FishObj, type RodObj, type ShopObj } from "../db";
@@ -110,7 +109,7 @@ export function shop() {
 
 
             const popupObjects = [shopMenuContainer, botContainer, leftBuyContainer, rightSellContainer, 
-                hideBtn, blocker, shopMenuBorder, sunIcon]
+                hideBtn, blocker, shopMenuBorder, sunIcon, leftBuyContainerAdd, rightSellContainerAdd]
 
 
             const caughtFishes = gm.fishCaught.map(id => {

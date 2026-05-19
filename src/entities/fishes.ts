@@ -2,7 +2,7 @@
 // code for movement and making fish bodies taken from fishGen.ts
 //
 import type { Vec2, GameObj, Color } from "kaplay";
-import { COLORS, FISH_AMOUNT, fishingAreaWarning } from "../constants";
+import { COLORS, fishingAreaWarning } from "../constants";
 import gm from "../gm";
 import k from "../kaplayCtx";
 import { type FishObj, FISH_DATA } from "../db";
@@ -111,7 +111,7 @@ export function makeFish(fish: FishObj, pos: Vec2) {
         k.area(),
         k.color(randomColor),
         k.rotate(0),
-        k.state("idle", ["idle", "notice", "move", "pursue", "hooked", "attack"]),
+        k.state("idle", ["idle", "notice", "move", "pursue", "hooked"]),
         {   
             fishId: fish.fishId,
             name: fish.name,
@@ -138,9 +138,6 @@ export function makeFish(fish: FishObj, pos: Vec2) {
             }),
             dir,
             turnFactor: turnFactor,
-            animFps: 30, //adjust for smoother movement
-            animTimer: 0,
-            pendingMovement: k.vec2(0, 0),
             randomColors: () => {
                 entity.data.forEach((item, index, array) => {
                     let base = k.rgb(34, 38, 92)
@@ -201,11 +198,6 @@ export function makeFish(fish: FishObj, pos: Vec2) {
         entity.enterState("move");
     })
 
-    // remove in prod
-    entity.onKeyPress("k", () => {
-        entity.enterState("attack");
-    });
-
     // color mode
     entity.onKeyPress("d", () => {
         entity.randomColors()
@@ -218,28 +210,6 @@ export function makeFish(fish: FishObj, pos: Vec2) {
         })
     });
 
-    entity.onStateEnter("attack", async () => {
-        const bobber = k.get("bobber")[0];
-        const dir = bobber.pos.sub(entity.pos).unit();
-        await k.wait(k.rand(0,1));
-        k.add([
-            k.pos(entity.pos),
-            k.move(dir, 30),
-            k.circle(1),
-            k.area(),
-            k.offscreen({ destroy: true }),
-            k.anchor("center"),
-            k.color(COLORS.WHITE),
-            "bullet",
-        ]);
-        
-        bobber.onCollide("bullet", (bullet: GameObj) => {
-            k.play("fishing-thunk", {volume: 0.2})
-            k.destroy(bullet);
-        });
-        await k.wait(1);
-        entity.enterState("idle");
-    })
 
     let fishHooked = false
 
@@ -248,6 +218,7 @@ export function makeFish(fish: FishObj, pos: Vec2) {
 
 
     entity.onUpdate(() => {
+        
         fishName.pos = entity.pos;
 
         if (gm.identifierOn) {
@@ -273,7 +244,7 @@ export function makeFish(fish: FishObj, pos: Vec2) {
 
 
         let bubbleChance = 0.01
-        if (fish.feature === "extra bubbling") bubbleChance = 0.04
+        if (fish.feature === "extra bubbling") bubbleChance = 0.02
         if (k.chance(bubbleChance)) {
             if (fish.feature === "no bubbling") return;
             fishBubbles(entity.pos)
@@ -295,19 +266,11 @@ export function makeFish(fish: FishObj, pos: Vec2) {
 
             const velocity = entity.dir.scale(entity.speed)
             const movement = velocity.scale(k.dt())
+            alignBody(entity, movement, distance);
+            entity.moveBy(movement);
 
-            entity.pendingMovement = entity.pendingMovement.add(movement);
-            entity.animTimer += k.dt();
-
-            if (entity.animTimer >= 1 / entity.animFps) {
-                entity.animTimer -= 1 / entity.animFps;
-                alignBody(entity, entity.pendingMovement, distance);
-                entity.moveBy(entity.pendingMovement);
-                entity.pendingMovement = k.vec2(0, 0);
-            }
         }
 
-        
         if (entity.state === "pursue") {
             const bobber = k.get("bobber")[0];
             if (!bobber || gm.state === "catching") {
@@ -338,6 +301,7 @@ export function makeFish(fish: FishObj, pos: Vec2) {
 
     entity.onDraw(() => {
         const currentOpacity = entity.opacity;
+
         // fish shape drawn here
         if (entity.name !== "Old Boot") {
             
@@ -353,6 +317,7 @@ export function makeFish(fish: FishObj, pos: Vec2) {
                 // settings for fun or possible future item effects.
                 //wildcolors(color)
             })
+            
 
         } else {
             entity.angle = k.randi(-4, 6)
@@ -404,14 +369,14 @@ export function makeFish(fish: FishObj, pos: Vec2) {
     entity.onStateEnter("notice", async () => {
         if (fishHooked) entity.enterState("idle");
         playSound("icon-sound-1", "sfx", -0.3, false, 1000)
-        const notice = entity.add([
+        entity.add([
             k.rect(1, 1),
             k.pos(1,-1),
             k.opacity(0.4),
+            k.lifespan(1, { fade: 0.5 }),
             k.color(COLORS.BEIGE)
         ])
         await k.wait(k.rand(1, 2))
-        k.destroy(notice)
         entity.enterState("pursue");
     })
 
@@ -463,7 +428,7 @@ function spawnCaughtFish(fish: GameObj) {
         {
             let randomX = k.randi(-3-sizemodifier, 3+sizemodifier)
             let randomY = k.randi(-3-sizemodifier, 3+sizemodifier)
-
+            // TODO: try to do this more efficently
             let bubbles = k.add([
                 k.pos(bobber.pos.x + randomX, bobber.pos.y + randomY),
                 k.circle(k.rand(0.2, 0.3)),
@@ -479,7 +444,7 @@ function spawnCaughtFish(fish: GameObj) {
                 0.3,
                 (p) =>  bubbles.pos = p, k.easings.easeInQuad
             ).then(() => {
-                playSound("fishing-thunk", "sfx", -0.7, false, 0, 1.5);
+                playSound("fishing-thunk", "sfx", -0.6, false, 0, 1.5);
                 const ripple = bubbles.add([
                     k.pos(0, 0),
                     k.circle(0.3, { fill: false }),

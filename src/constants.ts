@@ -1,7 +1,10 @@
 import type { Vec2 } from "kaplay";
 import k from "./kaplayCtx";
 
-export const FISH_TIMER = 300;
+
+// normal value 2000-5000
+// item boosted value 600-1000
+export const FISH_TIMER = 600;
 export const FISH_AMOUNT = k.randi(12, 18)
 export const ANCHOR = k.vec2(k.width() / 2, k.height() - 47)
 
