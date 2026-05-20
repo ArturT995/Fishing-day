@@ -17,11 +17,16 @@ export function fishingPool(FISH_DATA: FishObj[], poolSize: number, rarityMod = 
     const chosenPool = gm.nightTime ? nightFishes : dayFishes
     
     
-    //return chosenPool //disable after testing
+    return chosenPool //disable after testing
 
     const chosenFishes: FishObj[] = []
 
     const totalWeight = FISH_DATA.reduce((sum, f) => sum + (1 / f.rarityScore), 0);
+
+    let rodbonus = (Number(gm.equippedRodId) | 0)/8
+    //final rod
+    if (rodbonus >= 0.7) rodbonus += 2
+    rarityMod += rodbonus
 
     while (poolSize > 0) {
         let roll = Math.random() * totalWeight
@@ -157,13 +162,14 @@ export function makeFish(fish: FishObj, pos: Vec2) {
                     }
 
                     // special fish colors
-                    if (entity.name === "Gilded Fish") [head, base, tail] = [k.rgb(220 + deviation, 190 + deviation, 100 + deviation), k.rgb(244 + deviation, 223 + deviation, 149 + deviation), k.rgb(248 + deviation, 169 + deviation, 84 + deviation)];
-                    if (entity.name === "Ghost Carp")  [head, base, tail] = [k.rgb(20 + deviation, 100 + deviation, 120 + deviation),  k.rgb(60 + deviation, 160 + deviation, 180 + deviation),  k.rgb(30 + deviation, 110 + deviation, 140 + deviation)];
-                    if (entity.name === "Starbass")    [head, base, tail] = [k.rgb(10 + deviation, 60 + deviation, 130 + deviation),  k.rgb(40 + deviation, 120 + deviation, 180 + deviation),  k.rgb(15 + deviation, 70 + deviation, 145 + deviation)];
-                    if (entity.name === "Shyfish")     [head, base, tail] = [k.rgb(60 + deviation, 20 + deviation, 100 + deviation),   k.rgb(110 + deviation, 60 + deviation, 160 + deviation),  k.rgb(70 + deviation, 25 + deviation, 115 + deviation)];
-                    if (entity.name === "Olly")        [head, base, tail] = [k.rgb(120 + deviation, 70 + deviation, 70 + deviation),   k.rgb(165 + deviation, 130 + deviation, 105 + deviation), k.rgb(105 + deviation, 65 + deviation, 55 + deviation)];
-                    if (entity.name === "Bobo")        [head, base, tail] = [k.rgb(180 + deviation, 55 + deviation, 112 + deviation),   k.rgb(195 + deviation, 85 + deviation, 120 + deviation), k.rgb(120 + deviation, 35 + deviation, 90 + deviation)];
-                    if (entity.name === "Beardy")      [head, base, tail] = [k.rgb(15 + deviation, 45 + deviation, 35 + deviation),   k.rgb(20 + deviation, 50 + deviation, 35 + deviation),   k.rgb(10 + deviation, 40 + deviation, 25 + deviation)];
+                    if (entity.name === "Gilded Fish") [head, base, tail] = [setColor(k.rgb(220, 190, 100), deviation), setColor(k.rgb(244, 223, 149), deviation), setColor(k.rgb(248, 169, 84), deviation)];
+                    if (entity.name === "Ghost Carp")  [head, base, tail] = [setColor(k.rgb(20, 100, 120), deviation),  setColor(k.rgb(60, 160, 180), deviation),  setColor(k.rgb(30, 110, 140), deviation)];
+                    if (entity.name === "Starbass")    [head, base, tail] = [setColor(k.rgb(10, 60, 130), deviation),   setColor(k.rgb(40, 120, 180), deviation),  setColor(k.rgb(15, 70, 145), deviation)];
+                    if (entity.name === "Shyfish")     [head, base, tail] = [setColor(k.rgb(60, 20, 100), deviation),   setColor(k.rgb(110, 60, 160), deviation),  setColor(k.rgb(70, 25, 115), deviation)];
+                    if (entity.name === "Olly")        [head, base, tail] = [setColor(k.rgb(120, 70, 70), deviation),   setColor(k.rgb(165, 130, 105), deviation), setColor(k.rgb(105, 65, 55), deviation)];
+                    if (entity.name === "Bobo")        [head, base, tail] = [setColor(k.rgb(180, 55, 112), deviation),  setColor(k.rgb(195, 85, 120), deviation),  setColor(k.rgb(120, 35, 90), deviation)];
+                    if (entity.name === "Beardy")      [head, base, tail] = [setColor(k.rgb(15, 45, 35), deviation),    setColor(k.rgb(20, 50, 35), deviation),    setColor(k.rgb(10, 40, 25), deviation)];
+                    if (entity.name === "Ale")         [head, base, tail] = [setColor(k.rgb(23, 12, 44), deviation),    setColor(k.rgb(47, 21, 68), deviation),    setColor(k.rgb(41, 23, 60), deviation)];
                     
                     item.color = k.rgb(base.r + deviation, base.g + deviation, base.b + deviation)
                     if (index <= 2) item.color = head
@@ -545,7 +551,7 @@ function makeShape(fish: FishObj, size: number, length: number) {
     if (fish.name === "Beardy") radices = beardy
     if (fish.name === "Catfish") radices = catfish
     if (fish.name === "Esox") radices = esox
-    if (fish.name === "Åle") radices = ale
+    if (fish.name === "Ale") radices = ale
 
     //k.debug.log(`Size: ${size} , Length: ${length}`)
     return radices;
@@ -574,4 +580,11 @@ export function wildcolors(color: Color) {
         color.g = k.randi(23,230)
         color.b = k.randi(23,230)
     }
+}
+
+export function setColor(color: Color, deviation: number) {
+    color.r += deviation
+    color.g += deviation
+    color.b += deviation
+    return color;
 }

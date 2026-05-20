@@ -1,5 +1,6 @@
 import type { Vec2 } from "kaplay";
 import k from "./kaplayCtx";
+import gm from "./gm";
 
 
 // normal value 2000-5000

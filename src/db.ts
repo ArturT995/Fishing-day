@@ -217,7 +217,7 @@ export const FISH_DATA: FishObj[] = [
     unlocked: false, difficulty: 11, price: 1500, feature: "Icon sparkles/glows"},
 
     {fishId:" 7", name: "Spotted Gar", sprite: "spottedgar", spriteLocked: "spottedgar-locked", activeTime: "Day",
-    maxSize: 45, maxWeight: 4, rarityScore: 5,
+    maxSize: 80, maxWeight: 4, rarityScore: 5,
     desc: `Thick scales cover this fish, it's mouth filled with long, sharp teeth.
     It's most commonly found in clear, shallow waters and hunts smaller fish.`,
     unlocked: false, difficulty: 9, price: 60, feature: ""},
@@ -356,14 +356,30 @@ export const FISH_DATA: FishObj[] = [
     "A rudd? Too bad it's not a golden rudd, would have paid good coin for that" -ShopKeeper`,
     unlocked: false, difficulty: 10, price: 100, feature: ""},
 
-    {fishId: "28", name: "Åle", sprite: "ale", spriteLocked: "ale-locked", activeTime: "Night",
-    maxSize: 190, maxWeight: 25, rarityScore: 43,
+    {fishId: "28", name: "Ale", sprite: "ale", spriteLocked: "ale-locked", activeTime: "Night",
+    maxSize: 190, maxWeight: 25, rarityScore: 39,
     desc: `A gargantuan eel with purplish skin, it looks centuries old...
     What is this monstrosity?! - Shopkeeper"`,
-    unlocked: false, difficulty: 36, price: 960, feature: "Unique"},
+    unlocked: false, difficulty: 34, price: 960, feature: "Unique"},
 
-    // next 12 can be made up fish, leaning towards harder/rarer
+
+    // 29 difficulty: 14 day 
+    // 30 difficulty: 16 day
+    // 31 difficulty: 13 day
+    // 32 difficulty: 18 night Starbuck(large seabass unique)
+
+    // 33 difficulty: 30 night
+    // 34 difficulty: 29 night
+    // 35 difficulty: 25 day
+
+    // 36 difficulty: 35 feature no movement  day
+
+    // 37 difficulty: 22 rarity 25 night
     
+    // 38 difficulty: 14 unique sprite rarity 14 day
+    // 39 difficulty: 11 unique sprite rarity 12 day
+
+    // 40 difficulty: 33 unique sprite rarity 37 day
 ];
 
 

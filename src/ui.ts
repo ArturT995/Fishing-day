@@ -147,7 +147,7 @@ export function makeContainer(
             k.color(color),
             k.area(),
             k.opacity(1),
-            k.z(2+parent.z),
+            k.z(3+parent.z),
             k.opacity(opacity),
             "container",
             {
@@ -162,7 +162,7 @@ export function makeContainer(
             k.anchor(anchor),
             k.color(color),
             k.area(),
-            k.z(2),
+            k.z(3),
             k.opacity(opacity),
             "container",
         ]);
@@ -470,11 +470,14 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
                         if (obj.feature === "Rod Unique") {
                             const rodData = ROD_DATA.find(f => obj.name === f.name) as RodObj;
                             if (rodData === undefined) throw new Error("Rod tooltip text creation failed. Rod data not found")
-
+                            let rodbonus = (Number(rodData.rodId) | 0)/8
+                            //final rod
+                            if (rodbonus >= 0.7) rodbonus += 2
                             tooltipText.text = `${obj.name}\n\n${obj.desc}\n
                             Reeling speed: ${rodData.reelSpeed}
                             Catch area: ${rodData.catchArea}
                             Line durability: ${rodData.endurance}
+                            Luck bonus: ${rodbonus}
                             `
                         }
 

@@ -48,8 +48,10 @@ export function throwLine(anchor: Vec2, power: number) {
                 catchArea: gm.catchArea,
                 noticeArea: gm.noticeArea + baitPower,
                 fishPullDir: k.vec2(0,0),
+                fishPullDirTwo: k.vec2(0,0),
                 fishPullTime: 0,
                 fishPullSpeed: 0,
+                escapeZone: k.vec2(k.randi(80,140),0)
         },
         "bobber"
     ])
@@ -120,9 +122,11 @@ export function throwLine(anchor: Vec2, power: number) {
         })
     }
 
+
     bobber.onUpdate(() => {
 
         const toAnchor = anchor.sub(bobber.pos).unit();
+        
 
         if (bobber.state === "floating") {
             if (gm.state === "catching") {
@@ -150,25 +154,33 @@ export function throwLine(anchor: Vec2, power: number) {
             reelSound.paused = false;
             
             const fishId = gm.currentFishId;
-            //const size = gm.currentFishSize;
             const difficulty = gm.currentFishDifficulty/2;
 
 
             bobber.fishPullTime -= k.dt();
-            const maxFishDifficulty = 32;
+
+            //const maxFishDifficulty = 32;
             if (bobber.fishPullTime <= 0) {
-                bobber.fishPullTime = 3 + ((maxFishDifficulty - (gm.currentFishDifficulty + 3)) / 10);
-                const angle = k.rand(0, 340);
-                bobber.fishPullDir = k.Vec2.fromAngle(angle);
-                bobber.fishPullSpeed = k.rand(10+difficulty*3, 25+difficulty*5);
+                bobber.fishPullTime = 4;
+                let right = k.vec2(k.rand(0.8,1.3), k.rand(-0.2,0.5))
+                let left = k.vec2(k.rand(-0.8,-1.3), k.rand(-0.2,0.5))
+                let choose = k.choose([left, right])
+                let chooseTwo = k.choose([left, right])
+                bobber.fishPullDir = choose;
+                bobber.fishPullDirTwo = chooseTwo;
+                bobber.fishPullSpeed = k.rand(25+difficulty*4, 25+difficulty*5);
             }
 
+            if (bobber.fishPullTime >= 3+(gm.currentFishDifficulty/50)) {
+                bobber.move(bobber.fishPullDirTwo.scale(bobber.fishPullSpeed));
+            }
 
             // set to 2 to allow a refresh period between movements
-            if (bobber.fishPullTime >= 2) {
+            else if (bobber.fishPullTime >= 2) {
                 bobber.move(bobber.fishPullDir.scale(bobber.fishPullSpeed));
                 
-                //bounce
+                // bounce
+                // keep inside other if statement to prevent spam
                 if (!fishingArea.hasPoint(bobber.pos) && !rodArea.hasPoint(bobber.pos)) {
                     playSound("fishing-thunk", "sfx");
                     spawnRipple(bobber.pos)
@@ -180,7 +192,9 @@ export function throwLine(anchor: Vec2, power: number) {
                     bobber.move(toCenter.scale(k.randi(80, 140)));
                     if (!fishingArea.hasPoint(bobber.pos)) bobber.move(toCenter.scale(k.randi(50)));
                 }
-            }
+            }   
+            
+            
             if (bobber.fishPullTime >= 1 && bobber.fishPullTime >= 0 ) {
                 /*
                 let secondmove = 0;
@@ -193,11 +207,13 @@ export function throwLine(anchor: Vec2, power: number) {
             
 
             // constantly moves away from bobber at all times
-            bobber.move(toAnchor.scale(-30 - difficulty));
+            let toEscape = bobber.escapeZone.sub(bobber.pos).unit();
+
+            bobber.move(toEscape.scale(35 + difficulty));
 
 
             // catch
-            if (bobber.pos.dist(anchor) < 15) {
+            if (bobber.pos.dist(anchor) < 7) {
                 catchingFlag = false
                 const fish = FISH_DATA.find(fish=> fish.fishId === fishId)
                 if (fish === undefined) throw new Error("Fish undefined")
@@ -225,7 +241,7 @@ export function throwLine(anchor: Vec2, power: number) {
             }
 
             //escape
-            if (bobber.pos.dist(anchor) > k.height() - 50 || catchTime <= 0 ||
+            if (bobber.pos.dist(anchor) > k.height() - 50 || catchTime <= 0 || bobber.pos.y < 10 ||
             (!fishingArea.hasPoint(bobber.pos) && bobber.pos.dist(anchor) > 160 )) {
                 catchingFlag = false
                 k.destroy(bobber);
@@ -257,7 +273,6 @@ export function throwLine(anchor: Vec2, power: number) {
             if (!fishingArea.hasPoint(bobber.pos) && !rodArea.hasPoint(bobber.pos)) {
                 mvTime = 10;
             }
-
 
             if (mvTime > 0) {
                 mvTime -= 0.2

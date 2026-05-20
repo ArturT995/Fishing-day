@@ -111,7 +111,7 @@ export function openBag() {
                 if (gm.fishPool.length >= FISH_AMOUNT) message("No new fish show up, \nthe remainder happily eats \nthe Fish Feed Deluxe")
                 else if (gm.fishPool.length === 0) {
                     message("The empty lake fills with fish, \ncompeting to eat the appetizing meal")
-                    generateFishes(FISH_AMOUNT+5, 1.25)
+                    generateFishes(FISH_AMOUNT+5, 1.5)
                 } else {
                     if (gm.fishPool.length > 12) message("Some new fish rush to eat")
                     if (gm.fishPool.length < 12) message("Many new fish rush to the lake")
