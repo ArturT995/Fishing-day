@@ -206,12 +206,12 @@ export function makeFish(fish: FishObj, pos: Vec2) {
     })
 
     // color mode
-    entity.onKeyPress("d", () => {
+    entity.onKeyPress("t", () => {
         entity.randomColors()
     });
 
     // silhouette mode
-    entity.onKeyPress("s", () => {
+    entity.onKeyPress("f", () => {
         entity.data.forEach((item) => {
             item.color = randomColor
         })

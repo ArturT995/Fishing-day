@@ -109,19 +109,32 @@ export function throwLine(anchor: Vec2, power: number) {
     bobber.onStateEnter("catching", () => {
         if (catchingFlag) return;
         catchingFlag = true;
+        reelingArea.pos = bobber.pos;
         bobber.reelSpeed = bobber.reelSpeed - gm.currentFishDifficulty/2
     })
 
     const reelSound = playSound("icon-sound-1", "sfx", 1, true, 3200, 12 );
     reelSound.paused = true;
 
-    if (gm.debug === true) {
-        k.onKeyPress("1", () => {
-            reelingArea.opacity = 0.5
-            if (!bobber.noticeArea) return;
-            bobber.noticeArea.opacity = 0.5
-        })
+
+    // keyboard controls
+    if (gm.keyboardMode) {
+        let SPEED = (80 * (1+Number(gm.equippedRodId))/6) + 30
+        k.debug.log(SPEED)
+        k.onKeyDown("a", () => {
+            reelingArea.move(-SPEED, 0)
+        });
+        k.onKeyDown("w", () => {
+            reelingArea.move(0, -SPEED)
+        });
+        k.onKeyDown("d", () => {
+            reelingArea.move(SPEED, 0)
+        });
+        k.onKeyDown("s", () => {
+            reelingArea.move(0, SPEED)
+        });
     }
+    
 
 
     bobber.onUpdate(async () => {
@@ -138,7 +151,6 @@ export function throwLine(anchor: Vec2, power: number) {
 
         if (bobber.state === "reeling" && k.isMouseDown("right")) {
 
-            
             bobber.move(toAnchor.scale(bobber.reelSpeed));
             if (gm.state === "catching") {
                 bobber.enterState("catching")
@@ -153,7 +165,8 @@ export function throwLine(anchor: Vec2, power: number) {
         if (bobber.state === "catching") {
             k.destroy(noticeArea);
             catchTime -= 0.02
-            reelingArea.pos = k.mousePos()
+            if (!gm.keyboardMode) reelingArea.pos = k.mousePos()           
+
             reelingArea.opacity = 1;
             reelSound.paused = false;
             

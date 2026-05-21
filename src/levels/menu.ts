@@ -3,7 +3,7 @@ import { addSprite } from "../assetLoader";
 import { COLORS, fontConfig } from "../constants";
 import { FISH_DATA } from "../db";
 import gm from "../gm";
-import { bubbleText, clickProcess, hoverProcess, makeContainer, makeIcons, makeSlider } from "../ui";
+import { bubbleText, clickProcess, hoverProcess, makeButton, makeContainer, makeIcons, makeSlider } from "../ui";
 import { musicSet, playSound, sfxSet } from "../sounds";
 import { tutorialPopup } from "../tutorial";
 
@@ -261,6 +261,35 @@ export function openSettings() {
             sfx.volume = val + offset;
         });
     });
+
+    
+    const keyboardModeContainer = settingsMenu.add([
+        k.rect(5,5, { fill: false }),
+        k.outline(1, COLORS.ORANGE),
+        k.color(COLORS.ORANGE),
+        k.anchor("left"),
+        k.pos(-settingsMenu.width / 2 + PADDING,2),
+        k.area(),
+    ]);
+    settingsMenu.add([
+        k.text(`KEYBOARD MODE (WASD)`, fontConfig),
+        k.color(COLORS.ORANGE),
+        k.anchor("left"),
+        k.pos(-settingsMenu.width / 2 + PADDING*2,3),
+    ])
+    const checkbox1 = makeButton(`X`, 6, COLORS.ORANGE, keyboardModeContainer, "static", 0,2)
+    checkbox1.opacity = 0
+
+    checkbox1.onClick(() => {
+        if (!gm.keyboardMode) {
+            gm.keyboardMode = true;
+            checkbox1.opacity = 1;
+        } else {
+            gm.keyboardMode = false;
+            checkbox1.opacity = 0
+        };
+    })
+
 
 
     const closeBtn = settingsMenu.add ([

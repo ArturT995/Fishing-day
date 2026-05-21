@@ -29,6 +29,8 @@ interface GameManager extends GameObj {
     baitPower: number;
     lastLogin: number;
     debug: boolean;
+    noticeArea: number;
+    keyboardMode: boolean;
 
     saveProgress(): void;
 
@@ -194,6 +196,8 @@ function makeGameManager() {
             debug: true, // TODO: set to false in release
 
             noticeArea: (currentRod.catchArea ?? 10) + 5,
+
+            keyboardMode: false,
 
             // rod stats
             currentRodIcon: null,

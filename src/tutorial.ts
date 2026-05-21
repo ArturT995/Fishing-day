@@ -52,8 +52,8 @@ export function tutorialPopup() {
         `
         lmb - power up and throw fishing reel
         rmb - hold to reel bobber back
-        S - enable fish silhouette mode
-        D - enable fish color mode(default)
+        F - enable fish silhouette mode
+        T - enable fish color mode(default)
         
         Item hotkeys
         1 - toggle fish identifier

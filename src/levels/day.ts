@@ -77,7 +77,7 @@ export async function day() {
         // debug
         // toggle night and other effects here
         if (gm.debug) {
-            k.onKeyPress("w", () => {
+            k.onKeyPress("r", () => {
                 if (gm.nightTime) gm.nightTime = false;
                 else gm.nightTime = true;
             });
