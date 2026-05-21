@@ -123,7 +123,7 @@ export function throwLine(anchor: Vec2, power: number) {
     }
 
 
-    bobber.onUpdate(() => {
+    bobber.onUpdate(async () => {
 
         const toAnchor = anchor.sub(bobber.pos).unit();
         
@@ -229,7 +229,6 @@ export function throwLine(anchor: Vec2, power: number) {
                 }
 
                 gm.addFish(fishId);
-                gm.unlockFish(fishId);
                 gm.removeFishFromPool(fishId)
 
                 k.destroy(bobber);
@@ -237,6 +236,12 @@ export function throwLine(anchor: Vec2, power: number) {
                 gm.currentFishId = "";
                 gm.enterState("fishing")
                 message(`You caught: ${fish.name}`)
+                
+                if(!gm.fishUnlocked.includes(fish.fishId)) {
+                    gm.unlockFish(fishId);
+                    await k.wait(3)
+                    message(`${fish.name} log entry \nadded to Collection Log`)
+                }
                 return;
             }
 

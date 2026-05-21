@@ -189,6 +189,7 @@ export const FISH_DATA: FishObj[] = [
     maxSize: 25, maxWeight: 14, rarityScore: 20,
     desc: `The ghost of a fallen carp, 
     roaming the lake after sun has passed.
+    
     "How did you catch this?" - Shopkeeper`,
     unlocked: false, difficulty: 7, price: 75, feature: "no bubbling"},
 
@@ -204,6 +205,7 @@ export const FISH_DATA: FishObj[] = [
     maxSize: 20, maxWeight: 0.5, rarityScore: 20,
     desc: `Lifeless remains of a fish you can't identify, you are
     unsure how it got hooked.
+
     "You want me to buy this?" - Shopkeeper`, 
     unlocked: false, difficulty: 3, price: 5, feature: "no bubbling"},
 
@@ -213,6 +215,7 @@ export const FISH_DATA: FishObj[] = [
     It has lead to the scales being used as a popular version of fools gold.
     Alchemists grind the scales into dust and treat it chemically, 
     removing imperfections and sell it as gold powder.
+
     "Now this is a rare sight! Folks used to fish entire lakes dry in search of this fish." - Shopkeeper`, 
     unlocked: false, difficulty: 11, price: 1500, feature: "Icon sparkles/glows"},
 
@@ -228,6 +231,7 @@ export const FISH_DATA: FishObj[] = [
     It stalks the waters, looking to ambush other fish, waterfowl and small mammals.
     The scales have serrated edges and have a tough inner layer of bone.
     It's estimated to live between 50 to 70 years.
+
     "How did you manage to catch that?!" - Shopkeeper.`,
     unlocked: false, difficulty: 17, price: 220, feature: ""},
 
@@ -288,6 +292,7 @@ export const FISH_DATA: FishObj[] = [
     {fishId: "17", name: "Starbass", sprite: "starbass", spriteLocked: "starbass-locked", activeTime: "Night",
     maxSize: 41, maxWeight: 19, rarityScore: 17, 
     desc: `A curious fish, it has some scales that catch the light.
+
     "Bet you haven't seen this fella before eh? It's a local specialty" - Shopkeeper`,  
     unlocked: false, difficulty: 6, price: 100, feature: ""},
 
@@ -313,6 +318,7 @@ export const FISH_DATA: FishObj[] = [
     desc: `You've heard tales of this crafty fish in the local area. 
     Despite it's size it has managed to outsmart the fishermen and has remained uncaught until now.
     It looks quite old and has many thin barbels around its head.
+
     "Is that what I think it is?! You actually managed to catch Ol'Beardy?!" - Shopkeeper`,
     unlocked: false, difficulty: 32, price: 770, feature: "Unique"},
 
@@ -322,12 +328,14 @@ export const FISH_DATA: FishObj[] = [
     maxSize: 13, maxWeight: 5, rarityScore: 25,
     desc: `This pinkish fish seems to swim in interesting dance-like patterns.
     It seems to get along well with the other fish.
+
     "I remember seeing this little fella on my travels, it's a far way from home." - ShopKeeper`,
     unlocked: false, difficulty: 12, price: 330, feature: "Unique"},
 
     {fishId: "23", name: "Eel", sprite: "eel", spriteLocked: "eel-locked", activeTime: "Night",
     maxSize: 75, maxWeight: 12, rarityScore: 18,
     desc: `Eels hunt by scent at night and can be eaten by larger eels. They have 110 to 120 vertebrae.
+
     "I wonder where they come from, I've never seen a juvenile eel - Shopkeeper"`,
     unlocked: false, difficulty: 5, price: 150, feature: ""},
 
@@ -352,13 +360,15 @@ export const FISH_DATA: FishObj[] = [
     {fishId: "27", name: "Rudd", sprite: "rudd", spriteLocked: "rudd-locked", activeTime: "Day",
     maxSize: 50, maxWeight: 12, rarityScore: 10,
     desc: `Rudds have an upturned mouth, allowing them to easily feed at the top of the water.
-    The reddish coloring of the fins has earned the fish its namesake
+    The reddish coloring of the fins has earned the fish its namesake.
+
     "A rudd? Too bad it's not a golden rudd, would have paid good coin for that" -ShopKeeper`,
     unlocked: false, difficulty: 10, price: 100, feature: ""},
 
     {fishId: "28", name: "Ale", sprite: "ale", spriteLocked: "ale-locked", activeTime: "Night",
     maxSize: 190, maxWeight: 25, rarityScore: 39,
     desc: `A gargantuan eel with purplish skin, it looks centuries old...
+
     What is this monstrosity?! - Shopkeeper"`,
     unlocked: false, difficulty: 34, price: 960, feature: "Unique"},
 

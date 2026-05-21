@@ -7,6 +7,7 @@ import gm from "../gm";
 import k from "../kaplayCtx";
 import { message } from "../messages";
 import { playNextSong, playSound } from "../sounds";
+import { tutorialPopup } from "../tutorial";
 import { clickProcess, hoverProcess } from "../ui";
 import { openCollectionLog } from "./menu";
 
@@ -33,7 +34,7 @@ export async function day() {
 
         // sounds
         const dayMusic = ["fishing-bg-1", "day-bg-3", "fishing-bg-2", "fishing-bg-1", "fishing-bg-3"]
-        const nightMusic = ["night-bg-1", "night-bg-2", "fishing-bg-1"]
+        const nightMusic = ["night-bg-1", "night-bg-2"]
         let pickedMusic = gm.nightTime ? nightMusic : dayMusic;
 
         let bgMusic = playNextSong(pickedMusic, k.randi(0, pickedMusic.length))
@@ -123,6 +124,26 @@ export async function day() {
             if (gm.logPopupOpen) return;
             k.go("main-menu");
         })
+
+
+        const tutorialBtn = k.add([
+            k.text("Tutorial", fontConfigSmall),
+            k.anchor("right"),
+            k.pos(k.width()-PADDING*6, k.height() - 5),
+            k.color(btnColor),
+            k.area(),
+            k.scale(1),
+            k.z(3),
+        ]);
+        tutorialBtn.onHover(() => hoverProcess(tutorialBtn))
+        tutorialBtn.onClick(() => {
+            clickProcess(tutorialBtn)
+            let bobber = k.get("bobber");
+            if (bobber.length !== 0) return;
+            if (gm.logPopupOpen) return;
+            tutorialPopup();
+        })
+
 
         const shopBtn = k.add([
             k.text("Shop", fontConfigSmall),
@@ -255,10 +276,7 @@ export async function day() {
             throwsound.paused = true
             if (gm.logPopupOpen) return;
             if (!canCast) return;
-            const fish = k.get("fish")[0]
-            if(!fish) {
-                message("You've caught all the fish, \nmaybe there's a way to get more to appear.")
-            }
+
             if (fishlimit) {
                 playSound("fish-escaped", "sfx", -0.5, false, 500 , 4)
                 message("You can't carry anymore fish,\ngo to the store to sell them")
@@ -305,7 +323,7 @@ export async function day() {
         });
 
         k.onUpdate(() => {
-
+            
             gm.fishTimer -= 1
 
             if (gm.fishTimer < -200) {

@@ -7,12 +7,13 @@ import { playSound } from "./sounds";
 import { ROD_DATA, type BagObj, type FishObj, type RodObj, type ShopObj } from "./db";
 
 
-// sets base position bottom right atm then posX and posY are subtracted
+// sets base position bottom right then posX and posY are subtracted.
 export function makeButton(
     desc: string, fontSize: number,
     color: Color,
     container: GameObj, type: "static" | "dynamic",
-    posX: number, posY: number) {
+    posX: number, posY: number,
+    interactable = true) {
 
     let button: GameObj;
 
@@ -48,11 +49,11 @@ export function makeButton(
     }
 
     button.onHover(() => {
-        hoverProcess(button)
+        if (interactable) hoverProcess(button);
     });
 
     button.onClick(() => {
-        clickProcess(button)
+        if (interactable) clickProcess(button)
     });
 
     return button;
@@ -64,7 +65,7 @@ export function makeButton(
 
 
 
-// this causes a lot of bugs, best to not use it.
+// this causes some bugs, best to not use it.(currently used in slider positioning where it works)
 function alignObj(
     obj: GameObj, container: GameObj,
     offsetX: number, offsetY: number, padding: number,

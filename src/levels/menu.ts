@@ -1,10 +1,11 @@
 import k from "../kaplayCtx";
 import { addSprite } from "../assetLoader";
-import { COLORS, fontConfig } from "../constants";
+import { COLORS, fontConfig, fontConfigSmall } from "../constants";
 import { FISH_DATA } from "../db";
 import gm from "../gm";
 import { bubbleText, clickProcess, hoverProcess, makeContainer, makeIcons, makeSlider } from "../ui";
 import { musicSet, playSound, sfxSet } from "../sounds";
+import { tutorialPopup } from "../tutorial";
 
 
 //change font again
@@ -67,10 +68,13 @@ export function menu() {
         ]);
         bubbleText(start)
 
+        let GAP = 12;
+        let INITIAL_Y = 45
+
         const log = k.add([
             k.text("Collection Log", fontConfig),
             k.anchor("center"),
-            k.pos(k.center().x, k.center().y + 70),
+            k.pos(k.center().x, k.center().y + INITIAL_Y + GAP*2),
             k.color(chosenColor),
             k.area(),
             k.scale(1),
@@ -81,13 +85,29 @@ export function menu() {
         const settings = k.add([
             k.text("Settings", fontConfig),
             k.anchor("center"),
-            k.pos(k.center().x, k.center().y + 55),
+            k.pos(k.center().x, k.center().y + INITIAL_Y + GAP),
             k.color(chosenColor),
             k.area(),
             k.scale(1),
             k.rotate(0),
             k.z(2),
         ]);
+
+        const tutorialBtn = k.add([
+            k.text("Tutorial", fontConfig),
+            k.anchor("center"),
+            k.pos(k.center().x, k.center().y + INITIAL_Y),
+            k.color(chosenColor),
+            k.area(),
+            k.scale(1),
+            k.z(3),
+        ]);
+        tutorialBtn.onHover(() => hoverProcess(tutorialBtn))
+        tutorialBtn.onClick(() => {
+            clickProcess(tutorialBtn)
+            if (gm.logPopupOpen) return;
+            tutorialPopup();
+        })
 
 
         start.onClick( async () => {
