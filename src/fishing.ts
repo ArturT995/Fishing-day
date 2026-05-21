@@ -75,24 +75,25 @@ export function throwLine(anchor: Vec2, power: number) {
 
     bobber.onStateEnter("floating", () => {
 
-        const noticeArea = bobber.add([
-            k.circle(bobber.noticeArea, { fill: false }),
-            k.opacity(0),
-            k.outline(0.2, COLORS.BEIGE, 0.001),
-            k.anchor("center"),
-            k.pos(0,0),
-            k.area(),
-            "noticeArea"
-        ])
-        noticeArea.add([
-            k.circle(1),
-            k.opacity(0.03),
-            k.color(COLORS.BLACK),
-            k.anchor("center"),
-            k.area(),
-            "catchArea"
-        ])
     });
+
+
+    const noticeArea = k.add([
+        k.circle(bobber.noticeArea, { fill: false }),
+        k.opacity(0),
+        k.outline(0.2, COLORS.BEIGE, 0.001),
+        k.pos(),
+        k.area(),
+        "noticeArea"
+    ])
+    noticeArea.add([
+        k.circle(1),
+        k.opacity(0.03),
+        k.color(COLORS.BLACK),
+        k.anchor("center"),
+        k.area(),
+        "catchArea"
+    ])
 
 
     const reelingArea = k.add([
@@ -129,6 +130,7 @@ export function throwLine(anchor: Vec2, power: number) {
         
 
         if (bobber.state === "floating") {
+            noticeArea.pos = bobber.pos
             if (gm.state === "catching") {
                 bobber.enterState("catching")
             }
@@ -142,12 +144,14 @@ export function throwLine(anchor: Vec2, power: number) {
                 bobber.enterState("catching")
             }
             if (bobber.pos.dist(anchor) < 10) {
+                k.destroy(noticeArea);
                 k.destroy(bobber);
             }
         }
 
         // difficulty modifications here
         if (bobber.state === "catching") {
+            k.destroy(noticeArea);
             catchTime -= 0.02
             reelingArea.pos = k.mousePos()
             reelingArea.opacity = 1;

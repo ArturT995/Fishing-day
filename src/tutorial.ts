@@ -1,7 +1,6 @@
 import k from "./kaplayCtx";
-import { COLORS, fontConfig } from "./constants";
-import { playSound } from "./sounds";
-import { clickProcess, hoverProcess, makeContainer, makeButton} from "./ui";
+import { COLORS } from "./constants";
+import { makeContainer, makeButton} from "./ui";
 import gm from "./gm";
 
 

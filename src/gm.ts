@@ -193,7 +193,7 @@ function makeGameManager() {
             fishTimer: 0,
             debug: true, // TODO: set to false in release
 
-            noticeArea: currentRod.catchArea ?? 10 + 20,
+            noticeArea: (currentRod.catchArea ?? 10) + 5,
 
             // rod stats
             currentRodIcon: null,

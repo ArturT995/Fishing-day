@@ -1,19 +1,12 @@
 import k from "../kaplayCtx";
 import { addSprite } from "../assetLoader";
-import { COLORS, fontConfig, fontConfigSmall } from "../constants";
+import { COLORS, fontConfig } from "../constants";
 import { FISH_DATA } from "../db";
 import gm from "../gm";
 import { bubbleText, clickProcess, hoverProcess, makeContainer, makeIcons, makeSlider } from "../ui";
 import { musicSet, playSound, sfxSet } from "../sounds";
 import { tutorialPopup } from "../tutorial";
 
-
-//change font again
-
-
-//spamclicking sometimes causes a bug, sounds get overlapped and theres a crackling sound
-
-//add tags and group things
 
 
 

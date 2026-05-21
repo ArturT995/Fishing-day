@@ -17,7 +17,7 @@ export function fishingPool(FISH_DATA: FishObj[], poolSize: number, rarityMod = 
     const chosenPool = gm.nightTime ? nightFishes : dayFishes
     
     
-    return chosenPool //disable after testing
+    //return chosenPool //disable after testing
 
     const chosenFishes: FishObj[] = []
 
@@ -553,7 +553,6 @@ function makeShape(fish: FishObj, size: number, length: number) {
     if (fish.name === "Esox") radices = esox
     if (fish.name === "Ale") radices = ale
 
-    //k.debug.log(`Size: ${size} , Length: ${length}`)
     return radices;
 }
 
