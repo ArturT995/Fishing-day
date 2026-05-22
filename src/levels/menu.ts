@@ -278,15 +278,15 @@ export function openSettings() {
         k.pos(-settingsMenu.width / 2 + PADDING*2,3),
     ])
     const checkbox1 = makeButton(`X`, 6, COLORS.ORANGE, keyboardModeContainer, "static", 0,2)
-    checkbox1.opacity = 0
+    checkbox1.opacity = gm.keyboardMode ? 1 : 0;
 
     checkbox1.onClick(() => {
-        if (!gm.keyboardMode) {
-            gm.keyboardMode = true;
-            checkbox1.opacity = 1;
-        } else {
+        if (gm.keyboardMode) {
             gm.keyboardMode = false;
-            checkbox1.opacity = 0
+            checkbox1.opacity = 0;
+        } else {
+            gm.keyboardMode = true;
+            checkbox1.opacity = 1
         };
     })
 

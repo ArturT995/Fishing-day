@@ -16,22 +16,28 @@ export function fishingPool(FISH_DATA: FishObj[], poolSize: number, rarityMod = 
     const nightFishes = FISH_DATA.filter((fish: FishObj) => fish.activeTime === "Night");
     const chosenPool = gm.nightTime ? nightFishes : dayFishes
     
-    
+
     //return chosenPool //disable after testing
 
     const chosenFishes: FishObj[] = []
 
-    const totalWeight = FISH_DATA.reduce((sum, f) => sum + (1 / f.rarityScore), 0);
+    
+
+    //const totalWeight = chosenPool.length
 
     let rodbonus = (Number(gm.equippedRodId) | 0)/8
     //final rod
     if (rodbonus >= 0.7) rodbonus += 2
     rarityMod += rodbonus
 
+    const totalWeight = chosenPool.reduce((sum, f) => sum + Math.ceil((1 / f.rarityScore/rarityMod)), 0);
+
     while (poolSize > 0) {
         let roll = Math.random() * totalWeight
         for (const fish of chosenPool) {
             roll -= (1 / Math.ceil((fish.rarityScore/rarityMod)));
+
+
             if (roll <= 0) {
                 gm.addFishToPool(fish.fishId)
                 chosenFishes.push(fish)
@@ -40,6 +46,7 @@ export function fishingPool(FISH_DATA: FishObj[], poolSize: number, rarityMod = 
             }
         }
     }
+
 
     return chosenFishes
 };

@@ -1,6 +1,8 @@
+// helper function for printing filenames to be added to the assetloader list
+// run with: node gen.js and copy output to assetLoader.ts
+
 import fs from 'fs';
 import path from 'path';
-
 
 
 const soundDir = './public/sounds';

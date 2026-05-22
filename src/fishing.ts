@@ -120,7 +120,6 @@ export function throwLine(anchor: Vec2, power: number) {
     // keyboard controls
     if (gm.keyboardMode) {
         let SPEED = (80 * (1+Number(gm.equippedRodId))/6) + 30
-        k.debug.log(SPEED)
         k.onKeyDown("a", () => {
             reelingArea.move(-SPEED, 0)
         });
