@@ -17,7 +17,8 @@ import { openCollectionLog } from "./menu";
 export async function day() {
     k.scene("day", () => {
         let canCast = false;
-        
+        // additional override since in some rare instances game state got stuck on catching.
+        gm.enterState("fishing")
         
         // TODO: add crab and bird sprites
         // Wait a tiny bit of time before allowing input
@@ -200,9 +201,6 @@ export async function day() {
             openBag();
         })
 
-
-        
-        //generateFishes(FISH_AMOUNT) //debug only
 
 
         // initialize

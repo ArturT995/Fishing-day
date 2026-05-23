@@ -151,9 +151,6 @@ export function throwLine(anchor: Vec2, power: number) {
         if (bobber.state === "reeling" && k.isMouseDown("right")) {
 
             bobber.move(toAnchor.scale(bobber.reelSpeed));
-            if (gm.state === "catching") {
-                bobber.enterState("catching")
-            }
             if (bobber.pos.dist(anchor) < 10) {
                 k.destroy(noticeArea);
                 k.destroy(bobber);
@@ -185,6 +182,7 @@ export function throwLine(anchor: Vec2, power: number) {
                 bobber.fishPullDir = choose;
                 bobber.fishPullDirTwo = chooseTwo;
                 bobber.fishPullSpeed = k.rand(25+difficulty*4, 25+difficulty*5);
+                if (fishId === "38") bobber.fishPullSpeed = 10; //Goliath is slow
             }
 
             if (bobber.fishPullTime >= 3+(gm.currentFishDifficulty/50)) {
@@ -246,11 +244,11 @@ export function throwLine(anchor: Vec2, power: number) {
 
                 gm.addFish(fishId);
                 gm.removeFishFromPool(fishId)
-
+                gm.enterState("fishing")
                 k.destroy(bobber);
                 k.destroy(reelingArea);
                 gm.currentFishId = "";
-                gm.enterState("fishing")
+
                 message(`You caught: ${fish.name}`)
                 
                 if(!gm.fishUnlocked.includes(fish.fishId)) {
@@ -265,10 +263,10 @@ export function throwLine(anchor: Vec2, power: number) {
             if (bobber.pos.dist(anchor) > k.height() - 50 || catchTime <= 0 || bobber.pos.y < 10 ||
             (!fishingArea.hasPoint(bobber.pos) && bobber.pos.dist(anchor) > 160 )) {
                 catchingFlag = false
+                gm.enterState("fishing")
                 k.destroy(bobber);
                 k.destroy(reelingArea);
                 gm.currentFishId = "";
-                gm.enterState("fishing")
                 playSound("fish-escaped", "sfx")
                 message(". . .")
                 catchTime = gm.endurance

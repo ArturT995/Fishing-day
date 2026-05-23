@@ -21,10 +21,13 @@ export function fishingPool(FISH_DATA: FishObj[], poolSize: number, rarityMod = 
 
     const chosenFishes: FishObj[] = []
 
+    // shuffle array
+    for (let i = chosenPool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [chosenPool[i], chosenPool[j]] = [chosenPool[j], chosenPool[i]];
+    }
+
     
-
-    //const totalWeight = chosenPool.length
-
     let rodbonus = (Number(gm.equippedRodId) | 0)/8
     //final rod
     if (rodbonus >= 0.7) rodbonus += 2
@@ -106,11 +109,11 @@ export function makeFish(fish: FishObj, pos: Vec2) {
     
     let radices = makeShape(fish, size, length)
 
-    let speed = 20 - Math.min(12,radices.length)
+    let speed = k.randi(18,22) - Math.min(12,radices.length)
     let turnFactor = 0.15 / Math.min(13, radices.length)
 
     if (fish.name === "Old Boot") speed = 1;
-    
+    if (fish.name === "Goliath") speed = 4;
 
     let randomColor = COLORS.GRAYBLUE;
     if (gm.nightTime) randomColor = COLORS.BLACK

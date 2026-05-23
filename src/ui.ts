@@ -463,8 +463,8 @@ export function makeIcons(Container: any, popupObjects: GameObj[], data: FishObj
         
         icon.onUpdate(() => {
             if (icon.isHovering()) {
-                if (!obj.unlocked && 'fishId' in data[0]) {
-                        tooltipText.text = "???";
+                if (!obj.unlocked && 'activeTime' in obj) {
+                        tooltipText.text = `???\n${obj.activeTime}`;
                         tooltipText.width = 0;
                 } else {
                         tooltipText.text = `${obj.name}\n\n${obj.desc}`;

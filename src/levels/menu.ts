@@ -95,10 +95,10 @@ export function menu() {
             k.scale(1),
             k.z(3),
         ]);
-        tutorialBtn.onHover(() => hoverProcess(tutorialBtn))
+        tutorialBtn.onHover(() => {if (!gm.logPopupOpen) hoverProcess(tutorialBtn)})
         tutorialBtn.onClick(() => {
-            clickProcess(tutorialBtn)
             if (gm.logPopupOpen) return;
+            clickProcess(tutorialBtn)
             tutorialPopup();
         })
 

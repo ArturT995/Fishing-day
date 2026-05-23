@@ -474,7 +474,7 @@ export const FISH_DATA: FishObj[] = [
     desc: `A colossal creature! It looks somewhat similar to a catfish, you will need help hauling this to the store.
     
     "I can't fit this in my store! - Shopkeeper"`,
-    unlocked: false, difficulty: 36, price: 700, feature: "Slow"},
+    unlocked: false, difficulty: 39, price: 700, feature: "Slow"},
 
 
     {fishId: "39", name: "Slatefish", sprite: "slatefish", spriteLocked: "slatefish-locked", activeTime: "Night",
