@@ -1,6 +1,7 @@
 import { addSprite } from "../assetLoader";
 import { openBag } from "../bag";
 import { ANCHOR, COLORS, FISH_AMOUNT, FISH_TIMER, fishingArea, fontConfigSmall } from "../constants";
+import { makeCrabPot } from "../crabPot";
 import { generateFishes } from "../entities/fishes";
 import { throwLine } from "../fishing";
 import gm from "../gm";
@@ -28,7 +29,9 @@ export async function day() {
         gm.nightTime ? addSprite("night-sea") : addSprite("sea");
         gm.nightTime ? addSprite("night-ground", k.z(2)) : addSprite("ground", k.z(2));
 
-        const waves = k.add([k.sprite("waves"), k.z(1)]) // TODO: add nightwaves, currently ground color too light on anim
+
+        let chosenWaves = gm.nightTime ? "waves-night" : "waves";
+        const waves = k.add([k.sprite(chosenWaves), k.z(1)]) // TODO: add nightwaves, currently ground color too light on anim
         waves.play("normal");
 
 
@@ -90,23 +93,15 @@ export async function day() {
         let btnColor = gm.nightTime ? COLORS.ORANGE : COLORS.DARKRED
 
         const PADDING = 5;
-
-        let pier = k.add ([
+        
+        let chosenpier= gm.nightTime ? "pier-night" : "pier";
+        k.add ([
             "pier",
-            k.rect(30,40),
-            k.color(COLORS.BROWN),
+            k.sprite(chosenpier),
             k.pos(k.width()/2, k.height()),
             k.anchor("bot"),
             k.z(2)
         ])
-        k.add([
-            "player",
-            k.pos(k.vec2(k.width() / 2, k.height() -pier.height)),
-            k.anchor("center"),
-            k.rect(1,14),
-            k.z(2),
-            k.color(COLORS.DARKRED) // TODO: update to reflect equipped rod color
-        ]);
         
         const menuBtn = k.add([
             k.text("Menu", fontConfigSmall),
@@ -201,7 +196,11 @@ export async function day() {
             openBag();
         })
 
-
+        // crab pots
+        if (gm.itemsUnlocked.includes("24")) makeCrabPot(k.width()-30, k.height()-60)
+        if (gm.itemsUnlocked.includes("25")) makeCrabPot(k.width()-60, k.height()-40)
+        
+        
 
         // initialize
         if (gm.lastLogin === 0){

@@ -17,6 +17,8 @@ export async function assetLoader() {
     k.loadSprite("night-shop", "./graphics/night-shop.png")
     k.loadSprite("shopborder", "./graphics/shopborder.png")
 
+    k.loadSprite("pier", "./graphics/pier.png")
+    k.loadSprite("pier-night", "./graphics/pier-night.png")
     k.loadSprite("ground", "./graphics/ground.png")
     k.loadSprite("sea", "./graphics/sea.png")
     k.loadSprite("night-ground", "./graphics/night-ground.png")
@@ -24,6 +26,18 @@ export async function assetLoader() {
 
     
     k.loadSprite("waves", "./graphics/waves.png", {
+        sliceX: 4,
+        anims: {
+            "normal": {
+                from: 0,
+                to: 3,
+                speed: 3,
+                frames: [0,1,2,3,2,1],
+                loop: true,
+            },
+        },
+    })
+    k.loadSprite("waves-night", "./graphics/waves-night.png", {
         sliceX: 4,
         anims: {
             "normal": {
@@ -48,6 +62,41 @@ export async function assetLoader() {
             },
         },
     })
+
+    k.loadSprite("crabpot", "./graphics/crabpot.png", {
+        sliceX: 3,
+        anims: {
+            "idle": 0,
+            "submerged": 1,
+            "ready": 2,
+        },
+    })
+
+    k.loadSprite("bird", "./graphics/bird.png", {
+        sliceX: 3,
+        anims: {
+            "normal": {
+                from: 0,
+                to: 2,
+                speed: 2,
+                frames: [0,1,2,1,0],
+                loop: true,
+            },
+        },
+    })
+    k.loadSprite("crab", "./graphics/crab.png", {
+        sliceX: 3,
+        anims: {
+            "normal": {
+                from: 0,
+                to: 2,
+                speed: 2,
+                frames: [0,1,2,1,0],
+                loop: true,
+            },
+        },
+    })
+
 
     soundGen(soundsList)
     fishGen(fishesList)
@@ -177,6 +226,8 @@ let fishesList =
   "carp",
   "catfish-locked",
   "catfish",
+  "crayfish-locked",
+  "crayfish",
   "dragonfish-locked",
   "dragonfish",
   "eel-locked",
@@ -189,6 +240,8 @@ let fishesList =
   "esox",
   "fishbones-locked",
   "fishbones",
+  "freshwatercrab-locked",
+  "freshwatercrab",
   "freshwaterdrum-locked",
   "freshwaterdrum",
   "frogmouthcatfish-locked",
@@ -207,6 +260,8 @@ let fishesList =
   "humpbackchub",
   "largemouthbass-locked",
   "largemouthbass",
+  "lordcray-locked",
+  "lordcray",
   "oldboot-locked",
   "oldboot",
   "olly-locked",
@@ -220,6 +275,8 @@ let fishesList =
   "perch",
   "rudd-locked",
   "rudd",
+  "shrimp-locked",
+  "shrimp",
   "shyfish-locked",
   "shyfish",
   "slatefish-locked",
@@ -241,6 +298,7 @@ let fishesList =
 
 let itemsList = 
 [
+  "crabpot-icon",
   "beer",
   "birdfeed",
   "bugfeed",
@@ -262,5 +320,6 @@ let itemsList =
   "pipe",
   "rancidgloop",
   "redrum",
-  "woodrod"
+  "woodrod",
+  "attickey"
 ]

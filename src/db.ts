@@ -164,6 +164,18 @@ export const ITEM_DATA: ShopObj[] = [
     desc: `Feed to a bug to make them happy`,
     price: 15, unlocked: false, feature: "Item"},
 
+    {itemId: "23", name: "Attic Key", sprite: "attickey",
+    desc: `Sleep in the shop attic. Grants access to the night level`,
+    price: 1000, unlocked: false, feature: "Unique"},
+
+    {itemId: "24", name: "Crab Pot", sprite: "crabpot-icon",
+    desc: `Catch crustaceans passively while fishing.`,
+    price: 750, unlocked: false, feature: "Unique"},
+
+    {itemId: "25", name: "A second Crab Pot", sprite: "crabpot-icon",
+    desc: `Catch more crustaceans passively while fishing.`,
+    price: 800, unlocked: false, feature: "Unique"},
+
     //  next up decor and endgame items
 
     //  pier, lantern, red lights, beach umbrella, beach chair, 4 monuments, medal of completion.
@@ -493,6 +505,30 @@ export const FISH_DATA: FishObj[] = [
     After all the dreams I had and tall tales I expected something more...grand.
     People used to trick others with scales from this fish, claiming they were from a dragon." - Shopkeeper"`,
     unlocked: false, difficulty: 33, price: 1000, feature: "Unique"},
+
+    {fishId: "41", name: "Freshwater Crab", sprite: "freshwatercrab", spriteLocked: "freshwatercrab-locked", activeTime: "Other",
+    maxSize: 3, maxWeight: 3, rarityScore: 3,
+    desc: `The rare cousin of the crab, 
+    they are endemic to few parts of the world.`,
+    unlocked: false, difficulty: 1, price: 80, feature: "Crabpot"},
+
+    {fishId: "42", name: "Shrimp", sprite: "shrimp", spriteLocked: "shrimp-locked", activeTime: "Other",
+    maxSize: 3, maxWeight: 3, rarityScore: 1,
+    desc: `A widespread and abundant crustacean.`,
+    unlocked: false, difficulty: 1, price: 50, feature: "Crabpot"},
+
+    {fishId: "43", name: "Crayfish", sprite: "crayfish", spriteLocked: "crayfish-locked", activeTime: "Other",
+    maxSize: 3, maxWeight: 3, rarityScore: 2,
+    desc: `Names used for crayfish in different locations include baybugs, 
+    crabfish, craws, crawfish, crawdaddies, crawdads, freshwater lobsters, 
+    mountain lobsters, mudbugs, rock lobsters, or yabbies.`,
+    unlocked: false, difficulty: 1, price: 65, feature: "Crabpot"},
+    
+    {fishId: "44", name: "Lord Cray", sprite: "lordcray", spriteLocked: "lordcray-locked", activeTime: "Other",
+    maxSize: 3, maxWeight: 3, rarityScore: 8,
+    desc: `Lord of the craws, father to crawdads. Lord Cray has ruled this region
+    for nearly 200 years, he is nearly twice the size of other crayfish.`,
+    unlocked: false, difficulty: 1, price: 200, feature: "Crabpot"},
 
 ];
 

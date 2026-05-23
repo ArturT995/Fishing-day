@@ -241,7 +241,7 @@ export function throwLine(anchor: Vec2, power: number) {
                     if (fish.feature === "Grunting") playSound("thumping", "sfx", 3, false, -2000, 2)
                     else playSound("new-fish-caught", "sfx")
                 }
-
+                
                 gm.addFish(fishId);
                 gm.removeFishFromPool(fishId)
                 gm.enterState("fishing")
