@@ -12,6 +12,9 @@ export function shop() {
     k.scene("shop", () => {
         k.setCursor("default");
 
+        // additional override since in some rare instances game state got stuck on catching.
+        gm.enterState("fishing")
+
         let bgMusicShop = playSound("night-shop-1", "music", 0, true)
 
         let bgSprite = gm.nightTime ? "night-shop" : "shop-bg"

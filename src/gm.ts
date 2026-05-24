@@ -31,6 +31,7 @@ interface GameManager extends GameObj {
     debug: boolean;
     noticeArea: number;
     keyboardMode: boolean;
+    spawnedFishExists: boolean;
 
     saveProgress(): void;
 
@@ -192,6 +193,7 @@ function makeGameManager() {
             currentFishDifficulty: 0,
             currentFishSize: 0,
             nightTime: false,
+            spawnedFishExists: false,
             fishTimer: 0,
             debug: true, // TODO: set to false in release
 

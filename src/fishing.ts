@@ -247,6 +247,7 @@ export function throwLine(anchor: Vec2, power: number) {
                 gm.enterState("fishing")
                 k.destroy(bobber);
                 k.destroy(reelingArea);
+                gm.spawnedFishExists = false;
                 gm.currentFishId = "";
 
                 message(`You caught: ${fish.name}`)
@@ -272,6 +273,7 @@ export function throwLine(anchor: Vec2, power: number) {
                 catchTime = gm.endurance
                 reelSound.paused = true;
                 reelSound.stop();
+                gm.spawnedFishExists = false;
                 return;
             }
 

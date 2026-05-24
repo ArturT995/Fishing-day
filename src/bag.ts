@@ -14,9 +14,9 @@ export function openBag() {
     if (gm.logPopupOpen) return;
     gm.logPopupOpen = true;
     
-    const ownedItems = getStackableItems()
+    let ownedItems = getStackableItems()
+    ownedItems = ownedItems.filter(item => item.feature !== "crabPot Unique")
 
-    //squish multiple items and add an item counter
     
     const ICON_COLS = 4;
     const POPUP_WIDTH = k.width() / 1.3;
@@ -45,7 +45,7 @@ export function openBag() {
 
     let popupObjects = [blocker, bagContainer, closeBtn, border]
 
-    const bagIcons = makeIcons(bagContainer, popupObjects, ownedItems, "right", ICON_COLS)
+    let bagIcons = makeIcons(bagContainer, popupObjects, ownedItems, "right", ICON_COLS)
 
 
     for (let icon of bagIcons) {

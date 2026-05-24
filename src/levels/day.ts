@@ -18,25 +18,29 @@ import { openCollectionLog } from "./menu";
 export async function day() {
     k.scene("day", () => {
         let canCast = false;
-        // additional override since in some rare instances game state got stuck on catching.
-        gm.enterState("fishing")
+        
+        
         
         // TODO: add crab and bird sprites
         // Wait a tiny bit of time before allowing input
         k.wait(0.5, () => canCast = true);
         k.setCursor("default");
 
+        // additional override since in some rare instances game state got stuck on catching.
+        gm.enterState("fishing")
+
         gm.nightTime ? addSprite("night-sea") : addSprite("sea");
         gm.nightTime ? addSprite("night-ground", k.z(2)) : addSprite("ground", k.z(2));
 
 
         let chosenWaves = gm.nightTime ? "waves-night" : "waves";
-        const waves = k.add([k.sprite(chosenWaves), k.z(1)]) // TODO: add nightwaves, currently ground color too light on anim
+        const waves = k.add([k.sprite(chosenWaves), k.z(1)]) // TODO: fix wave sprites
         waves.play("normal");
 
 
 
         // sounds
+
         const dayMusic = ["fishing-bg-1", "day-bg-3", "fishing-bg-2", "fishing-bg-1", "fishing-bg-3"]
         const nightMusic = ["night-bg-1", "night-bg-2"]
         let pickedMusic = gm.nightTime ? nightMusic : dayMusic;
@@ -63,8 +67,6 @@ export async function day() {
         
         const finalsfx = creatureSfx.concat(pickedSfx)
 
-        // TODO: play "fast-tune" when boss fish hooked.
-
         const seaSound = playSound("sea", "sfx", -0.9, true);
 
         let canPlaySound = true;
@@ -78,7 +80,64 @@ export async function day() {
             }
         });
 
-        // debug
+
+
+        // day creature animations
+        if (!gm.nightTime) {
+            k.loop(10, () => {
+                if (k.rand(1, 11) < 8) return;
+
+                const spawnCrab = k.chance(0.5);
+                
+                if (spawnCrab) {
+                    const crab = k.add([
+                        k.sprite("crab"),
+                        k.pos(70, k.height() + 5),
+                        k.z(2),
+                        { speed: 5, target: k.vec2(30, k.height() - 35), stage: 1 }
+                    ]);
+                    crab.play("normal");
+                    crab.onUpdate(() => {
+
+                        const dir = crab.target.sub(crab.pos).unit();
+                        crab.move(dir.scale(crab.speed));
+                        
+                        if (crab.pos.dist(crab.target) < 5) {
+                            if (crab.stage === 1) {
+                                crab.target = k.vec2(5, k.height() + 5);
+                                crab.stage = 2;
+                            } else {
+                                k.destroy(crab);
+                            }
+                        }
+                    });
+                } else {
+                    const y = k.height() / k.rand(1.5, 4);
+                    const direction = k.choose([125,90,45])
+                    const bird = k.add([
+                        k.sprite("bird"),
+                        k.pos(k.width() + 5, y),
+                        k.rotate(direction),
+                        k.z(2),
+                        { speed: 40 }
+                    ]);
+                    bird.play("normal");
+
+                    bird.onUpdate(() => {
+                        if (direction === 125) bird.move(-bird.speed, -bird.speed/2);
+                        if (direction === 90) bird.move(-bird.speed, 0);
+                        if (direction === 45) bird.move(-bird.speed, bird.speed/2);
+                        if (bird.pos.x < -10 || bird.pos.y < -10 ) k.destroy(bird);
+                    });
+                }
+            });
+        }
+
+
+        // night creature animations
+
+
+
         // toggle night and other effects here
         if (gm.debug) {
             k.onKeyPress("r", () => {
@@ -86,6 +145,9 @@ export async function day() {
                 else gm.nightTime = true;
             });
         }
+
+
+
 
 
         // Buttons and shapes
@@ -347,6 +409,9 @@ export async function day() {
             } else {
                 canCast = false;
             }
+
+            //animations
+
 
         })
 

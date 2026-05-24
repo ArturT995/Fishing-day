@@ -43,10 +43,10 @@ export type BagObj = ShopObj & { count: number };
 export const ROD_DATA: any[] = [
 
     {rodId: "1", name: "Wood rod", unlocked: true,
-    selected: true, reelSpeed: 65, catchArea: 14, endurance: 12},
+    selected: true, reelSpeed: 65, catchArea: 13, endurance: 12},
 
     {rodId: "2", name: "Copper rod", unlocked: false,
-    selected: false, reelSpeed: 70, catchArea: 15, endurance: 12},
+    selected: false, reelSpeed: 70, catchArea: 14, endurance: 12},
 
     {rodId: "3", name: "Elegant Rod", unlocked: false,
     selected: false, reelSpeed: 73, catchArea: 15, endurance: 13},
@@ -55,7 +55,7 @@ export const ROD_DATA: any[] = [
     selected: true, reelSpeed: 80, catchArea: 16, endurance: 14},
 
     {rodId: "5", name: "Excellent rod", unlocked: false,
-    selected: false, reelSpeed: 95, catchArea: 17, endurance: 15},
+    selected: false, reelSpeed: 105, catchArea: 17, endurance: 15},
 
     {rodId: "6", name: "Legendary rod", unlocked: false,
     selected: false, reelSpeed: 125, catchArea: 21, endurance: 17},
@@ -77,7 +77,7 @@ export const ITEM_DATA: ShopObj[] = [
 
     {itemId: "3", name: "Fish Feed Can", sprite: "fishfeedcan",
     desc: "Use this to attract more fish to the lake",
-    price: 120, unlocked: false, feature: "Item"},
+    price: 150, unlocked: false, feature: "Item"},
 
     {itemId: "4", name: "Coffee", sprite: "coffee",
     desc: "The best beverage there is, don't drink too much though!",
@@ -89,39 +89,39 @@ export const ITEM_DATA: ShopObj[] = [
 
     {itemId: "6", name: "Rancid gloop", sprite: "rancidgloop",
     desc: `A disgusting mess, even fish are deterred by this. Used by some to clear areas in the lake, thus allowing different types of fish to emerge sometimes`,
-    price: 10, unlocked: false, feature: "Item"},
+    price: 20, unlocked: false, feature: "Item"},
 
     {itemId: "7", name: "Fish Feed Deluxe", sprite: "fishfeeddeluxe",
     desc: `A delicacy so potent it drives the fish into a frenzy, empty lakes are filled. 
     Even the rarest of fish might come out of hiding.`,
-    price: 250, unlocked: false, feature: "Item"},
+    price: 350, unlocked: false, feature: "Item"},
 
     // rods
 
     {itemId:" 8", name: "Wood rod", sprite: "woodrod",
     desc: `A basic rod, enough to get the job done`,
-    price: 40, unlocked: false, feature: "Rod Unique"},
+    price: 100, unlocked: false, feature: "Rod Unique"},
 
     {itemId:" 9", name: "Copper rod", sprite: "copperrod",
     desc: `An improved rod, it is easier to handle.`,
-    price: 170, unlocked: false, feature: "Rod Unique"},
+    price: 270, unlocked: false, feature: "Rod Unique"},
 
     {itemId: "10", name: "Elegant Rod", sprite: "elegantrod",
     desc: `A graceful rod, it is lighter and feels comfortable in your hands.`,
-    price: 500, unlocked: false, feature: "Rod Unique"},
+    price: 700, unlocked: false, feature: "Rod Unique"},
 
     {itemId: "11", name: "Exquisite rod", sprite: "exquisiterod",
     desc: `Quite a feat of craftsmanship. It has a great grip, weight and handles well.`,
-    price: 900, unlocked: false, feature: "Rod Unique"},
+    price: 1100, unlocked: false, feature: "Rod Unique"},
 
     {itemId: "12", name: "Excellent rod", sprite: "excellentrod",
     desc: `This rod feels perfect! You didn't think rods could be done at such a level.`,
-    price: 1250, unlocked: false, feature: "Rod Unique"},
+    price: 1550, unlocked: false, feature: "Rod Unique"},
 
     {itemId: "13", name: "Legendary rod", sprite: "legendaryrod",
     desc: `Tales have been told of an ancient ornate rod that can tame the mightiest of fish. 
     To see it in person fills you with awe. You feel a strange tingling when you hold it.`,
-    price: 2300, unlocked: false, feature: "Rod Unique"},
+    price: 2600, unlocked: false, feature: "Rod Unique"},
 
     // night and misc items
 
@@ -170,11 +170,11 @@ export const ITEM_DATA: ShopObj[] = [
 
     {itemId: "24", name: "Crab Pot", sprite: "crabpot-icon",
     desc: `Catch crustaceans passively while fishing.`,
-    price: 750, unlocked: false, feature: "Unique"},
+    price: 500, unlocked: false, feature: "crabPot Unique"},
 
     {itemId: "25", name: "A second Crab Pot", sprite: "crabpot-icon",
     desc: `Catch more crustaceans passively while fishing.`,
-    price: 800, unlocked: false, feature: "Unique"},
+    price: 800, unlocked: false, feature: "crabPot Unique"},
 
     //  next up decor and endgame items
 

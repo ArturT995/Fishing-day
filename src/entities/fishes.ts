@@ -175,12 +175,19 @@ export function makeFish(fish: FishObj, pos: Vec2) {
                     if (entity.name === "Gilded Fish") [head, base, tail] = [setColor(k.rgb(220, 190, 100), deviation), setColor(k.rgb(244, 223, 149), deviation), setColor(k.rgb(248, 169, 84), deviation)];
                     if (entity.name === "Ghost Carp")  [head, base, tail] = [setColor(k.rgb(20, 100, 120), deviation),  setColor(k.rgb(60, 160, 180), deviation),  setColor(k.rgb(30, 110, 140), deviation)];
                     if (entity.name === "Starbass")    [head, base, tail] = [setColor(k.rgb(10, 60, 130), deviation),   setColor(k.rgb(40, 120, 180), deviation),  setColor(k.rgb(15, 70, 145), deviation)];
+                    if (entity.name === "Orion")    [head, base, tail] = [setColor(k.rgb(10, 60, 130), deviation),   setColor(k.rgb(40, 120, 180), deviation),  setColor(k.rgb(15, 70, 145), deviation)];
                     if (entity.name === "Shyfish")     [head, base, tail] = [setColor(k.rgb(60, 20, 100), deviation),   setColor(k.rgb(110, 60, 160), deviation),  setColor(k.rgb(70, 25, 115), deviation)];
                     if (entity.name === "Olly")        [head, base, tail] = [setColor(k.rgb(120, 70, 70), deviation),   setColor(k.rgb(165, 130, 105), deviation), setColor(k.rgb(105, 65, 55), deviation)];
                     if (entity.name === "Bobo")        [head, base, tail] = [setColor(k.rgb(180, 55, 112), deviation),  setColor(k.rgb(195, 85, 120), deviation),  setColor(k.rgb(120, 35, 90), deviation)];
                     if (entity.name === "Beardy")      [head, base, tail] = [setColor(k.rgb(15, 45, 35), deviation),    setColor(k.rgb(20, 50, 35), deviation),    setColor(k.rgb(10, 40, 25), deviation)];
                     if (entity.name === "Ale")         [head, base, tail] = [setColor(k.rgb(23, 12, 44), deviation),    setColor(k.rgb(47, 21, 68), deviation),    setColor(k.rgb(41, 23, 60), deviation)];
-                    
+                    if (entity.name === "Dragonfish")  [head, base, tail] = [setColor(k.rgb(108, 17, 17), deviation),   setColor(k.rgb(119, 22, 22), deviation),    setColor(k.rgb(43, 16, 16), deviation)];
+                    if (entity.name === "Eidolon")     [head, base, tail] = [setColor(k.rgb(185, 195, 203), deviation), setColor(k.rgb(193, 185, 200), deviation), setColor(k.rgb(129, 126, 159), deviation)];
+                    if (entity.name === "Emerald dreamer")  [head, base, tail] = [setColor(k.rgb(20, 30, 26), deviation), setColor(k.rgb(21, 112, 19), deviation), setColor(k.rgb(24, 62, 46), deviation)];
+                    if (entity.name === "Slatefish")   [head, base, tail] = [setColor(k.rgb(26, 33, 28), deviation), setColor(k.rgb(28, 22, 33), deviation), setColor(k.rgb(13, 19, 22), deviation)];
+                    if (entity.name === "Goliath")     [head, base, tail] = [setColor(k.rgb(30, 41, 39), deviation), setColor(k.rgb(30, 44, 56), deviation), setColor(k.rgb(24, 34, 30), deviation)];
+                    if (entity.name === "Rudd")        [head, base, tail] = [setColor(k.rgb(31, 53, 37), deviation), setColor(k.rgb(32, 68, 31), deviation), setColor(k.rgb(77, 17, 17), deviation)];
+
                     item.color = k.rgb(base.r + deviation, base.g + deviation, base.b + deviation)
                     if (index <= 2) item.color = head
                     if (Math.ceil((array.length/100) * 60) <= index && index <= Math.ceil((array.length/100) * 80)) {
@@ -356,14 +363,14 @@ export function makeFish(fish: FishObj, pos: Vec2) {
     })
 
     entity.onCollide("noticeArea", () => {
-        if (gm.state === "catching") return;
+        if (gm.state === "catching" && gm.spawnedFishExists) return;
         if (entity.state !== "idle" && entity.state !== "move" ) return
         entity.enterState("notice")
     })
 
     
     entity.onCollide("catchArea", () => {
-        if (gm.state === "catching") return;
+        if (gm.state === "catching" && gm.spawnedFishExists) return;
         playSound("fishing-thunk", "sfx", 0.5 , false, -1000)
         spawnCaughtFish(entity);
         if(!entity.fishId) throw new Error("id not found when spawning fish")
@@ -384,7 +391,7 @@ export function makeFish(fish: FishObj, pos: Vec2) {
 
 
     entity.onStateEnter("notice", async () => {
-        if (fishHooked) entity.enterState("idle");
+        if (fishHooked && gm.spawnedFishExists) entity.enterState("idle");
         playSound("icon-sound-1", "sfx", -0.3, false, 1000)
         entity.add([
             k.rect(1, 1),
@@ -409,6 +416,7 @@ function spawnCaughtFish(fish: GameObj) {
     const bobber = k.get("bobber")[0];
     if (!bobber) return;
 
+    gm.spawnedFishExists = true;
     const sizeInput = (k.rand(1, 1.2)*fish.size)
     const exponent = 0.45;
     let size = Math.pow(sizeInput, exponent);
@@ -534,8 +542,10 @@ function makeShape(fish: FishObj, size: number, length: number) {
     let radices = [0.5, 1, 0.9, 0.4, 0.6, 0.8] //default
     const tench = [0.6, 0.7, 1.3, 1.5, 1.6, 1.5, 0.9, 1, 1.2]
     const catfish = [3.5, 4, 4.5, 4.6, 5, 5.2, 2, 4.5, 4.5, 4, 4, 3.5, 3, 3, 4, 4]
+    const goliath = [3.5, 4, 4.5, 5, 5, 6, 6, 2, 5, 5, 4.5, 4, 3.5, 3, 3, 4, 4]
     const beardy = [3.5, 4, 4.5, 4.6, 4, 2, 4, 3, 2, 3, 4, 4]
     const esox = [1, 1, 1, 1, 1.5, 1.5, 1.5, 1.5, 1.7, 1.8, 1.7, 1.5, 1.5, 1.5, 1, 1, 1, 1.2, 1.5]
+    const paddlefish = [1.2, 1.2, 1.1, 1, 1, 1, 1.5, 1.5, 2, 2, 2, 2.3, 2.5, 2, 1.7, 1.5, 1.5, 1, 1, 1, 1.2, 1.5]
     const small = smoothOutline([0.3, 0.6, 0.9, 1.0, 0.9, 0.7, 0.5, 0.3, 0.2])
     const mid = smoothOutline([0.6, 1.3, 1.7, 1.8, 1.6, 0.9, 1, 1.1]);
     const semibig = [1, 1, 2, 2, 2.5, 2.5, 3, 3, 3, 2.5, 2.5, 2, 2, 1, 1, 1, 2, 2]
@@ -561,7 +571,10 @@ function makeShape(fish: FishObj, size: number, length: number) {
     if (fish.name === "Beardy") radices = beardy
     if (fish.name === "Catfish") radices = catfish
     if (fish.name === "Esox") radices = esox
+    if (fish.name === "Paddlefish") radices = paddlefish
     if (fish.name === "Ale") radices = ale
+    if (fish.name === "Goliath") radices = goliath
+
 
     return radices;
 }

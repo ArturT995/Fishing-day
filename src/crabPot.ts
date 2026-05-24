@@ -58,6 +58,7 @@ export function makeCrabPot(posY: number, posX: number) {
 
             if (potTimer <= 0) {
                 pot.enterState("ready")
+                message("Crabpot caught something.")
                 potTimer = k.randi(FISH_TIMER/1.5,FISH_TIMER)
             }
         })
