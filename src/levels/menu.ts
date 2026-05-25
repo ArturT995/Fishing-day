@@ -16,7 +16,7 @@ export function menu() {
         
         const CURSOR_1 = k.add([
             k.sprite("cursor1"),
-            k.anchor("left"),
+            k.anchor("center"),
             k.pos(),
             k.z(10),
         ]);

@@ -176,7 +176,7 @@ export const ITEM_DATA: ShopObj[] = [
     desc: `Catch more crustaceans passively while fishing.`,
     price: 800, unlocked: false, feature: "crabPot Unique"},
 
-    {itemId: "26", name: "Boat Key", sprite: "attickey",
+    {itemId: "26", name: "Boat Key", sprite: "boatkey",
     desc: `Keys to a dependable steamboat. Use it to head out to the sea.`,
     price: 10000, unlocked: false, feature: "Unique"},
 

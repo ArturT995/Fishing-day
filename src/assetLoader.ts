@@ -26,7 +26,8 @@ export async function assetLoader() {
     k.loadSprite("night-ground", "./graphics/night-ground.png")
     k.loadSprite("night-sea", "./graphics/night-sea.png")
 
-    
+    k.loadSprite("endscene", "./graphics/endscene.png")
+
     k.loadSprite("waves", "./graphics/waves.png", {
         sliceX: 4,
         anims: {
@@ -301,6 +302,7 @@ let fishesList =
 let itemsList = 
 [
   "crabpot-icon",
+  "boatkey",
   "beer",
   "birdfeed",
   "bugfeed",

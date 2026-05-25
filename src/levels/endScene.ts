@@ -22,10 +22,9 @@ export function endScene() {
 
         // ending sprite
         k.add([
-            k.rect(k.width() -20, k.height()/2),
+            k.sprite("endscene"),
             k.pos(k.width()/2, 55),
             k.anchor("center"),
-            k.color(COLORS.DARKRED),
             k.z(2)
         ])
         let sea = playSound("sea", "music", -0.8 ,true)
@@ -38,7 +37,7 @@ export function endScene() {
             k.anchor("center"),
             k.z(2)
         ])
-        playSound("laughing-bird", "sfx")
+
         await k.wait(3)
         let seaText = k.choose(["North", "South", "East", "West", "to The Archipelago", "towards The Depths", "to the Emerald Isles", "to seek bigger fish", "to Stormy Isles"])
         k.add([
