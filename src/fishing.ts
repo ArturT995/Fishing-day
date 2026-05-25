@@ -160,6 +160,7 @@ export function throwLine(anchor: Vec2, power: number) {
         // difficulty modifications here
         if (bobber.state === "catching") {
             k.destroy(noticeArea);
+            k.setCursor("none");
             catchTime -= 0.02
             if (!gm.keyboardMode) reelingArea.pos = k.mousePos()           
 
@@ -232,6 +233,8 @@ export function throwLine(anchor: Vec2, power: number) {
                 const fish = FISH_DATA.find(fish=> fish.fishId === fishId)
                 if (fish === undefined) throw new Error("Fish undefined")
                 
+                k.setCursor("default");
+
                 reelSound.paused = true;
                 reelSound.stop();
                 
@@ -264,6 +267,8 @@ export function throwLine(anchor: Vec2, power: number) {
             if (bobber.pos.dist(anchor) > k.height() - 50 || catchTime <= 0 || bobber.pos.y < 10 ||
             (!fishingArea.hasPoint(bobber.pos) && bobber.pos.dist(anchor) > 160 )) {
                 catchingFlag = false
+
+                k.setCursor("default");
                 gm.enterState("fishing")
                 k.destroy(bobber);
                 k.destroy(reelingArea);

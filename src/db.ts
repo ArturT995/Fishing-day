@@ -166,7 +166,7 @@ export const ITEM_DATA: ShopObj[] = [
 
     {itemId: "23", name: "Attic Key", sprite: "attickey",
     desc: `Sleep in the shop attic. Grants access to the night level`,
-    price: 1000, unlocked: false, feature: "Unique"},
+    price: 600, unlocked: false, feature: "Unique"},
 
     {itemId: "24", name: "Crab Pot", sprite: "crabpot-icon",
     desc: `Catch crustaceans passively while fishing.`,

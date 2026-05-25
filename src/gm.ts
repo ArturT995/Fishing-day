@@ -28,6 +28,7 @@ interface GameManager extends GameObj {
     money: number;
     baitPower: number;
     lastLogin: number;
+    keyUsed: boolean;
     debug: boolean;
     noticeArea: number;
     keyboardMode: boolean;
@@ -195,6 +196,7 @@ function makeGameManager() {
             nightTime: false,
             spawnedFishExists: false,
             fishTimer: 0,
+            keyUsed: false,
             debug: true, // TODO: set to false in release
 
             noticeArea: (currentRod.catchArea ?? 10) + 5,

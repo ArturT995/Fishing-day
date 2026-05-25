@@ -155,6 +155,24 @@ export function openBag() {
 
             }
 
+            if (name === "Attic Key") {
+                gm.keyUsed = true;
+                
+                if (gm.nightTime) {
+                    gm.nightTime = false;
+                } else {
+                    gm.nightTime = true;
+                };
+
+                popupObjects.forEach(obj => obj.destroy());
+                gm.currentRodIcon = null
+                gm.logPopupOpen = false;
+                k.go("sleep-scene")
+            }
+
+
+
+
             // alcohols
             if (name === "Beer") {
                 message("Cheers!")

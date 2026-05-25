@@ -15,15 +15,15 @@ import { openCollectionLog } from "./menu";
 
 
 
-export async function day() {
-    k.scene("day", () => {
+export function day() {
+    k.scene("day", async () => {
         let canCast = false;
         
         
-        
-        // TODO: add crab and bird sprites
+
         // Wait a tiny bit of time before allowing input
-        k.wait(0.5, () => canCast = true);
+
+
         k.setCursor("default");
 
         // additional override since in some rare instances game state got stuck on catching.
@@ -258,6 +258,14 @@ export async function day() {
             openBag();
         })
 
+
+
+
+
+
+
+
+
         // crab pots
         if (gm.itemsUnlocked.includes("24")) makeCrabPot(k.width()-30, k.height()-60)
         if (gm.itemsUnlocked.includes("25")) makeCrabPot(k.width()-60, k.height()-40)
@@ -270,13 +278,27 @@ export async function day() {
             gm.lastLogin = Date.now()
         }
 
+
+
+
         // this draws fish when returning to scene
         if (gm.fishPool.length > 0) {
-            k.wait(0.5)
+            await k.wait(0.5)
             generateFishes()
         }
         
+
+        // add some fish when switching between day/night
+        if (gm.keyUsed && gm.fishPool.length === 0) {
+            await k.wait(0.5)
+            generateFishes(6)
+            gm.keyUsed = false;
+        }
+
+
+        await k.wait(0.5, () => canCast = true);
         
+
         // Fishing rod Power bar
         const powerBar = k.add([
                 k.rect(2,0),
@@ -431,7 +453,6 @@ export async function day() {
         });
 
 
-        //add bird laughing sound sometimes when u fail to catch a fish
         k.onSceneLeave(() => {
             gm.currentFishID = "";
             bgMusic.stop();
