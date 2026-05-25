@@ -1,6 +1,6 @@
 import k from "../kaplayCtx";
 import { addSprite } from "../assetLoader";
-import { COLORS, fontConfig } from "../constants";
+import { COLORS, fontConfig, fontConfigSmall } from "../constants";
 import { FISH_DATA } from "../db";
 import gm from "../gm";
 import { bubbleText, clickProcess, hoverProcess, makeButton, makeContainer, makeIcons, makeSlider } from "../ui";
@@ -12,7 +12,22 @@ import { tutorialPopup } from "../tutorial";
 
 export function menu() {
     k.scene("main-menu", () => {
-        k.setCursor("default");//make custom cursor
+        k.setCursor("none");
+        
+        const CURSOR_1 = k.add([
+            k.sprite("cursor1"),
+            k.anchor("left"),
+            k.pos(),
+            k.z(10),
+        ]);
+        k.onUpdate(() => {
+            if (gm.isPotOneSubmerged || gm.isPotTwoSubmerged ) {
+                gm.accumulatedTime += 1
+            }
+            CURSOR_1.moveTo(k.mousePos())
+        });
+        
+
         
         let background = gm.nightTime ? "nightMenuScreen" : "dayMenuScreen";
         addSprite(background)
@@ -137,6 +152,18 @@ export function menu() {
             if (gm.logPopupOpen) return;
             hoverProcess(log);
         })
+
+
+        k.add([
+            k.text("Made by ArturT995", fontConfigSmall),
+            k.anchor("right"),
+            k.pos(k.width() - 5, k.height() - 5),
+            k.color(chosenColor),
+            k.area(),
+            k.opacity(1),
+            k.scale(1),
+            k.z(4),
+        ]);
 
         k.onSceneLeave(() => {
             bgMusic.stop();

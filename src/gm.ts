@@ -29,10 +29,14 @@ interface GameManager extends GameObj {
     baitPower: number;
     lastLogin: number;
     keyUsed: boolean;
+    isPotOneSubmerged: boolean;
+    isPotTwoSubmerged: boolean;
+    accumulatedTime: number;
     debug: boolean;
     noticeArea: number;
     keyboardMode: boolean;
     spawnedFishExists: boolean;
+
 
     saveProgress(): void;
 
@@ -197,7 +201,11 @@ function makeGameManager() {
             spawnedFishExists: false,
             fishTimer: 0,
             keyUsed: false,
+            isPotOneSubmerged: false,
+            isPotTwoSubmerged: false,
+            accumulatedTime: 0,
             debug: true, // TODO: set to false in release
+
 
             noticeArea: (currentRod.catchArea ?? 10) + 5,
 

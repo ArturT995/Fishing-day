@@ -126,7 +126,7 @@ export function makeFish(fish: FishObj, pos: Vec2) {
         k.area(),
         k.color(randomColor),
         k.rotate(0),
-        k.state("idle", ["idle", "notice", "move", "pursue", "hooked"]),
+        k.state("move", ["idle", "notice", "move", "pursue", "hooked"]),
         {   
             fishId: fish.fishId,
             name: fish.name,
@@ -218,10 +218,6 @@ export function makeFish(fish: FishObj, pos: Vec2) {
     ]);
 
 
-    entity.onStateEnter("idle", async () => {
-        entity.enterState("move");
-    })
-
     // color mode
     entity.onKeyPress("t", () => {
         entity.randomColors()
@@ -280,7 +276,6 @@ export function makeFish(fish: FishObj, pos: Vec2) {
         if (entity.state === "move") {
             if (entity.pos.dist(target) < 5) {
                 entity.currentWaypoint = (entity.currentWaypoint + 1) % entity.waypoints.length;
-                entity.enterState("idle");
             };
 
             const turnDt = k.dt() * 120
@@ -298,7 +293,7 @@ export function makeFish(fish: FishObj, pos: Vec2) {
         if (entity.state === "pursue") {
             const bobber = k.get("bobber")[0];
             if (!bobber || gm.state === "catching") {
-                entity.enterState("idle");
+                entity.enterState("move");
             } else {
                 const dir = bobber.pos.sub(entity.pos).unit();
                 //const mouseDir = k.mousePos().sub(entity.pos).unit();
@@ -314,7 +309,7 @@ export function makeFish(fish: FishObj, pos: Vec2) {
             fishHooked = true
             const bobber = k.get("bobber")[0];
             if (!bobber) {
-                entity.enterState("idle");
+                entity.enterState("move");
                 fishHooked = false
             } else {
                 entity.use(k.follow(bobber, k.vec2(0, 0)));
@@ -385,13 +380,13 @@ export function makeFish(fish: FishObj, pos: Vec2) {
     entity.onStateEnter("hooked", () => {
         const bobber = k.get("bobber")[0];
         if (!bobber){
-            entity.enterState("idle");
+            entity.enterState("move");
         }
     })
 
 
     entity.onStateEnter("notice", async () => {
-        if (fishHooked && gm.spawnedFishExists) entity.enterState("idle");
+        if (fishHooked && gm.spawnedFishExists) entity.enterState("move");
         playSound("icon-sound-1", "sfx", -0.3, false, 1000)
         entity.add([
             k.rect(1, 1),

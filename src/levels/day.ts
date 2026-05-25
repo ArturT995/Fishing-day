@@ -1,6 +1,6 @@
 import { addSprite } from "../assetLoader";
 import { openBag } from "../bag";
-import { ANCHOR, COLORS, FISH_AMOUNT, FISH_TIMER, fishingArea, fontConfigSmall } from "../constants";
+import { ANCHOR, COLORS, FISH_AMOUNT, FISH_TIMER, fishingArea, fishingAreaWarning, fontConfigSmall } from "../constants";
 import { makeCrabPot } from "../crabPot";
 import { generateFishes } from "../entities/fishes";
 import { throwLine } from "../fishing";
@@ -19,12 +19,7 @@ export function day() {
     k.scene("day", async () => {
         let canCast = false;
         
-        
 
-        // Wait a tiny bit of time before allowing input
-
-
-        k.setCursor("default");
 
         // additional override since in some rare instances game state got stuck on catching.
         gm.enterState("fishing")
@@ -261,14 +256,55 @@ export function day() {
 
 
 
+        // cursors
+
+        k.setCursor("none");
+        
+        const CURSOR_1 = k.add([
+            k.sprite("cursor1"),
+            k.outline(1),
+            k.anchor("left"),
+            k.opacity(1),
+            k.pos(),
+            k.z(10),
+            "cursor1"
+        ]);
+        const CURSOR_2 = k.add([
+            k.sprite("cursor2"),
+            k.outline(1),
+            k.anchor("left"),
+            k.opacity(1),
+            k.pos(),
+            k.z(10),
+            "cursor2"
+        ]);
+
+        k.onUpdate(() => {
+            let cursor = CURSOR_1
+            if (!gm.logPopupOpen) {
+                cursor = fishingArea.hasPoint(k.mousePos()) ? CURSOR_2 : CURSOR_1
+                if (fishingArea.hasPoint(k.mousePos())) {
+                    CURSOR_1.opacity = 0
+                    CURSOR_2.opacity = 1
+                } else {
+                    CURSOR_1.opacity = 1
+                    CURSOR_2.opacity = 0
+                }
+            }
+
+            if (gm.spawnedFishExists) cursor.opacity = 0
+            else cursor.opacity = 1
+
+            cursor.moveTo(k.mousePos());
+        })
 
 
 
 
 
         // crab pots
-        if (gm.itemsUnlocked.includes("24")) makeCrabPot(k.width()-30, k.height()-60)
-        if (gm.itemsUnlocked.includes("25")) makeCrabPot(k.width()-60, k.height()-40)
+        if (gm.itemsUnlocked.includes("24")) makeCrabPot(k.width()-30, k.height()-60, "pot1")
+        if (gm.itemsUnlocked.includes("25")) makeCrabPot(k.width()-60, k.height()-40, "pot2")
         
         
 
@@ -277,8 +313,6 @@ export function day() {
             generateFishes(FISH_AMOUNT)
             gm.lastLogin = Date.now()
         }
-
-
 
 
         // this draws fish when returning to scene
@@ -296,9 +330,12 @@ export function day() {
         }
 
 
-        await k.wait(0.5, () => canCast = true);
+        
         
 
+        await k.wait(0.5, () => canCast = true);
+        
+        
         // Fishing rod Power bar
         const powerBar = k.add([
                 k.rect(2,0),

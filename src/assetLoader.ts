@@ -11,7 +11,9 @@ export async function assetLoader() {
     
     k.loadSprite("sunIcon", "./graphics/sunIcon.png")
     k.loadSprite("moonIcon", "./graphics/moonIcon.png")
-    //k.loadSprite("titlebox", "./graphics/titlebox.png")
+    
+    k.loadSprite("cursor1", "./graphics/cursor1.png")
+    k.loadSprite("cursor2", "./graphics/cursor2.png")
 
     k.loadSprite("shop-bg", "./graphics/shop-bg.png")
     k.loadSprite("night-shop", "./graphics/night-shop.png")

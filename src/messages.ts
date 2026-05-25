@@ -14,6 +14,8 @@ export function message(text: string) {
         k.anchor("left"),
         k.color(COLORS.BEIGE),
         k.z(8),
+        k.area(),
+        k.body(),
         k.lifespan(2, { fade: 0.5 }),
         k.opacity(1),
         "message",

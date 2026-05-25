@@ -9,7 +9,19 @@ export const FISH_TIMER = 3500;
 export const FISH_AMOUNT = 14
 export const ANCHOR = k.vec2(k.width() / 2 - 1, k.height() - 47)
 
+export const CURSOR_1 = k.add([
+    k.sprite("cursor1"),
+    k.anchor("center"),
+    k.pos(),
+    k.z(10),
+]);
 
+export const CURSOR_2 = k.add([
+    k.sprite("cursor2"),
+    k.anchor("center"),
+    k.pos(),
+    k.z(10),
+]);
 
 export const COLORS = {
     WHITE: k.rgb(255, 255, 255),  

@@ -10,7 +10,20 @@ import { makeContainer, makeButton, makeIcons, clickProcess, hoverProcess } from
 
 export function shop() {
     k.scene("shop", () => {
-        k.setCursor("default");
+        k.setCursor("none")
+        const CURSOR_1 = k.add([
+            k.sprite("cursor1"),
+            k.anchor("left"),
+            k.pos(),
+            k.z(10),
+        ]);
+        
+        k.onUpdate(() => {
+            if (gm.isPotOneSubmerged || gm.isPotTwoSubmerged ) {
+                gm.accumulatedTime += 1
+            }
+            CURSOR_1.moveTo(k.mousePos())
+        });
 
         // additional override since in some rare instances game state got stuck on catching.
         gm.enterState("fishing")

@@ -5,7 +5,7 @@ import k from "./kaplayCtx";
 import { message } from "./messages";
 
 
-export function makeCrabPot(posY: number, posX: number) {
+export function makeCrabPot(posY: number, posX: number, name: string) {
     const pot = k.add([
             k.sprite("crabpot", { anim: "idle" }),
             k.pos(posY,posX),
@@ -42,6 +42,8 @@ export function makeCrabPot(posY: number, posX: number) {
         pot.onClick(() => {
             if (pot.state === "idle") {
                 pot.enterState("submerged");
+                if (name === "pot1") gm.isPotOneSubmerged = true
+                if (name === "pot2") gm.isPotTwoSubmerged = true
             } else if (pot.state === "ready"){
                 gm.addFish(chosenCrab.fishId);
                 gm.unlockFish(chosenCrab.fishId);
@@ -50,16 +52,25 @@ export function makeCrabPot(posY: number, posX: number) {
             }
         });
 
-        let potTimer = k.randi(FISH_TIMER/1.5,FISH_TIMER)
+        let potTimer = FISH_TIMER/100 - gm.accumulatedTime/10
         pot.onUpdate(() => {
+            if (gm.isPotOneSubmerged && name === "pot1") pot.enterState("submerged");
+            if (gm.isPotTwoSubmerged && name === "pot2") pot.enterState("submerged");
+            
             if (pot.state === "submerged") {
-                potTimer -= 1
+                if (gm.accumulatedTime > 0) {
+                    potTimer -= gm.accumulatedTime/100
+                    gm.accumulatedTime = 0;
+                }  
+                potTimer -= k.dt()
             }
 
             if (potTimer <= 0) {
+                if (name === "pot1") gm.isPotOneSubmerged = false
+                if (name === "pot2") gm.isPotTwoSubmerged = false
                 pot.enterState("ready")
                 message("Crabpot caught something.")
-                potTimer = k.randi(FISH_TIMER/1.5,FISH_TIMER)
+                potTimer = k.randi(FISH_TIMER/1.5,FISH_TIMER)/100
             }
         })
 }

@@ -10,6 +10,7 @@ export function sleepScene() {
     
 
     k.scene("sleep-scene", async () => {
+        k.setCursor("none");
 
         k.add([
             k.rect(k.height(), k.width()),
