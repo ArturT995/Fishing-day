@@ -1,6 +1,6 @@
 import { addSprite } from "../assetLoader";
 import { openBag } from "../bag";
-import { ANCHOR, COLORS, FISH_AMOUNT, FISH_TIMER, fishingArea, fishingAreaWarning, fontConfigSmall } from "../constants";
+import { ANCHOR, COLORS, FISH_AMOUNT, FISH_TIMER, fishingArea, fontConfigSmall } from "../constants";
 import { makeCrabPot } from "../crabPot";
 import { generateFishes } from "../entities/fishes";
 import { throwLine } from "../fishing";
@@ -19,7 +19,6 @@ export function day() {
     k.scene("day", async () => {
         let canCast = false;
         
-
 
         // additional override since in some rare instances game state got stuck on catching.
         gm.enterState("fishing")
@@ -292,7 +291,7 @@ export function day() {
                 }
             }
 
-            if (gm.spawnedFishExists) cursor.opacity = 0
+            if (gm.spawnedFishExists || gm.bobberExists) cursor.opacity = 0
             else cursor.opacity = 1
 
             cursor.moveTo(k.mousePos());
@@ -316,14 +315,14 @@ export function day() {
 
 
         // this draws fish when returning to scene
-        if (gm.fishPool.length > 0) {
+        else if (gm.fishPool.length > 0 && gm.lastLogin !== 0) {
             await k.wait(0.5)
             generateFishes()
         }
         
 
         // add some fish when switching between day/night
-        if (gm.keyUsed && gm.fishPool.length === 0) {
+        if (gm.keyUsed && gm.fishPool.length === 0 && gm.lastLogin !== 0) {
             await k.wait(0.5)
             generateFishes(6)
             gm.keyUsed = false;

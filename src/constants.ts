@@ -6,7 +6,7 @@ import k from "./kaplayCtx";
 // item boosted value 600-1000
 // current: 3500
 export const FISH_TIMER = 3500;
-export const FISH_AMOUNT = 14
+export const FISH_AMOUNT = 14;
 export const ANCHOR = k.vec2(k.width() / 2 - 1, k.height() - 47)
 
 export const CURSOR_1 = k.add([

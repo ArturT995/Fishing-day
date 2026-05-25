@@ -176,6 +176,11 @@ export const ITEM_DATA: ShopObj[] = [
     desc: `Catch more crustaceans passively while fishing.`,
     price: 800, unlocked: false, feature: "crabPot Unique"},
 
+    {itemId: "26", name: "Boat Key", sprite: "attickey",
+    desc: `Keys to a dependable steamboat. Use it to head out to the sea.`,
+    price: 10000, unlocked: false, feature: "Unique"},
+
+
     //  next up decor and endgame items
 
     //  pier, lantern, red lights, beach umbrella, beach chair, 4 monuments, medal of completion.
@@ -442,7 +447,7 @@ export const FISH_DATA: FishObj[] = [
     desc: `A gargantuan eel with purplish skin, it looks centuries old...
 
     "What is this monstrosity?! - Shopkeeper"`,
-    unlocked: false, difficulty: 34, price: 960, feature: "Unique"},
+    unlocked: false, difficulty: 33, price: 960, feature: "Unique"},
 
 
     {fishId: "34", name: "Orion", sprite: "orion", spriteLocked: "orion-locked", activeTime: "Night",
@@ -486,7 +491,7 @@ export const FISH_DATA: FishObj[] = [
     desc: `A colossal creature! It looks somewhat similar to a catfish, you will need help hauling this to the store.
     
     "I can't fit this in my store! - Shopkeeper"`,
-    unlocked: false, difficulty: 39, price: 700, feature: "Slow"},
+    unlocked: false, difficulty: 37, price: 700, feature: "Slow"},
 
 
     {fishId: "39", name: "Slatefish", sprite: "slatefish", spriteLocked: "slatefish-locked", activeTime: "Night",

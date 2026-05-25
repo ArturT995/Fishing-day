@@ -14,6 +14,9 @@ export function throwLine(anchor: Vec2, power: number) {
         return;
     }
 
+    gm.bobberExists = true;
+
+
     const mouseTarget = k.mousePos();
     const dir = mouseTarget.sub(anchor).unit();
     const landingPos = anchor.add(dir.scale(power * 50));
@@ -153,6 +156,7 @@ export function throwLine(anchor: Vec2, power: number) {
             bobber.move(toAnchor.scale(bobber.reelSpeed));
             if (bobber.pos.dist(anchor) < 10) {
                 k.destroy(noticeArea);
+                gm.bobberExists = false;
                 k.destroy(bobber);
             }
         }
@@ -248,6 +252,7 @@ export function throwLine(anchor: Vec2, power: number) {
                 gm.removeFishFromPool(fishId)
                 gm.enterState("fishing")
                 k.destroy(bobber);
+                gm.bobberExists = false;
                 k.destroy(reelingArea);
                 gm.spawnedFishExists = false;
                 gm.currentFishId = "";
@@ -267,9 +272,10 @@ export function throwLine(anchor: Vec2, power: number) {
             (!fishingArea.hasPoint(bobber.pos) && bobber.pos.dist(anchor) > 160 )) {
                 catchingFlag = false
 
-                k.setCursor("default");
+
                 gm.enterState("fishing")
                 k.destroy(bobber);
+                gm.bobberExists = false;
                 k.destroy(reelingArea);
                 gm.currentFishId = "";
                 playSound("fish-escaped", "sfx")

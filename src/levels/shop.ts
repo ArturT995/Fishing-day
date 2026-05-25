@@ -47,12 +47,11 @@ export function shop() {
         smoke.play("normal");
         
 
-        //addSprite("shopPopupBorders")
 
         shopPopup()
 
         function shopPopup() {
-            //overlay borders with a sprite on these
+
             if (gm.logPopupOpen) return;
             gm.logPopupOpen = true
             let POPUP_WIDTH = k.width() - 10 

@@ -4,6 +4,7 @@ import { menu } from "./levels/menu";
 import { day } from "./levels/day";
 import { shop } from "./levels/shop";
 import { sleepScene } from "./levels/sleepScene";
+import { endScene } from "./levels/endScene";
 
 
 
@@ -36,6 +37,8 @@ day()
 shop()
 
 sleepScene()
+
+endScene()
 // this addresses an issue where the hover/click areas drift to left from the ui element positions on the screen caused by
 // flexbox set to true. It forces a resize causing the areas to update.
 // test this in build mode and maybe other settings too like flexbox and like.

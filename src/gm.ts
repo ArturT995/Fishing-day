@@ -29,6 +29,7 @@ interface GameManager extends GameObj {
     baitPower: number;
     lastLogin: number;
     keyUsed: boolean;
+    bobberExists: boolean;
     isPotOneSubmerged: boolean;
     isPotTwoSubmerged: boolean;
     accumulatedTime: number;
@@ -201,6 +202,7 @@ function makeGameManager() {
             spawnedFishExists: false,
             fishTimer: 0,
             keyUsed: false,
+            bobberExists: false,
             isPotOneSubmerged: false,
             isPotTwoSubmerged: false,
             accumulatedTime: 0,

@@ -155,6 +155,8 @@ export function openBag() {
 
             }
 
+            // keys
+
             if (name === "Attic Key") {
                 gm.keyUsed = true;
                 
@@ -168,6 +170,13 @@ export function openBag() {
                 gm.currentRodIcon = null
                 gm.logPopupOpen = false;
                 k.go("sleep-scene")
+            }
+
+            if (name === "Boat Key") {
+                popupObjects.forEach(obj => obj.destroy());
+                gm.currentRodIcon = null
+                gm.logPopupOpen = false;
+                k.go("end-scene")
             }
 
 
