@@ -325,7 +325,7 @@ export function equipRod(rod: RodObj, currentIcon: GameObj) {
     gm.currentRodIcon = currentIcon;
 }
 
-async function splashSounds() {
+export async function splashSounds() {
     playSound("fishing-thunk", "sfx", 0, false, k.randi(-3000, -2000));
     await k.wait(0.3)
     playSound("fishing-thunk", "sfx", 0, false, k.randi(-1000, -2000));
@@ -336,7 +336,7 @@ async function splashSounds() {
     playSound("fishing-thunk", "sfx", 0, false, k.randi(-4000, -2000));
 }
 
-async function thunkSounds() {
+export async function thunkSounds() {
     playSound("fishing-thunk", "sfx", 0, false, k.randi(300, 200));
     await k.wait(0.3)
     playSound("fishing-thunk", "sfx", 0, false, k.randi(1000, 2000));

@@ -1,5 +1,5 @@
 import { addSprite } from "../assetLoader";
-import { openBag } from "../bag";
+import { openBag, splashSounds, thunkSounds } from "../bag";
 import { ANCHOR, COLORS, FISH_AMOUNT, FISH_TIMER, fishingArea, fontConfigSmall } from "../constants";
 import { makeCrabPot } from "../crabPot";
 import { generateFishes } from "../entities/fishes";
@@ -296,6 +296,105 @@ export function day() {
 
             cursor.moveTo(k.mousePos());
         })
+
+
+
+
+        // Hotkeys
+        
+        //fish identifier
+        k.onKeyPress("1", async () => {
+            if (gm.identifierOn) {
+                message("You turn on the identifier off.")
+                playSound("fishing-thunk", "sfx", 0, false, 1000);
+                await k.wait(0.1)
+                playSound("fishing-thunk", "sfx", 0, false, 500);
+                await k.wait(2)
+                message("It feels like a relief.")
+                gm.identifierOn = false;
+            } else {
+                message("You turn on the identifier and hear a hum.")
+                playSound("powerup", "sfx",0, false, -2500)
+                gm.identifierOn = true;
+            }
+        });
+
+        //rancid gloop
+        k.onKeyPress("2", () => {
+            if (!gm.itemsOwned.includes("6")) {
+                message("No gloop left.")
+                return
+            }
+            gm.removeItem("6")
+            message("Disgusting.")
+            let fishes = k.get("fish");
+            let fishNames = k.get("fishName");
+            playSound("rancid-gloop", "sfx")
+            splashSounds()
+            fishes.forEach(fish => {
+                gm.removeFishFromPool(fish.fishId);
+                fish.destroy();
+            });
+            fishNames.forEach(name => name.destroy())
+        });
+
+        //fish feed can
+        k.onKeyPress("3", async () => {
+            if (!gm.itemsOwned.includes("3")) {
+                message("No fish feed left.")
+                return
+            }
+            gm.removeItem("3")
+            message("You scatter the contents into the lake.")
+                splashSounds()
+                await k.wait(1.5)
+                if (gm.fishPool.length >= FISH_AMOUNT) message("No new fish show up")
+                else if (gm.fishPool.length === 0) {
+                    message("The empty lake fills with fish")
+                    generateFishes(FISH_AMOUNT)
+                } else {
+                    if (gm.fishPool.length > 12) message("Some new fish emerge")
+                    if (gm.fishPool.length < 12) message("Many new fish emerge")
+                    generateFishes(FISH_AMOUNT - gm.fishPool.length)
+                }
+        });
+
+        //fish feed deluxe
+        k.onKeyPress("4", async () => {
+            if (!gm.itemsOwned.includes("7")) {
+                message("No fish feed deluxe left.")
+                return
+            }
+            gm.removeItem("7")
+            message("You scatter the pricy goods into the lake.")
+                thunkSounds()
+                splashSounds()
+                await k.wait(1.5)
+                if (gm.fishPool.length >= FISH_AMOUNT) message("No new fish show up, \nthe remainder happily eats \nthe Fish Feed Deluxe")
+                else if (gm.fishPool.length === 0) {
+                    message("The empty lake fills with fish, \ncompeting to eat the appetizing meal")
+                    generateFishes(FISH_AMOUNT+5, 1.5)
+                } else {
+                    if (gm.fishPool.length > 12) message("Some new fish rush to eat")
+                    if (gm.fishPool.length < 12) message("Many new fish rush to the lake")
+                    generateFishes(FISH_AMOUNT - gm.fishPool.length, 1.5)
+                }
+                await k.wait(0.5)
+                thunkSounds()
+        });
+
+        //bait
+        k.onKeyPress("5", () => {
+            if (!gm.itemsOwned.includes("2")) {
+                message("No bait left.")
+                return
+            }
+            gm.removeItem("2")
+            message("You apply some of that fancy bait.")
+            playSound("powerup", "sfx",0, false, -500)
+            gm.baitPower += 5;
+        });
+
 
 
 

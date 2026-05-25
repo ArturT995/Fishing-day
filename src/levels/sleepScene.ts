@@ -30,7 +30,7 @@ export function sleepScene() {
         ])
         playSound("shaking", "sfx")
         await k.wait(2)
-        let dreamText = k.choose(["dogs", "cats", "turtles", "fish", "The Shopkeeper", "bugs", "the Sea", "the Depths", "a forest", "a field with stormclouds", "nothing", "eating", "being young again", "falling"])
+        let dreamText = k.choose(["dogs", "cats", "turtles", "fish", "The Shopkeeper", "a mermaid", "bugs", "the Sea", "the Depths", "a forest", "a field with stormclouds", "nothing", "eating", "being young again", "falling"])
         k.add([
             k.text(`You dream of ${dreamText}`, fontConfig),
             k.color(COLORS.ORANGE),
