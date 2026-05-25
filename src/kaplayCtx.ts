@@ -10,6 +10,7 @@ const k = kaplay({
     debug: true, // set to false in prod.
     background: [0,0,0],
     global: false,
+    maxFPS: 60,
 });
 
 export default k;

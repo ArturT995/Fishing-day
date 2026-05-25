@@ -153,12 +153,12 @@ export function menu() {
             hoverProcess(log);
         })
 
-
+        let creditsColor = gm.nightTime ? COLORS.BLACK : COLORS.DARKRED;
         k.add([
             k.text("Made by ArturT995", fontConfigSmall),
             k.anchor("right"),
             k.pos(k.width() - 5, k.height() - 5),
-            k.color(chosenColor),
+            k.color(creditsColor),
             k.area(),
             k.opacity(1),
             k.scale(1),

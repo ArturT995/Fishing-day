@@ -43,16 +43,16 @@ export type BagObj = ShopObj & { count: number };
 export const ROD_DATA: any[] = [
 
     {rodId: "1", name: "Wood rod", unlocked: true,
-    selected: true, reelSpeed: 65, catchArea: 13, endurance: 12},
+    selected: true, reelSpeed: 70, catchArea: 13, endurance: 12},
 
     {rodId: "2", name: "Copper rod", unlocked: false,
-    selected: false, reelSpeed: 70, catchArea: 14, endurance: 12},
+    selected: false, reelSpeed: 75, catchArea: 14, endurance: 12},
 
     {rodId: "3", name: "Elegant Rod", unlocked: false,
-    selected: false, reelSpeed: 73, catchArea: 15, endurance: 13},
+    selected: false, reelSpeed: 78, catchArea: 15, endurance: 13},
 
     {rodId: "4", name: "Exquisite rod", unlocked: true,
-    selected: true, reelSpeed: 80, catchArea: 16, endurance: 14},
+    selected: true, reelSpeed: 85, catchArea: 16, endurance: 14},
 
     {rodId: "5", name: "Excellent rod", unlocked: false,
     selected: false, reelSpeed: 105, catchArea: 17, endurance: 15},
@@ -108,7 +108,7 @@ export const ITEM_DATA: ShopObj[] = [
 
     {itemId: "10", name: "Elegant Rod", sprite: "elegantrod",
     desc: `A graceful rod, it is lighter and feels comfortable in your hands.`,
-    price: 700, unlocked: false, feature: "Rod Unique"},
+    price: 600, unlocked: false, feature: "Rod Unique"},
 
     {itemId: "11", name: "Exquisite rod", sprite: "exquisiterod",
     desc: `Quite a feat of craftsmanship. It has a great grip, weight and handles well.`,
