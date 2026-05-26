@@ -5,9 +5,9 @@ const k = kaplay({
     height: 192,
     letterbox: true,
     touchToMouse: true,
-    scale: 4,
+    scale: 20,
     pixelDensity: devicePixelRatio,
-    debug: true, // set to false in prod.
+    debug: false,
     background: [0,0,0],
     global: false,
     maxFPS: 60,

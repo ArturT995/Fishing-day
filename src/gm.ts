@@ -206,7 +206,7 @@ function makeGameManager() {
             isPotOneSubmerged: false,
             isPotTwoSubmerged: false,
             accumulatedTime: 0,
-            debug: true, // TODO: set to false in release
+            debug: false,
 
 
             noticeArea: (currentRod.catchArea ?? 10) + 5,

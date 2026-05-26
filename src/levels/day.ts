@@ -132,15 +132,6 @@ export function day() {
 
 
 
-        // toggle night and other effects here
-        if (gm.debug) {
-            k.onKeyPress("r", () => {
-                if (gm.nightTime) gm.nightTime = false;
-                else gm.nightTime = true;
-            });
-        }
-
-
 
 
 
@@ -456,14 +447,15 @@ export function day() {
         
         let power = 0;
         let fishlimit = false
+
         k.onMousePress("left", () => {
+
             if(gm.fishCaught.length >= 30) {
                 fishlimit = true;
                 return;
             } else {
                 fishlimit = false;
             }
-            
         })
 
 
@@ -486,6 +478,9 @@ export function day() {
                 powerBarBox.angle = random;
                 powerBar.height = 8} 
         });
+
+        // TODO: reset powerbar and catch power if u open a menu and lower it if u drag mouse outside of area
+        // if it's value is 0 its hidden/destroyed
         
         k.onMouseRelease("left", () => {
             throwsound.paused = true
@@ -538,6 +533,24 @@ export function day() {
         });
 
 
+
+        k.onMouseDown("right", () => {
+            
+            const bobber = k.get("bobber")[0];
+            if (bobber && (bobber.state === "floating" || bobber.state === "reeling")) {
+                bobber.enterState("reeling");
+                reelSound.paused = false;
+            } else {
+                reelSound.paused = true;
+            }
+        });
+
+        k.onMouseRelease("right", () => {
+            reelSound.paused = true;
+            const bobber = k.get("bobber")[0];
+            if(bobber) bobber.enterState("floating");
+        });
+
         
 
         await k.wait(0.3, () => canCast = true);
@@ -576,23 +589,7 @@ export function day() {
                 canCast = false;
             }
 
-            //animations
         })
-
-
-        k.onMouseDown("right", () => {
-            const bobber = k.get("bobber")[0];
-            if (bobber && (bobber.state === "floating" || bobber.state === "reeling")) {
-                bobber.enterState("reeling");
-                reelSound.paused = false;
-            }
-        });
-
-        k.onMouseRelease("right", () => {
-            reelSound.paused = true;
-            const bobber = k.get("bobber")[0];
-            if(bobber) bobber.enterState("floating");
-        });
 
 
         k.onSceneLeave(() => {

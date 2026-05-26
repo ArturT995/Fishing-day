@@ -1,6 +1,6 @@
 import type { Vec2 } from "kaplay";
 import k from "./kaplayCtx";
-import { COLORS, fishingArea, rodArea } from "./constants";
+import { CATCH_DISTANCE, COLORS, fishingArea, rodArea } from "./constants";
 import gm from "./gm";
 import { playSound } from "./sounds";
 import { message } from "./messages";
@@ -137,6 +137,7 @@ export function throwLine(anchor: Vec2, power: number) {
         });
     }
     
+    let weakRodAdd = 0;
 
 
     bobber.onUpdate(async () => {
@@ -151,10 +152,10 @@ export function throwLine(anchor: Vec2, power: number) {
             }
         }
 
+       
         if (bobber.state === "reeling" && k.isMouseDown("right")) {
-
             bobber.move(toAnchor.scale(bobber.reelSpeed));
-            if (bobber.pos.dist(anchor) < 10) {
+            if (bobber.pos.dist(anchor) < CATCH_DISTANCE) {
                 k.destroy(noticeArea);
                 gm.bobberExists = false;
                 k.destroy(bobber);
@@ -213,26 +214,16 @@ export function throwLine(anchor: Vec2, power: number) {
                 }
             }   
             
-            
-            if (bobber.fishPullTime >= 1 && bobber.fishPullTime >= 0 ) {
-                /*
-                let secondmove = 0;
-                if (k.randi(gm.currentFishDifficulty,32) > 28) {
-                    k.debug.log("2nd")
-                    bobber.move(bobber.fishPullDir.scale(bobber.fishPullSpeed*4));
-                }
-                */
-            }
-            
 
             // constantly moves away from bobber at all times
+            // weakRodAdd helps catch harder fish with bad rods
             let toEscape = bobber.escapeZone.sub(bobber.pos).unit();
 
-            bobber.move(toEscape.scale(35 + difficulty));
+            bobber.move(toEscape.scale(35 + difficulty - weakRodAdd));
 
 
             // catch
-            if (bobber.pos.dist(anchor) < 7) {
+            if (bobber.pos.dist(anchor) < CATCH_DISTANCE) {
                 catchingFlag = false
                 const fish = FISH_DATA.find(fish=> fish.fishId === fishId)
                 if (fish === undefined) throw new Error("Fish undefined")
@@ -251,7 +242,8 @@ export function throwLine(anchor: Vec2, power: number) {
                 gm.addFish(fishId);
                 gm.removeFishFromPool(fishId)
                 gm.enterState("fishing")
-                k.destroy(bobber);
+                k.destroy(bobber); // here bobber gets destroyed and since caughtFish is it's child it should also get destroyed, but in some cases doesnt
+                // TODO: add an extra k.destroy command for bobbers children.
                 gm.bobberExists = false;
                 k.destroy(reelingArea);
                 gm.spawnedFishExists = false;
@@ -288,17 +280,22 @@ export function throwLine(anchor: Vec2, power: number) {
                 return;
             }
 
-            // resist
+            // resist and catch mechanic
 
             const isInside = bobber.pos.dist(reelingArea.pos) < reelingArea.radius;
             if (isInside) {   
                 const isResisting = k.chance(difficulty / 100);
-
+                
+                if (gm.equippedRodId === "0" || gm.equippedRodId === "1" || gm.equippedRodId === "2" || gm.equippedRodId === "3"|| gm.equippedRodId === "4") {
+                    weakRodAdd += k.dt()
+                }
                 if (isResisting) {
                     bobber.move(toAnchor.scale(bobber.reelSpeed - gm.currentFishDifficulty*2));
                 } else {
                     bobber.move(toAnchor.scale(bobber.reelSpeed - gm.currentFishDifficulty));
                 }
+            } else {
+                weakRodAdd -= k.dt()/2
             }
 
             //bounce

@@ -9,6 +9,8 @@ export const FISH_TIMER = 3500;
 export const FISH_AMOUNT = 14;
 export const ANCHOR = k.vec2(k.width() / 2 - 1, k.height() - 47)
 
+export const CATCH_DISTANCE = 7;
+
 export const CURSOR_1 = k.add([
     k.sprite("cursor1"),
     k.anchor("center"),
