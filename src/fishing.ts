@@ -264,6 +264,7 @@ export function throwLine(anchor: Vec2, power: number) {
                     await k.wait(3)
                     message(`${fish.name} log entry \nadded to Collection Log`)
                 }
+                
                 return;
             }
 

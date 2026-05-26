@@ -304,6 +304,10 @@ export function day() {
         
         //fish identifier
         k.onKeyPress("1", async () => {
+            if (!gm.itemsOwned.includes("14")) {
+                message("You don't have an identifier yet.")
+                return;
+            }
             if (gm.identifierOn) {
                 message("You turn on the identifier off.")
                 playSound("fishing-thunk", "sfx", 0, false, 1000);
@@ -429,11 +433,6 @@ export function day() {
 
 
         
-        
-
-        await k.wait(0.5, () => canCast = true);
-        
-        
         // Fishing rod Power bar
         const powerBar = k.add([
                 k.rect(2,0),
@@ -538,6 +537,14 @@ export function day() {
 
         });
 
+
+        
+
+        await k.wait(0.3, () => canCast = true);
+        
+        
+
+
         k.onUpdate(() => {
             
             gm.fishTimer -= 1
@@ -557,6 +564,8 @@ export function day() {
                 flySound.paused = false;
             } else {
                 flySound.paused = true;
+                // additional reset in case previous toggles weren't reached
+                gm.spawnedFishExists = false
             }
 
             let mouse = k.mousePos();
@@ -568,8 +577,6 @@ export function day() {
             }
 
             //animations
-
-
         })
 
 
