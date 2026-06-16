@@ -6,12 +6,12 @@ You can play it in desktop browser here(or view screenshots and read more about 
 
 
 Install and run it in your CLI with(Linux/WSL example):
-\`\`\`bash
+```bash
 git clone https://github.com/ArturT995/Fishing-day
 cd Fishing-day
 npm install
 npm run dev
-\`\`\`
+```
 
 
 ### About & Contributing
