@@ -5,7 +5,7 @@ import { playSound } from "../sounds";
 
 
 export function endScene() {
-    // reset flags
+
     gm.logPopupOpen = false;
     
 

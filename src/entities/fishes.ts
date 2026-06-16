@@ -202,9 +202,6 @@ export function makeFish(fish: FishObj, pos: Vec2) {
         "fish",
     ]);
     
-    // Remove if you want silhouette look.
-    // TODO: add option for turning colors on
-    
     entity.randomColors()
 
     let fishName = k.add([
@@ -448,7 +445,7 @@ function spawnCaughtFish(fish: GameObj) {
         {
             let randomX = k.randi(-3-sizemodifier, 3+sizemodifier)
             let randomY = k.randi(-3-sizemodifier, 3+sizemodifier)
-            // TODO: try to do this more efficently
+
             let bubbles = k.add([
                 k.pos(bobber.pos.x + randomX, bobber.pos.y + randomY),
                 k.circle(k.rand(0.2, 0.3)),

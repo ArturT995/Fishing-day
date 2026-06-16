@@ -28,7 +28,7 @@ export function day() {
 
 
         let chosenWaves = gm.nightTime ? "waves-night" : "waves";
-        const waves = k.add([k.sprite(chosenWaves), k.z(1)]) // TODO: fix wave sprites
+        const waves = k.add([k.sprite(chosenWaves), k.z(1)])
         waves.play("normal");
 
 
@@ -126,10 +126,6 @@ export function day() {
                 }
             });
         }
-
-
-        // night creature animations
-
 
 
 

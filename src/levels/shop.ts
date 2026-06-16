@@ -95,7 +95,7 @@ export function shop() {
             if (chosenIcon === "moonIcon") shopMenuBorder.color = COLORS.BLUE;
 
 
-            // TODO: move position changes in makeContainer and modify it so button positions update correctly.
+
             const leftBuyContainer = makeContainer("center", COLORS.GRAYBLUE, 
                 shopMenuContainer.width/2, 
                 shopMenuContainer.height - botContainer.height, 0.6)

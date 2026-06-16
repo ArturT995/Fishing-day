@@ -3,7 +3,7 @@ import k from "./kaplayCtx";
 
 
 export async function assetLoader() {
-    //k.loadFont("happy", "./fonts/happy-font.ttf")
+
     k.loadFont("happy", "./fonts/Easy-Pixel.ttf")
 
     k.loadSprite("dayMenuScreen", "./graphics/dayMenuScreen.png")

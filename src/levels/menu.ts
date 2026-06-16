@@ -35,35 +35,8 @@ export function menu() {
         let chosenColor = (background === "nightMenuScreen") ? COLORS.BLUE : COLORS.BEIGE;
         const bgMusic = (background === "nightMenuScreen") ? playSound("night-menu-1", "music", 0, true, 0, 0.8) : playSound("menu-bg-1", "music", 0, true, 0, 1);
         
+
         
-
-        // change all music/sfx logic, make helper functions, some gm stuff
-        // unlocked music/sfx saves.
-
-        //credits song? playSound("menu-bg-1","music", 1, true, 6, 3);
-
-
-
-    /*
-    Move these to Stats when you make it.
-
-    const totalCaught = gm.fishCaught.length;
-    const totalUnlocked = gm.fishUnlocked.length;
-
-    k.add([
-        k.text(`Fish Discovered: ${totalUnlocked}`, {font: "happy", size: 6}),
-        k.pos(20, 20),
-        k.z(23),
-    ]);
-    k.add([
-        k.text(`Fish Caught: ${totalCaught}`, {font: "happy", size: 6}),
-        k.pos(20, 40),
-        k.z(23),
-    ]);
-    */
-    //const menuContainer = makeContainer()
-    
-    //const start = makeButton()
         const start = k.add([
             k.text("Click to start", {font: "happy", size: 12}),
             k.anchor("center"),

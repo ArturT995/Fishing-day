@@ -242,8 +242,7 @@ export function throwLine(anchor: Vec2, power: number) {
                 gm.addFish(fishId);
                 gm.removeFishFromPool(fishId)
                 gm.enterState("fishing")
-                k.destroy(bobber); // here bobber gets destroyed and since caughtFish is it's child it should also get destroyed, but in some cases doesnt
-                // TODO: add an extra k.destroy command for bobbers children.
+                k.destroy(bobber);
                 gm.bobberExists = false;
                 k.destroy(reelingArea);
                 gm.spawnedFishExists = false;
