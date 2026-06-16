@@ -1,4 +1,4 @@
-# Fishing Day
+## Fishing Day
 
 My first game, catch fish, buy items and upgrade rods until you can afford boat keys to travel out to the sea. Built with [Kaplay](https://kaplayjs.com/) and TypeScript/Vite.
 
@@ -14,7 +14,7 @@ npm run dev
 \`\`\`
 
 
-# About & Contributing
+### About & Contributing
 
 After doing the guided Boot.dev courses I wanted to do a short game project, but It ended up becoming longer and I spent a couple months on it as a side project. Currently the code still needs to be cleaned up and refactored in parts. Some types need to be defined as well.
 
